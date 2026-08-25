@@ -1174,14 +1174,34 @@ menu.classList.add(
   </style>
 
   <button id="chat-toggle-btn" aria-label="Open chat assistant">
-    <span class="material-symbols-outlined">smart_toy</span>
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="freyaGradientBtn" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#ffffff"/>
+          <stop offset="100%" stop-color="#dce8ff"/>
+        </linearGradient>
+      </defs>
+      <path d="M12 1.5c.6 3.6 1.4 5.9 2.9 7.6 1.5 1.5 3.8 2.3 7.6 2.9-3.8.6-6.1 1.4-7.6 2.9-1.5 1.7-2.3 4-2.9 7.6-.6-3.6-1.4-5.9-2.9-7.6C7.6 13.4 5.3 12.6 1.5 12c3.8-.6 6.1-1.4 7.6-2.9C10.6 7.4 11.4 5.1 12 1.5Z" fill="url(#freyaGradientBtn)"/>
+      <circle cx="19" cy="4" r="1.3" fill="url(#freyaGradientBtn)"/>
+      <circle cx="4.5" cy="18.5" r="1" fill="url(#freyaGradientBtn)"/>
+    </svg>
   </button>
 
   <div id="chat-window">
     <div id="chat-header">
-      <span class="material-symbols-outlined">smart_toy</span>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="freyaGradientHeader" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#699cff"/>
+            <stop offset="100%" stop-color="#9c48ea"/>
+          </linearGradient>
+        </defs>
+        <path d="M12 1.5c.6 3.6 1.4 5.9 2.9 7.6 1.5 1.5 3.8 2.3 7.6 2.9-3.8.6-6.1 1.4-7.6 2.9-1.5 1.7-2.3 4-2.9 7.6-.6-3.6-1.4-5.9-2.9-7.6C7.6 13.4 5.3 12.6 1.5 12c3.8-.6 6.1-1.4 7.6-2.9C10.6 7.4 11.4 5.1 12 1.5Z" fill="url(#freyaGradientHeader)"/>
+        <circle cx="19" cy="4" r="1.3" fill="url(#freyaGradientHeader)"/>
+        <circle cx="4.5" cy="18.5" r="1" fill="url(#freyaGradientHeader)"/>
+      </svg>
       <div id="chat-header-text">
-        <div id="chat-header-title">Ask Neeraj's AI</div>
+        <div id="chat-header-title">Freya · Neeraj's AI</div>
         <div id="chat-header-status">Online</div>
       </div>
       <button id="chat-close-btn" aria-label="Close chat">
@@ -1190,7 +1210,7 @@ menu.classList.add(
     </div>
     <div id="chat-messages"></div>
     <div id="chat-input-area">
-      <input type="text" id="chat-input" placeholder="Ask me anything..." autocomplete="off">
+      <input type="text" id="chat-input" placeholder="Ask about Neeraj's work..." autocomplete="off">
       <button id="chat-send-btn" aria-label="Send message">
         <span class="material-symbols-outlined">send</span>
       </button>
@@ -1200,59 +1220,177 @@ menu.classList.add(
   <script>
   (function () {
     // ── Knowledge base pulled directly from the portfolio content on this page ──
+    // Every entry lists many real phrasings a visitor might type, so Freya recognizes
+    // the same question asked in different ways.
     const KB = [
       {
-        keywords: ["btech", "b.tech", "college", "university", "degree", "graduat", "bachelor", "computer science", "engineering college"],
+        keywords: ["btech", "b.tech", "college", "university", "degree", "graduat", "bachelor", "computer science", "engineering college", "which college", "where did he study", "where did you study"],
         answer: "Neeraj completed his B.Tech in Computer Science Engineering at APJ Abdul Kalam Technological University (2021 – 2025), graduating with a CGPA of 9.15."
       },
       {
-        keywords: ["12th", "plus two", "higher secondary", "school", "intermediate"],
+        keywords: ["12th", "plus two", "higher secondary", "school", "intermediate", "10th", "schooling"],
         answer: "Neeraj completed his Higher Secondary Education (Computer Science stream) from 2019 to 2021, securing 98.3% in core subjects."
       },
       {
-        keywords: ["education", "study", "qualification", "academic"],
+        keywords: ["education", "study", "qualification", "academic", "background", "education history"],
         answer: "Education: B.Tech in Computer Science Engineering, APJ Abdul Kalam Technological University (2021–2025, CGPA 9.15). Before that, Higher Secondary Education in Computer Science (2019–2021, 98.3%)."
       },
       {
-        keywords: ["work", "job", "experience", "company", "employ", "trainee", "career"],
+        keywords: ["cgpa", "gpa"],
+        answer: "Neeraj graduated with a CGPA of 9.15 in his B.Tech (Computer Science Engineering, 2021–2025)."
+      },
+      {
+        keywords: ["percentage", "12th marks", "12th percentage", "higher secondary marks", "plus two marks"],
+        answer: "Neeraj scored 98.3% in his Higher Secondary core subjects (Computer Science stream, 2019–2021)."
+      },
+      {
+        keywords: ["marks", "grade", "score in"],
+        answer: "Neeraj graduated with a CGPA of 9.15 in his B.Tech, and scored 98.3% in his Higher Secondary core subjects."
+      },
+      {
+        keywords: ["current job", "current role", "current company", "where does he work", "where do you work", "working now", "present job", "currently doing", "career milestones", "milestones"],
+        answer: "Neeraj is currently working as a Python Trainee at ZKTeco Biometrics India Pvt Ltd, Bangalore, since February 2026."
+      },
+      {
+        keywords: ["how long", "since when", "years of experience", "how many years", "experience duration", "started working"],
+        answer: "Neeraj has been working as a Python Trainee at ZKTeco Biometrics India Pvt Ltd since February 2026, building on the skills from his B.Tech (2021–2025)."
+      },
+      {
+        keywords: ["work", "job", "experience", "company", "employ", "trainee", "career", "role", "designation", "profession", "internship"],
         answer: "Neeraj is currently working as a Python Trainee at ZKTeco Biometrics India Pvt Ltd, Bangalore (Feb 2026 – Present), building dynamic web applications with Django and gaining hands-on experience in REST APIs and database management."
       },
       {
-        keywords: ["skill", "tech stack", "technology", "language", "framework", "know", "proficient"],
+        keywords: ["sql", "postgresql", "postgres", "database skill", "db skill", "databases"],
+        answer: "Yes — Neeraj is proficient in SQL & PostgreSQL (85%), using them for database design and query optimization in his Django projects."
+      },
+      {
+        keywords: ["django", "python skill", "backend skill", "backend developer"],
+        answer: "Yes — Neeraj's strongest skill is Python with Django (90%), which he uses to build backend web applications."
+      },
+      {
+        keywords: ["rest api", "api skill", "restful", "apis"],
+        answer: "Yes — Neeraj is skilled in REST APIs (85%), building and integrating them into Django applications."
+      },
+      {
+        keywords: ["frontend", "html", "css", "javascript", "js skill", "front-end", "ui skill"],
+        answer: "Yes — Neeraj works with Frontend technologies (HTML/CSS/JS) at around 80% proficiency."
+      },
+      {
+        keywords: ["ai/ml", "machine learning", "ai skill", "ml skill", "ml", "ai", "artificial intelligence", "data analysis", "data science"],
+        answer: "Yes — Neeraj applies AI/ML for data analysis and insights, including a Brain Tumor Detection project using CNNs and Genetic Algorithms."
+      },
+      {
+        keywords: ["skill", "tech stack", "technology", "language", "framework", "know", "proficient", "good at", "expertise", "strength", "strong at", "what can he do", "what can you do", "abilities", "arsenal", "technical arsenal", "tech arsenal"],
         answer: "Core skills: Python (Django) – 90%, REST APIs – 85%, SQL & PostgreSQL – 85%, Frontend (HTML/CSS/JS) – 80%, plus AI/ML for data analysis and insights."
       },
       {
-        keywords: ["project", "built", "portfolio work", "brain tumor", "check balance"],
+        keywords: ["brain tumor", "tumor detection", "medical imaging", "mri", "cnn", "genetic algorithm"],
+        answer: "Brain Tumor Detection System — an intelligent medical imaging solution that detects brain tumors from MRI scans, using CNNs for feature extraction and Genetic Algorithms to optimize model performance. Built with Python."
+      },
+      {
+        keywords: ["check balance", "balance app", "account balance"],
+        answer: "Check Balance — a web app that lets users view their current account balance with real-time updates of available funds, built with HTML, CSS, and JS."
+      },
+      {
+        keywords: ["project", "built", "portfolio work", "made", "developed", "case stud"],
         answer: "Featured projects: 1) Brain Tumor Detection System — detects tumors from MRI scans using CNN feature extraction and Genetic Algorithms for optimization. 2) Check Balance — a web app for viewing real-time account balance updates (HTML, CSS, JS)."
       },
       {
-        keywords: ["contact", "email", "phone", "number", "reach", "mail"],
+        keywords: ["all projects", "more projects", "other projects", "github repo", "repositories"],
+        answer: "You can browse all of Neeraj's projects on GitHub: github.com/NEERAJ-2003?tab=repositories"
+      },
+      {
+        keywords: ["contact", "email", "phone", "number", "reach", "mail", "get in touch", "connect", "let's connect"],
         answer: "You can reach Neeraj at devbyneeraj@gmail.com or +91 9744733146."
       },
       {
-        keywords: ["github", "linkedin", "instagram", "whatsapp", "social"],
+        keywords: ["hire", "hiring", "available for work", "open to work", "freelance", "opportunit", "looking for a job", "recruit", "collaborat"],
+        answer: "Neeraj is open to new opportunities and collaborations — the best way to reach out is via email at devbyneeraj@gmail.com or connect on LinkedIn: linkedin.com/in/neeraj-k-r-a1456b294"
+      },
+      {
+        keywords: ["where is he based", "where is he located", "location", "based in", "live in", "city", "from where", "where does he live"],
+        answer: "Neeraj is based in Bangalore, India, where he currently works at ZKTeco Biometrics India Pvt Ltd."
+      },
+      {
+        keywords: ["github", "linkedin", "instagram", "whatsapp", "social", "profile link"],
         answer: "GitHub: github.com/NEERAJ-2003 | LinkedIn: linkedin.com/in/neeraj-k-r-a1456b294 | Instagram: @_neeraj.kr_ | WhatsApp: +91 9744733146"
       },
       {
-        keywords: ["who is", "about him", "who are you", "introduce", "name"],
+        keywords: ["who is", "about him", "who are you", "introduce", "tell me about", "what does he do", "what does neeraj do", "architecting logic"],
         answer: "This is Neeraj K R — a Python Developer specializing in Django, REST APIs, and database design, currently working as a Python Trainee at ZKTeco Biometrics India Pvt Ltd."
       },
       {
-        keywords: ["leetcode", "cgpa", "score", "achievement", "stats"],
+        keywords: ["name", "his name", "full name"],
+        answer: "His name is Neeraj K R."
+      },
+      {
+        keywords: ["leetcode", "problems solved", "coding practice", "dsa"],
+        answer: "Neeraj has solved 100+ problems on LeetCode as part of sharpening his data structures and algorithms skills."
+      },
+      {
+        keywords: ["achievement", "stats", "highlight", "accomplishment"],
         answer: "Quick stats: 100+ LeetCode problems solved, 5+ projects built, 9.15 CGPA in B.Tech."
+      },
+      {
+        keywords: ["resume", "cv", "download resume"],
+        answer: "There's no direct resume download here, but you can get Neeraj's full background via email (devbyneeraj@gmail.com) or LinkedIn: linkedin.com/in/neeraj-k-r-a1456b294"
       },
     ];
 
-    const FALLBACK = "I can answer questions about Neeraj's education, work experience, skills, projects, or contact details.";
+    // ── Smalltalk — handled before the KB so greetings feel natural rather than a rigid match ──
+    const SMALLTALK = [
+      { keywords: ["hi", "hello", "hey", "good morning", "good afternoon", "good evening", "yo"], answer: "Hey there! I'm Freya. Ask me anything about Neeraj's education, experience, skills, or projects." },
+      { keywords: ["thank", "thanks", "thx", "appreciate"], answer: "You're welcome! Let me know if you'd like to know anything else about Neeraj's work." },
+      { keywords: ["bye", "goodbye", "see you", "cya"], answer: "Take care! Feel free to reach out to Neeraj directly at devbyneeraj@gmail.com if you'd like to connect further." },
+      { keywords: ["how are you", "how's it going", "what's up"], answer: "Doing great, thanks for asking! I'm here to answer questions about Neeraj's portfolio — what would you like to know?" },
+    ];
+
+    // Broad set of signals that a question is actually about Neeraj / his portfolio.
+    // Anything that doesn't hit the KB *and* doesn't even brush against these topics
+    // gets politely declined, so Freya stays confined to the portfolio.
+    const PORTFOLIO_SCOPE = [
+      "neeraj", "you", "your", "he", "his", "him",
+      "resume", "cv", "portfolio", "hire", "hiring", "available",
+      "django", "python", "api", "sql", "database", "backend",
+      "fastapi", "docker", "ml", "machine learning", "ai"
+    ];
+
+    const FALLBACK = "I'm Freya, and I only help with questions about Neeraj's portfolio — his education, work experience, skills, projects, or contact details. Try asking about one of those!";
+    const OFF_TOPIC = "That's outside what I can help with — I'm Freya, Neeraj's portfolio assistant, so I stick to questions about his education, experience, skills, projects, and contact info.";
+
+    function hasWord(q, keyword) {
+      // Exact word/phrase match using boundaries, so short words like "hi" or "yo"
+      // don't accidentally match inside words like "his" or "yourself".
+      // Apostrophes are stripped from both sides so "let's" and "lets" both match.
+      const normalize = s => s.replace(/['’]/g, "");
+      const nq = normalize(q);
+      const nk = normalize(keyword);
+      const escaped = nk.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      return new RegExp("(^|[^a-z])" + escaped + "([^a-z]|$)", "i").test(nq);
+    }
 
     function findAnswer(question) {
       const q = question.toLowerCase();
-      for (const entry of KB) {
-        if (entry.keywords.some(k => q.includes(k))) {
+      for (const entry of SMALLTALK) {
+        if (entry.keywords.some(k => hasWord(q, k))) {
           return entry.answer;
         }
       }
-      return FALLBACK;
+      for (const entry of KB) {
+        if (entry.keywords.some(k => hasWord(q, k))) {
+          return entry.answer;
+        }
+      }
+      if (PORTFOLIO_SCOPE.some(k => hasWord(q, k))) {
+        return FALLBACK;
+      }
+      return OFF_TOPIC;
+    }
+
+    // Quick check so greetings/thanks/bye can skip the "thinking" simulation entirely
+    function isSmalltalk(question) {
+      const q = question.toLowerCase();
+      return SMALLTALK.some(entry => entry.keywords.some(k => hasWord(q, k)));
     }
 
     const toggleBtn = document.getElementById("chat-toggle-btn");
@@ -1285,10 +1423,30 @@ menu.classList.add(
       }, speed);
     }
 
+    // A varied set of "thinking" phrases so it doesn't just say the same thing every time
+    const THINKING_PHRASES = [
+      "Thinking...",
+      "Let me check...",
+      "Looking that up...",
+      "Digging through Neeraj's info...",
+      "One sec...",
+      "Give me a moment...",
+      "Searching my notes...",
+      "Piecing that together..."
+    ];
+
+    function pickThinkingPhrase(exclude) {
+      let phrase;
+      do {
+        phrase = THINKING_PHRASES[Math.floor(Math.random() * THINKING_PHRASES.length)];
+      } while (phrase === exclude && THINKING_PHRASES.length > 1);
+      return phrase;
+    }
+
     function openChat() {
       chatWindow.classList.add("open");
       if (!greeted) {
-        addMessage("Hey! I'm Neeraj's portfolio assistant. Ask me about his education, experience, skills, or projects.", "bot");
+        addMessage("Hi, I'm Freya, Neeraj's portfolio assistant. Ask me about his education, experience, skills, or projects.", "bot");
         greeted = true;
       }
       input.focus();
@@ -1309,15 +1467,34 @@ menu.classList.add(
       addMessage(text, "user");
       input.value = "";
 
-      const typingEl = addMessage("Thinking...", "typing");
+      // Greetings/thanks/bye get a quick, natural reply — no "thinking" simulation
+      if (isSmalltalk(text)) {
+        const typingEl = addMessage("", "bot");
+        setTimeout(() => {
+          typeOutMessage(typingEl, findAnswer(text), 18);
+        }, 250);
+        return;
+      }
 
-      // Simulate a natural "thinking" pause before responding (0.9s – 1.8s)
-      const thinkDelay = 900 + Math.random() * 900;
+      let currentPhrase = pickThinkingPhrase(null);
+      const typingEl = addMessage(currentPhrase, "typing");
+
+      // Simulate a natural "thinking" pause before responding (1.6s – 2.6s),
+      // cycling through a couple of different phrases along the way.
+      const thinkDelay = 1600 + Math.random() * 1000;
+
+      const phraseTimer = setInterval(() => {
+        currentPhrase = pickThinkingPhrase(currentPhrase);
+        typingEl.textContent = currentPhrase;
+        messages.scrollTop = messages.scrollHeight;
+      }, 650);
 
       setTimeout(() => {
+        clearInterval(phraseTimer);
         const answer = findAnswer(text);
         typingEl.className = "chat-msg bot";
-        typeOutMessage(typingEl, answer, 16);
+        // A slightly slower, more deliberate typing pace for the reply itself
+        typeOutMessage(typingEl, answer, 26);
       }, thinkDelay);
     }
 
