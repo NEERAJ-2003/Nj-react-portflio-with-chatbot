@@ -1,4 +1,4 @@
-# Neeraj K R — Portfolio (React + Vite)
+Portfolio (React + Vite)
 
 Converted from the original single-file HTML/Tailwind/JS portfolio.
 
