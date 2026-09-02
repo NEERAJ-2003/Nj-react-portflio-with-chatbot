@@ -1,7 +1,5 @@
 # Portfolio (React + Vite)
 
-Converted from the original single-file HTML/Tailwind/JS portfolio.
-
 ## Setup
 ```bash
 npm install
