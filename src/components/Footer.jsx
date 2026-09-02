@@ -1,7 +1,7 @@
 const SOCIALS = [
   { label: "GitHub", href: "https://github.com/NEERAJ-2003" },
   { label: "LinkedIn", href: "http://www.linkedin.com/in/neeraj-k-r-a1456b294" },
-  { label: "Instagram", href: "https://www.instagram.com/_neeraj.kr_?igsh=MnpzN2E1amRpcHhx" },
+  // { label: "Instagram", href: "https://www.instagram.com/_neeraj.kr_?igsh=MnpzN2E1amRpcHhx" },
   { label: "Whatsapp", href: "https://wa.me/9744733146" },
 ];
 
