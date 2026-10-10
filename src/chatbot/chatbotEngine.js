@@ -75,7 +75,7 @@ const SKILL_KNOWN = [
     percent: null,
     aliases: ["dsa", "leetcode", "data structures", "algorithms", "coding practice",
       "problem solving", "competitive programming", "coding challenges"],
-    extra: "100+ problems solved on LeetCode as part of sharpening data structures & algorithms."
+    extra: "130+ problems solved on LeetCode as part of sharpening data structures & algorithms."
   },
 ];
 
@@ -142,12 +142,12 @@ function skillsAnswer(question) {
   }
 
   if (unknown.score > 0 && unknown.score >= listScore &&
-      scoreKeywords(q, SKILL_INTENT_WORDS) > 0) {
+    scoreKeywords(q, SKILL_INTENT_WORDS) > 0) {
     return `Neeraj hasn't listed ${unknown.keyword} as one of his skills — he hasn't worked with it, or it isn't part of his current stack.`;
   }
 
   if (listScore > 0) {
-    return "Python (Django) – 90%, FastAPI – 85%, REST APIs – 85%, SQL & PostgreSQL – 85%, Frontend (HTML/CSS/JS) – 80%. He also applies AI/ML for medical data analysis (e.g. CNNs + Genetic Algorithms in his Brain Tumor Detection project) and has solved 100+ DSA problems on LeetCode. Ask me about any of these for more detail!";
+    return "Python (Django) – 90%, FastAPI – 85%, REST APIs – 85%, SQL & PostgreSQL – 85%, Frontend (HTML/CSS/JS) – 80%. He also applies AI/ML for medical data analysis (e.g. CNNs + Genetic Algorithms in his Brain Tumor Detection project) and has solved 130+ DSA problems on LeetCode. Ask me about any of these for more detail!";
   }
   return null;
 }
@@ -296,7 +296,7 @@ const KB = [
   {
     keywords: ["why should we hire", "why hire him", "why should i hire", "what makes him a good fit",
       "what makes him stand out", "unique strengths", "why is he a good candidate"],
-    answer: "Neeraj combines strong Python/Django backend skills (90%) with REST API and database expertise (85% each), a 9.15 CGPA, 100+ LeetCode problems solved, and hands-on project experience spanning both classic web apps and applied AI/ML — a well-rounded profile for backend or full-stack roles."
+    answer: "Neeraj combines strong Python/Django backend skills (90%) with REST API and database expertise (85% each), a 9.15 CGPA, 130+ LeetCode problems solved, and hands-on project experience spanning both classic web apps and applied AI/ML — a well-rounded profile for backend or full-stack roles."
   },
   {
     keywords: ["where is he based", "where is he located", "location", "based in", "live in", "city",
@@ -319,22 +319,22 @@ const KB = [
       "what does neeraj do", "architecting logic", "give me an intro", "brief about him",
       "tell me about neeraj", "describe him", "his profile", "his background story", "his intro",
       "elevator pitch", "summary about him"],
-    answer: "This is Neeraj K R — a Python Developer specializing in Django, REST APIs, and database design, currently working as a Software Engineer Trainee at ZKTeco Biometrics India Pvt Ltd."
+    answer: "This is Neeraj KR — a Software Engineer specializing in FastAPI, Django, REST APIs, and database design, currently working as a Software Engineer Trainee at ZKTeco Biometrics India Pvt Ltd."
   },
   {
     keywords: ["name", "his name", "full name", "what is his name", "what's his name"],
-    answer: "His name is Neeraj K R."
+    answer: "His name is Neeraj KR."
   },
   {
     keywords: ["leetcode", "problems solved", "coding practice", "competitive coding",
       "how many leetcode problems", "leetcode profile", "leetcode stats", "leetcode rank"],
-    answer: "Neeraj has solved 100+ problems on LeetCode as part of sharpening his data structures and algorithms skills."
+    answer: "Neeraj has solved 130+ problems on LeetCode as part of sharpening his data structures and algorithms skills."
   },
   {
     keywords: ["achievement", "stats", "highlight", "accomplishment", "his stats", "quick stats",
       "key numbers", "at a glance", "his achievements", "notable achievements", "accolades",
       "awards", "recognition"],
-    answer: "Quick stats: 100+ LeetCode problems solved, 5+ projects built, 9.15 CGPA in B.Tech."
+    answer: "Quick stats: 130+ LeetCode problems solved, 5+ projects built, 9.15 CGPA in B.Tech."
   },
   {
     keywords: ["resume", "cv", "download resume", "download cv", "can i get his resume",
@@ -368,32 +368,58 @@ function bestKBMatch(q) {
 
 // ── Smalltalk ──
 const SMALLTALK = [
-  { keywords: ["rate neeraj", "rate your creator", "how super is neeraj", "is he super"],
-    answer: "Now im not ready to rate my creator" },
-  { keywords: ["your current build version", "your version", "version", "what is your version", "whats your version", "what version", "which version", "current version", "freya version", "app version", "build version", "model version", "v1.1.0", "v1.0"],
-    answer: "v1.1.0" },
-  { keywords: ["who made you", "who created you", "who is your creator", "worked on you"],
-    answer: "Neeraj build me as his ai assistant..." },
-  { keywords: ["when he builded you", "when builded you", "date you created", "created date", "your build date"],
-    answer: "August 2026" },
-  { keywords: ["hi", "hello", "hey", "yo", "hiya", "howdy"],
-    answer: "Hey there! I'm Freya. Ask me anything about the portfolio." },
-  { keywords: ["good morning"],
-    answer: "Hey, good morning, I'm Freya. Have a nice day..." },
-  { keywords: ["good afternoon"],
-    answer: "Hey, good afternoon, I'm Freya." },
-  { keywords: ["good evening"],
-    answer: "Hey, good evening, I'm Freya." },
-  { keywords: ["good night"],
-    answer: "Hey, Good night sweet dreams..." },
-  { keywords: ["thank", "thanks", "thx", "appreciate", "cheers", "much appreciated"],
-    answer: "You're welcome! Let me know if you'd like to know anything else about Neeraj's work." },
-  { keywords: ["bye", "goodbye", "see you", "cya", "take care", "catch you later"],
-    answer: "Take care! Feel free to reach out to Neeraj directly at devbyneeraj@gmail.com if you'd like to connect further." },
-  { keywords: ["how are you", "how's it going", "what's up", "how you doing", "hows it going"],
-    answer: "Doing great, thanks for asking! I'm here to answer questions about Neeraj's portfolio — what would you like to know?" },
-  { keywords: ["ok", "okay", "cool", "nice", "great", "alright", "got it", "sounds good"],
-    answer: "Glad that helps! Anything else you'd like to know about Neeraj?" },
+  {
+    keywords: ["rate neeraj", "rate your creator", "how super is neeraj", "is he super"],
+    answer: "Now im not ready to rate my creator"
+  },
+  {
+    keywords: ["your current build version", "your version", "version", "what is your version", "whats your version", "what version", "which version", "current version", "freya version", "app version", "build version", "model version", "v1.1.0", "v1.0"],
+    answer: "v1.1.0"
+  },
+  {
+    keywords: ["who made you", "who created you", "who is your creator", "worked on you"],
+    answer: "Neeraj build me as his ai assistant..."
+  },
+  {
+    keywords: ["when he builded you", "when builded you", "date you created", "created date", "your build date"],
+    answer: "August 2026"
+  },
+  {
+    keywords: ["hi", "hello", "hey", "yo", "hiya", "howdy"],
+    answer: "Hey there! I'm Freya. Ask me anything about the portfolio."
+  },
+  {
+    keywords: ["good morning"],
+    answer: "Hey, good morning, I'm Freya. Have a nice day..."
+  },
+  {
+    keywords: ["good afternoon"],
+    answer: "Hey, good afternoon, I'm Freya."
+  },
+  {
+    keywords: ["good evening"],
+    answer: "Hey, good evening, I'm Freya."
+  },
+  {
+    keywords: ["good night"],
+    answer: "Hey, Good night sweet dreams..."
+  },
+  {
+    keywords: ["thank", "thanks", "thx", "appreciate", "cheers", "much appreciated"],
+    answer: "You're welcome! Let me know if you'd like to know anything else about Neeraj's work."
+  },
+  {
+    keywords: ["bye", "goodbye", "see you", "cya", "take care", "catch you later"],
+    answer: "Take care! Feel free to reach out to Neeraj directly at devbyneeraj@gmail.com if you'd like to connect further."
+  },
+  {
+    keywords: ["how are you", "how's it going", "what's up", "how you doing", "hows it going"],
+    answer: "Doing great, thanks for asking! I'm here to answer questions about Neeraj's portfolio — what would you like to know?"
+  },
+  {
+    keywords: ["ok", "okay", "cool", "nice", "great", "alright", "got it", "sounds good"],
+    answer: "Glad that helps! Anything else you'd like to know about Neeraj?"
+  },
 ];
 
 function smalltalkMatch(q) {

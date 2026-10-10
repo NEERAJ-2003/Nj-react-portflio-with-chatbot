@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import Reveal from "./Reveal";
 
 const LEETCODE_METRICS = {
-  total: 105,
-  ranking: "Top 18%",
+  total: 136,
+  ranking: "Rank #1,292,007",
   categories: [
-    { name: "Easy", count: 58, total: 800, color: "text-emerald-400", bg: "bg-emerald-400", pct: 70 },
-    { name: "Medium", count: 41, total: 1700, color: "text-amber-400", bg: "bg-amber-400", pct: 50 },
-    { name: "Hard", count: 6, total: 750, color: "text-rose-400", bg: "bg-rose-400", pct: 15 },
+    { name: "Easy", count: 121, total: 969, color: "text-emerald-400", bg: "bg-emerald-400", pct: Math.round((121 / 969) * 100) },
+    { name: "Medium", count: 13, total: 2124, color: "text-amber-400", bg: "bg-amber-400", pct: Math.round((13 / 2124) * 100) },
+    { name: "Hard", count: 2, total: 980, color: "text-rose-400", bg: "bg-rose-400", pct: Math.round((2 / 980) * 100) },
   ],
   topics: [
     { label: "Algorithms", level: "Advanced", icon: "memory" },
@@ -180,12 +180,12 @@ export default function DeveloperMetrics() {
                     <div>
                       <h3 className="font-headline font-bold text-lg text-on-surface">LeetCode Mastery</h3>
                       <p className="text-xs text-on-surface-variant font-label">
-                        100+ Problems Solved · {LEETCODE_METRICS.ranking}
+                        {LEETCODE_METRICS.total}+ Problems Solved · {LEETCODE_METRICS.ranking}
                       </p>
                     </div>
                   </div>
                   <span className="px-3 py-1 rounded-full text-xs font-label bg-amber-500/15 text-amber-300 font-bold">
-                    100+ Solved
+                    {LEETCODE_METRICS.total}+ Solved
                   </span>
                 </div>
 

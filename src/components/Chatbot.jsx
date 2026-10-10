@@ -2,13 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { findAnswer, isSmalltalk, pickThinkingPhrase } from "../chatbot/chatbotEngine";
 import VoiceVisualizer from "./VoiceVisualizer";
 
-const QUICK_CHIPS = [
-  { label: "Architecture 🧬", query: "Explain the Brain Tumor architecture pipeline" },
-  { label: "FastAPI stack ⚡", query: "What are his FastAPI and REST skills?" },
-  { label: "Backend stack 🐍", query: "What is his backend experience?" },
-  { label: "Preview resume 📄", query: "Can I see his resume?" },
-  { label: "Contact info 📬", query: "How do I contact Neeraj?" },
-];
 
 export default function Chatbot() {
   const [open, setOpen] = useState(false);
@@ -765,19 +758,6 @@ export default function Chatbot() {
             })}
           </div>
 
-          {/* Quick Suggestion Chips */}
-          <div className="chat-chips-area px-3 py-2 border-t border-white/5 bg-surface-container-lowest/50 flex gap-1.5 overflow-x-auto no-scrollbar">
-            {QUICK_CHIPS.map((chip, idx) => (
-              <button
-                key={chip.label}
-                onClick={() => handleSend(chip.query)}
-                className="chat-chip text-left"
-                style={{ "--chip-index": idx }}
-              >
-                {chip.label}
-              </button>
-            ))}
-          </div>
 
           {/* Standard Chat Input Area */}
           <div id="chat-input-area">

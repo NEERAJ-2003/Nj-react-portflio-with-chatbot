@@ -195,7 +195,7 @@ export default function Hero({ onOpenResume }) {
         >
           NEERAJ
           <span className="text-transparent bg-clip-text bg-gradient-to-br from-primary via-primary-dim to-tertiary inline-block filter drop-shadow-[0_0_30px_rgba(105,156,255,0.4)]">
-            &nbsp;K&nbsp;R
+            &nbsp;KR
           </span>
         </h1>
 
