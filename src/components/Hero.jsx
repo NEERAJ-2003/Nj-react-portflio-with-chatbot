@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-const PHRASES = ["Python Developer", "Backend Developer", "Problem Solver"];
+const PHRASES = ["Software Engineer", "Python Developer", "Problem Solver"];
 
 export default function Hero({ onOpenResume }) {
   const canvasRef = useRef(null);
