@@ -72,7 +72,7 @@ export default function About() {
             <Reveal delay={120}>
               <div className="glass-card p-8 md:p-12 rounded-3xl relative overflow-hidden hover-lift">
                 <p className="text-xl text-on-surface-variant font-label">
-                  I'm a <span className="text-on-surface font-semibold">Python Developer</span> with a strong foundation in building scalable, real-world applications using{" "}
+                  I'm a <span className="text-on-surface font-semibold">Software Engineer</span> with a strong foundation in building scalable, real-world applications using{" "}
                   <span className="text-primary-dim font-semibold">FastAPI, Django</span>. My work spans backend architecture,{" "}
                   <span className="text-primary-dim font-semibold">REST APIs</span>, and{" "}
                   <span className="text-primary-dim font-semibold">database design</span> - turning complex business logic into clean, maintainable systems.
