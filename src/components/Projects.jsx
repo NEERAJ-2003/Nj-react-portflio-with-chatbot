@@ -11,6 +11,8 @@ export const PROJECTS_DATA = [
     badge: "IBM Hackathon",
     icon: "security",
     image: "/sentinel_img.jpg",
+    imagePosition: "left center",
+    noZoom: true,
     summary:
       "Sentinel enforces cryptographic trust and governance for autonomous AI agents running on IBM Bob — intercepting every action, validating against policy, and attaching deterministic digital signatures before execution.",
     problem:
@@ -114,7 +116,7 @@ function FanCard({ project, index, hoveredIndex, onHover, onSelectProject, onOpe
     flex: isHovered ? "3.2 1 0%" : hasHover ? "0.55 1 0%" : "1 1 0%",
     transform: `perspective(1200px) rotateY(${tiltDeg}deg) translateX(${translateX}) scale(${scale})`,
     transformOrigin: isBefore ? "right center" : "left center",
-    transition: "all 1.2s cubic-bezier(0.34,1.4,0.64,1)",
+    transition: "all 0.75s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
     zIndex,
     position: "relative",
     minWidth: 0,
@@ -126,20 +128,72 @@ function FanCard({ project, index, hoveredIndex, onHover, onSelectProject, onOpe
     <div style={style} onMouseEnter={() => onHover(index)} className="rounded-3xl overflow-hidden cursor-pointer group">
       {hasImage ? (
         <div className="relative h-[440px] w-full flex flex-col justify-end border border-white/10 rounded-3xl overflow-hidden">
-          <img src={project.image} alt={project.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/65 to-black/10" />
 
-          <div className="absolute inset-0 flex items-center justify-center transition-opacity duration-300" style={{ opacity: isHovered ? 0 : 1, pointerEvents: "none" }}>
-            <div className="text-center px-3">
-              <span className="material-symbols-outlined text-white/60 text-3xl mb-2 block">{project.icon}</span>
-              <p className="text-white font-bold text-sm font-headline leading-snug line-clamp-2">{project.title}</p>
-            </div>
+          {/* noZoom cards: use background-image so expanding container reveals more content instead of zooming */}
+          {project.noZoom ? (
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `url(${project.image})`,
+                backgroundSize: "cover",
+                backgroundPosition: project.imagePosition || "center center",
+                backgroundRepeat: "no-repeat",
+              }}
+            />
+          ) : (
+            /* Normal cards: img with scale-zoom on hover */
+            <img
+              src={project.image}
+              alt={project.title}
+              className="absolute inset-0 w-full h-full object-cover"
+              style={{
+                transform: isHovered ? "scale(1.10)" : "scale(1.0)",
+                transition: "transform 1.2s cubic-bezier(0.34,1.4,0.64,1)",
+                objectPosition: project.imagePosition || "center center",
+              }}
+            />
+          )}
+
+          {/* Gradient overlay — lighter when not hovered so image shows through */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: isHovered
+                ? "linear-gradient(to top, rgba(0,0,0,0.92) 40%, rgba(0,0,0,0.45) 70%, rgba(0,0,0,0.15) 100%)"
+                : "linear-gradient(to top, rgba(0,0,0,0.70) 25%, rgba(0,0,0,0.20) 65%, rgba(0,0,0,0.05) 100%)",
+              transition: "background 1.2s ease",
+            }}
+          />
+
+          {/* Collapsed: just the title pinned at bottom */}
+          <div
+            className="absolute bottom-0 left-0 right-0 z-10 p-5 pointer-events-none"
+            style={{
+              opacity: isHovered ? 0 : 1,
+              transform: isHovered ? "translateY(6px)" : "translateY(0)",
+              transition: "opacity 0.35s, transform 0.35s",
+            }}
+          >
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-label font-bold uppercase tracking-wide bg-primary/20 text-primary border border-primary/30 inline-block mb-1.5">
+              {project.badge}
+            </span>
+            <p className="text-white font-bold text-base font-headline leading-snug">{project.title}</p>
           </div>
 
-          <div className="relative z-10 p-6 md:p-8" style={{ opacity: isHovered ? 1 : 0, transform: isHovered ? "translateY(0)" : "translateY(16px)", transition: "opacity 0.3s 0.1s, transform 0.3s 0.1s" }}>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-label font-bold uppercase tracking-wide bg-primary/20 text-primary border border-primary/30 inline-block mb-3">{project.badge}</span>
+          {/* Expanded content: slides up on hover */}
+          <div
+            className="relative z-10 p-6 md:p-8"
+            style={{
+              opacity: isHovered ? 1 : 0,
+              transform: isHovered ? "translateY(0)" : "translateY(22px)",
+              transition: "opacity 0.4s 0.15s, transform 0.4s 0.15s",
+            }}
+          >
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-label font-bold uppercase tracking-wide bg-primary/20 text-primary border border-primary/30 inline-block mb-3">
+              {project.badge}
+            </span>
             <h3 className="text-2xl md:text-3xl font-bold font-headline mb-2 text-white">{project.title}</h3>
-            <p className="text-sm text-white/70 font-label mb-5 line-clamp-2 leading-relaxed max-w-xl">{project.summary}</p>
+            <p className="text-sm text-white/75 font-label mb-5 line-clamp-2 leading-relaxed max-w-xl">{project.summary}</p>
             <div className="flex flex-wrap gap-1.5 mb-5">
               {project.tech.slice(0, 5).map((t) => (
                 <span key={t} className="px-2.5 py-1 bg-white/10 backdrop-blur-sm rounded-lg text-white/80 text-[11px] font-label border border-white/10">{t}</span>
@@ -151,7 +205,7 @@ function FanCard({ project, index, hoveredIndex, onHover, onSelectProject, onOpe
                   <span className="material-symbols-outlined text-sm">schema</span><span>Architecture</span>
                 </button>
               )}
-              {project.repo && (
+              {project.repo && project.id !== "brain-tumor" && (
                 <a href={project.repo} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()} className="px-5 py-2.5 rounded-xl bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white text-xs font-label font-bold flex items-center gap-2 border border-white/20 transition-all">
                   <span className="material-symbols-outlined text-sm">code</span><span>GitHub</span>
                 </a>
@@ -205,55 +259,91 @@ function FanCard({ project, index, hoveredIndex, onHover, onSelectProject, onOpe
 
 function MobileCard({ project, onSelectProject, onOpenArch }) {
   const hasImage = !!project.image;
-  return hasImage ? (
-    <div className="relative rounded-3xl h-[360px] overflow-hidden border border-white/10 flex flex-col justify-end">
-      <img src={project.image} alt={project.title} className="absolute inset-0 w-full h-full object-cover" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/65 to-transparent" />
-      <div className="relative z-10 p-6">
-        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-label font-bold uppercase bg-primary/20 text-primary border border-primary/30 inline-block mb-2">{project.badge}</span>
-        <h3 className="text-2xl font-bold font-headline mb-2 text-white">{project.title}</h3>
-        <p className="text-sm text-white/70 font-label mb-4 line-clamp-2">{project.summary}</p>
-        <div className="flex flex-wrap gap-2">
-          {project.id === "brain-tumor" && (
-            <button onClick={onOpenArch} className="px-4 py-2 rounded-xl bg-primary text-on-primary text-xs font-label font-bold flex items-center gap-1.5">
-              <span className="material-symbols-outlined text-sm">schema</span> Architecture
-            </button>
-          )}
-          {project.repo && (
-            <a href={project.repo} target="_blank" rel="noreferrer" className="px-4 py-2 rounded-xl bg-white/10 text-white text-xs font-label font-bold flex items-center gap-1.5 border border-white/20">
-              <span className="material-symbols-outlined text-sm">code</span> GitHub
-            </a>
-          )}
-          <button onClick={() => onSelectProject(project)} className="px-4 py-2 rounded-xl bg-white/10 text-white text-xs font-label border border-white/20 flex items-center gap-1.5">
-            <span className="material-symbols-outlined text-sm">visibility</span> Case Study
-          </button>
+
+  return (
+    <div className="rounded-2xl overflow-hidden border border-white/10 bg-surface-container/60 backdrop-blur-sm flex flex-row h-[130px]">
+      {/* Left: image thumbnail */}
+      {hasImage ? (
+        <div className="relative w-[110px] flex-shrink-0 overflow-hidden">
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `url(${project.image})`,
+              backgroundSize: "cover",
+              backgroundPosition: project.imagePosition || "center center",
+            }}
+          />
+          <div className="absolute inset-0 bg-black/30" />
+          {/* Badge on thumbnail */}
+          <span className="absolute top-2 left-2 px-1.5 py-0.5 rounded-md text-[8px] font-label font-bold uppercase tracking-wide bg-primary/30 text-primary border border-primary/30 leading-tight">
+            {project.badge}
+          </span>
         </div>
-      </div>
-    </div>
-  ) : (
-    <div className="glass-card p-6 rounded-3xl flex flex-col justify-between h-[360px] border border-primary/15">
-      <div>
-        <div className="flex items-center justify-between mb-4">
+      ) : (
+        <div className="w-[110px] flex-shrink-0 flex items-center justify-center bg-surface-variant/30 border-r border-white/5">
           <span className="material-symbols-outlined text-3xl text-tertiary">{project.icon}</span>
-          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-label font-bold uppercase bg-primary/10 text-primary">{project.badge}</span>
         </div>
-        <h3 className="text-xl font-bold font-headline mb-2">{project.title}</h3>
-        <p className="text-sm text-on-surface-variant font-label line-clamp-3">{project.summary}</p>
-      </div>
-      <div>
-        <div className="flex flex-wrap gap-1.5 mb-4">
-          {project.tech.slice(0, 4).map((t) => (
-            <span key={t} className="px-2.5 py-1 bg-surface-variant/40 rounded-lg text-on-surface-variant text-[11px] font-label">{t}</span>
+      )}
+
+      {/* Right: content */}
+      <div className="flex flex-col justify-between flex-1 min-w-0 p-3">
+        <div>
+          <h3 className="text-sm font-bold font-headline text-on-surface leading-snug line-clamp-1 mb-0.5">
+            {project.title}
+          </h3>
+          <p className="text-[11px] text-on-surface-variant font-label line-clamp-2 leading-snug">
+            {project.summary}
+          </p>
+        </div>
+
+        {/* Tech pills - max 3 */}
+        <div className="flex flex-wrap gap-1 mb-2">
+          {(project.tech || []).slice(0, 3).map((t) => (
+            <span key={t} className="px-1.5 py-0.5 bg-white/8 rounded text-[9px] font-label text-on-surface-variant border border-white/10">
+              {t}
+            </span>
           ))}
         </div>
-        <div className="flex gap-3 pt-4 border-t border-primary/10">
+
+        {/* Action buttons */}
+        <div className="flex gap-1.5">
+          {project.id === "brain-tumor" && (
+            <button
+              onClick={onOpenArch}
+              className="px-2.5 py-1 rounded-lg bg-primary text-on-primary text-[10px] font-label font-bold flex items-center gap-1"
+            >
+              <span className="material-symbols-outlined text-xs">schema</span>
+              Arch
+            </button>
+          )}
           {project.liveUrl && (
-            <a href={project.liveUrl} target="_blank" rel="noreferrer" className="px-4 py-2 rounded-xl bg-primary text-on-primary text-xs font-label font-bold flex items-center gap-1.5">
-              Live App <span className="material-symbols-outlined text-sm">open_in_new</span>
+            <a
+              href={project.liveUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="px-2.5 py-1 rounded-lg bg-primary text-on-primary text-[10px] font-label font-bold flex items-center gap-1"
+            >
+              <span className="material-symbols-outlined text-xs">open_in_new</span>
+              Live
             </a>
           )}
-          <button onClick={() => onSelectProject(project)} className="px-4 py-2 rounded-xl bg-surface-container text-on-surface text-xs font-label border border-outline-variant/30 flex items-center gap-1.5">
-            <span className="material-symbols-outlined text-sm">visibility</span> Case Study
+          {project.repo && project.id !== "brain-tumor" && (
+            <a
+              href={project.repo}
+              target="_blank"
+              rel="noreferrer"
+              className="px-2.5 py-1 rounded-lg bg-white/10 text-white text-[10px] font-label font-bold flex items-center gap-1 border border-white/15"
+            >
+              <span className="material-symbols-outlined text-xs">code</span>
+              GitHub
+            </a>
+          )}
+          <button
+            onClick={() => onSelectProject(project)}
+            className="px-2.5 py-1 rounded-lg bg-white/10 text-white text-[10px] font-label flex items-center gap-1 border border-white/15"
+          >
+            <span className="material-symbols-outlined text-xs">visibility</span>
+            Study
           </button>
         </div>
       </div>
@@ -299,7 +389,7 @@ export default function Projects({ onSelectProject }) {
             </Reveal>
           </div>
           <Reveal delay={120}>
-            <a className="text-primary font-label text-sm tracking-widest uppercase flex items-center gap-1.5 hover:underline" href="https://github.com/NEERAJ-2003?tab=repositories" target="_blank" rel="noreferrer">
+            <a className="text-primary font-label text-sm tracking-widest uppercase flex items-center gap-1.5" href="https://github.com/NEERAJ-2003?tab=repositories" target="_blank" rel="noreferrer">
               <span>View All Repositories</span><span className="material-symbols-outlined text-sm">open_in_new</span>
             </a>
           </Reveal>
