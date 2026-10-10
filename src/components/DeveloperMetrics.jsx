@@ -185,7 +185,7 @@ export default function DeveloperMetrics() {
                     </div>
                   </div>
                   <span className="px-3 py-1 rounded-full text-xs font-label bg-amber-500/15 text-amber-300 font-bold">
-                    {LEETCODE_METRICS.total}+ Solved
+                    {LEETCODE_METRICS.total} Solved
                   </span>
                 </div>
 
