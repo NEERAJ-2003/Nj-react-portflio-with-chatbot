@@ -257,99 +257,155 @@ function FanCard({ project, index, hoveredIndex, onHover, onSelectProject, onOpe
   );
 }
 
-function MobileCard({ project, onSelectProject, onOpenArch }) {
-  const hasImage = !!project.image;
+/* ─── Touch Fan Card (Mobile) ────────────────────────────────────── */
+function TouchFanCard({ project, index, activeIndex, onTap, onSelectProject, onOpenArch }) {
+  const isActive  = activeIndex === index;
+  const hasActive = activeIndex !== null;
+  const hasImage  = !!project.image;
+
+  const cardHeight = isActive ? 380 : hasActive ? 90 : 130;
+
+  const style = {
+    height: cardHeight,
+    transition: "height 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+    overflow: "hidden",
+    position: "relative",
+    borderRadius: "1.25rem",
+    cursor: "pointer",
+    flexShrink: 0,
+  };
 
   return (
-    <div className="rounded-2xl overflow-hidden border border-white/10 bg-surface-container/60 backdrop-blur-sm flex flex-row h-[130px]">
-      {/* Left: image thumbnail */}
+    <div style={style} onClick={() => onTap(isActive ? null : index)}
+      className="border border-white/10">
+
       {hasImage ? (
-        <div className="relative w-[110px] flex-shrink-0 overflow-hidden">
-          <div
-            className="absolute inset-0"
-            style={{
+        <div className="relative w-full h-full">
+          {/* Background image */}
+          {project.noZoom ? (
+            <div className="absolute inset-0" style={{
               backgroundImage: `url(${project.image})`,
               backgroundSize: "cover",
               backgroundPosition: project.imagePosition || "center center",
-            }}
-          />
-          <div className="absolute inset-0 bg-black/30" />
-          {/* Badge on thumbnail */}
-          <span className="absolute top-2 left-2 px-1.5 py-0.5 rounded-md text-[8px] font-label font-bold uppercase tracking-wide bg-primary/30 text-primary border border-primary/30 leading-tight">
-            {project.badge}
-          </span>
+            }} />
+          ) : (
+            <img src={project.image} alt={project.title}
+              className="absolute inset-0 w-full h-full object-cover"
+              style={{
+                transform: isActive ? "scale(1.06)" : "scale(1.0)",
+                transition: "transform 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+                objectPosition: project.imagePosition || "center center",
+              }}
+            />
+          )}
+
+          {/* Gradient */}
+          <div className="absolute inset-0" style={{
+            background: isActive
+              ? "linear-gradient(to top, rgba(0,0,0,0.93) 40%, rgba(0,0,0,0.5) 70%, rgba(0,0,0,0.1) 100%)"
+              : "linear-gradient(to top, rgba(0,0,0,0.75) 30%, rgba(0,0,0,0.2) 70%, rgba(0,0,0,0.05) 100%)",
+            transition: "background 0.65s ease",
+          }} />
+
+          {/* Collapsed label */}
+          <div className="absolute bottom-0 left-0 right-0 p-3 pointer-events-none"
+            style={{ opacity: isActive ? 0 : 1, transition: "opacity 0.3s" }}>
+            <span className="px-1.5 py-0.5 rounded-md text-[8px] font-label font-bold uppercase bg-primary/25 text-primary border border-primary/30 inline-block mb-1">
+              {project.badge}
+            </span>
+            <p className="text-white font-bold text-sm font-headline leading-snug">{project.title}</p>
+          </div>
+
+          {/* Expanded content */}
+          <div className="absolute bottom-0 left-0 right-0 p-5 z-10"
+            style={{
+              opacity: isActive ? 1 : 0,
+              transform: isActive ? "translateY(0)" : "translateY(14px)",
+              transition: "opacity 0.35s 0.15s, transform 0.35s 0.15s",
+              pointerEvents: isActive ? "auto" : "none",
+            }}>
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-label font-bold uppercase bg-primary/20 text-primary border border-primary/30 inline-block mb-2">
+              {project.badge}
+            </span>
+            <h3 className="text-xl font-bold font-headline mb-1.5 text-white">{project.title}</h3>
+            <p className="text-xs text-white/70 font-label mb-3 line-clamp-2 leading-relaxed">{project.summary}</p>
+            <div className="flex flex-wrap gap-1 mb-3">
+              {project.tech.slice(0, 4).map((t) => (
+                <span key={t} className="px-2 py-0.5 bg-white/10 rounded-md text-white/80 text-[10px] font-label border border-white/10">{t}</span>
+              ))}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {project.id === "brain-tumor" && (
+                <button onClick={(e) => { e.stopPropagation(); onOpenArch(); }}
+                  className="px-3 py-1.5 rounded-xl bg-primary text-on-primary text-[11px] font-label font-bold flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-sm">schema</span>Architecture
+                </button>
+              )}
+              {project.repo && project.id !== "brain-tumor" && (
+                <a href={project.repo} target="_blank" rel="noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="px-3 py-1.5 rounded-xl bg-white/10 text-white text-[11px] font-label font-bold flex items-center gap-1.5 border border-white/20">
+                  <span className="material-symbols-outlined text-sm">code</span>GitHub
+                </a>
+              )}
+              <button onClick={(e) => { e.stopPropagation(); onSelectProject(project); }}
+                className="px-3 py-1.5 rounded-xl bg-white/10 text-white text-[11px] font-label flex items-center gap-1.5 border border-white/20">
+                <span className="material-symbols-outlined text-sm">visibility</span>Case Study
+              </button>
+            </div>
+          </div>
         </div>
       ) : (
-        <div className="w-[110px] flex-shrink-0 flex items-center justify-center bg-surface-variant/30 border-r border-white/5">
-          <span className="material-symbols-outlined text-3xl text-tertiary">{project.icon}</span>
+        /* Glass card (Check Balance) */
+        <div className="glass-card h-full p-4 flex flex-col justify-between border-0">
+          {/* Collapsed icon label */}
+          <div className="absolute inset-0 flex items-center px-4"
+            style={{ opacity: isActive ? 0 : 1, transition: "opacity 0.3s", pointerEvents: "none" }}>
+            <span className="material-symbols-outlined text-2xl text-tertiary mr-3">{project.icon}</span>
+            <div>
+              <span className="px-1.5 py-0.5 rounded text-[8px] font-label font-bold uppercase bg-primary/10 text-primary inline-block mb-0.5">{project.badge}</span>
+              <p className="text-on-surface font-bold text-sm font-headline">{project.title}</p>
+            </div>
+          </div>
+
+          {/* Expanded content */}
+          <div className="h-full flex flex-col justify-between"
+            style={{ opacity: isActive ? 1 : 0, transition: "opacity 0.35s 0.15s", pointerEvents: isActive ? "auto" : "none" }}>
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <span className="material-symbols-outlined text-2xl text-tertiary">{project.icon}</span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-label font-bold uppercase bg-primary/10 text-primary">{project.badge}</span>
+              </div>
+              <h3 className="text-lg font-bold font-headline mb-1.5">{project.title}</h3>
+              <p className="text-xs text-on-surface-variant font-label line-clamp-3">{project.summary}</p>
+            </div>
+            <div>
+              <div className="flex flex-wrap gap-1 mb-3">
+                {project.tech.slice(0, 4).map((t) => (
+                  <span key={t} className="px-2 py-0.5 bg-surface-variant/40 rounded text-on-surface-variant text-[10px] font-label">{t}</span>
+                ))}
+              </div>
+              <div className="flex gap-2 pt-3 border-t border-primary/10">
+                {project.liveUrl && (
+                  <a href={project.liveUrl} target="_blank" rel="noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="px-3 py-1.5 rounded-xl bg-primary text-on-primary text-[11px] font-label font-bold flex items-center gap-1.5">
+                    Live App <span className="material-symbols-outlined text-sm">open_in_new</span>
+                  </a>
+                )}
+                <button onClick={(e) => { e.stopPropagation(); onSelectProject(project); }}
+                  className="px-3 py-1.5 rounded-xl bg-surface-container text-on-surface text-[11px] font-label border border-outline-variant/30 flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-sm">visibility</span>Case Study
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
-
-      {/* Right: content */}
-      <div className="flex flex-col justify-between flex-1 min-w-0 p-3">
-        <div>
-          <h3 className="text-sm font-bold font-headline text-on-surface leading-snug line-clamp-1 mb-0.5">
-            {project.title}
-          </h3>
-          <p className="text-[11px] text-on-surface-variant font-label line-clamp-2 leading-snug">
-            {project.summary}
-          </p>
-        </div>
-
-        {/* Tech pills - max 3 */}
-        <div className="flex flex-wrap gap-1 mb-2">
-          {(project.tech || []).slice(0, 3).map((t) => (
-            <span key={t} className="px-1.5 py-0.5 bg-white/8 rounded text-[9px] font-label text-on-surface-variant border border-white/10">
-              {t}
-            </span>
-          ))}
-        </div>
-
-        {/* Action buttons */}
-        <div className="flex gap-1.5">
-          {project.id === "brain-tumor" && (
-            <button
-              onClick={onOpenArch}
-              className="px-2.5 py-1 rounded-lg bg-primary text-on-primary text-[10px] font-label font-bold flex items-center gap-1"
-            >
-              <span className="material-symbols-outlined text-xs">schema</span>
-              Arch
-            </button>
-          )}
-          {project.liveUrl && (
-            <a
-              href={project.liveUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="px-2.5 py-1 rounded-lg bg-primary text-on-primary text-[10px] font-label font-bold flex items-center gap-1"
-            >
-              <span className="material-symbols-outlined text-xs">open_in_new</span>
-              Live
-            </a>
-          )}
-          {project.repo && project.id !== "brain-tumor" && (
-            <a
-              href={project.repo}
-              target="_blank"
-              rel="noreferrer"
-              className="px-2.5 py-1 rounded-lg bg-white/10 text-white text-[10px] font-label font-bold flex items-center gap-1 border border-white/15"
-            >
-              <span className="material-symbols-outlined text-xs">code</span>
-              GitHub
-            </a>
-          )}
-          <button
-            onClick={() => onSelectProject(project)}
-            className="px-2.5 py-1 rounded-lg bg-white/10 text-white text-[10px] font-label flex items-center gap-1 border border-white/15"
-          >
-            <span className="material-symbols-outlined text-xs">visibility</span>
-            Study
-          </button>
-        </div>
-      </div>
     </div>
   );
 }
+
 
 export default function Projects({ onSelectProject }) {
   const [activeCategory, setActiveCategory] = useState("All");
@@ -407,9 +463,17 @@ export default function Projects({ onSelectProject }) {
         </Reveal>
 
         {isMobile ? (
-          <div className="flex flex-col gap-6">
-            {filteredProjects.map((project) => (
-              <MobileCard key={project.id} project={project} onSelectProject={onSelectProject} onOpenArch={() => setArchModalOpen(true)} />
+          <div className="flex flex-col gap-3" onClick={(e) => e.stopPropagation()}>
+            {filteredProjects.map((project, idx) => (
+              <TouchFanCard
+                key={project.id}
+                project={project}
+                index={idx}
+                activeIndex={hoveredIndex}
+                onTap={setHoveredIndex}
+                onSelectProject={onSelectProject}
+                onOpenArch={() => setArchModalOpen(true)}
+              />
             ))}
           </div>
         ) : (
