@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Reveal from "./Reveal";
 
 const LEETCODE_METRICS = {
-  total: 136,
+  total: 141,
   ranking: "Rank #1,292,007",
   categories: [
     { name: "Easy", count: 124, total: 969, color: "text-emerald-400", bg: "bg-emerald-400", pct: Math.round((124 / 969) * 100) },

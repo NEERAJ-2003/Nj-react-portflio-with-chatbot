@@ -70,7 +70,7 @@ export default function About() {
               </h2>
             </Reveal>
             <Reveal delay={120}>
-              <div className="glass-card p-8 md:p-12 rounded-3xl relative overflow-hidden hover-lift">
+              <div className="glass-card p-8 md:p-12 rounded-3xl relative overflow-hidden">
                 <p className="text-xl text-on-surface-variant font-label">
                   I'm a <span className="text-on-surface font-semibold">Software Engineer</span> with a strong foundation in building scalable, real-world applications using{" "}
                   <span className="text-primary-dim font-semibold">FastAPI, Django</span>. My work spans backend architecture,{" "}
