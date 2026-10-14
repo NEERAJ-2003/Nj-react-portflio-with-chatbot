@@ -1,6 +1,57 @@
 import { useRef, useState } from "react";
 import Reveal from "./Reveal";
 
+const ALL_PROJECTS = [
+  {
+    title: "Sentinel",
+    type: "Cryptographic Trust & AI Governance",
+    badge: "IBM Hackathon",
+    tech: ["FastAPI", "React", "IBM Bob", "Cryptography", "Python"],
+    overhead: "<10ms",
+    status: "Production-Ready",
+  },
+  {
+    title: "Brain Tumor Detection System",
+    type: "Medical ML & Computer Vision",
+    badge: "ML System",
+    tech: ["Python", "CNN", "Genetic Algorithm", "OpenCV"],
+    accuracy: "96.4%",
+    status: "Completed",
+  },
+  {
+    title: "Check Balance Web Application",
+    type: "Fullstack Web App",
+    badge: "Web App",
+    tech: ["JavaScript", "HTML5", "CSS3", "REST APIs"],
+    status: "Deployed",
+  },
+];
+
+function buildProjectsResponse(page = 1, limit = 2) {
+  const totalItems = ALL_PROJECTS.length;
+  const totalPages = Math.ceil(totalItems / limit);
+  const safePage = Math.min(Math.max(1, page), totalPages);
+  const startIndex = (safePage - 1) * limit;
+  const items = ALL_PROJECTS.slice(startIndex, startIndex + limit);
+  const hasNext = safePage < totalPages;
+  const hasPrev = safePage > 1;
+
+  return {
+    count: totalItems,
+    pagination: {
+      page: safePage,
+      limit,
+      total_items: totalItems,
+      total_pages: totalPages,
+      has_next: hasNext,
+      has_prev: hasPrev,
+      next_url: hasNext ? `/api/v1/projects?page=${safePage + 1}&limit=${limit}` : null,
+      prev_url: hasPrev ? `/api/v1/projects?page=${safePage - 1}&limit=${limit}` : null,
+    },
+    items,
+  };
+}
+
 const ENDPOINTS = [
   {
     id: "profile",
@@ -61,67 +112,74 @@ const ENDPOINTS = [
   {
     id: "projects",
     method: "GET",
-    path: "/api/v1/projects?featured=true",
-    desc: "Retrieve production-grade portfolio projects and architecture artifacts",
+    path: "/api/v1/projects?page=1&limit=2",
+    desc: "Retrieve paginated production-grade projects, architecture artifacts & performance metrics",
     status: 200,
     statusText: "OK",
-    latency: 35,
+    latency: 32,
     headers: {
       "Content-Type": "application/json",
-      "X-Total-Count": "2",
+      "X-Total-Count": "3",
+      "X-Page": "1",
+      "X-Per-Page": "2",
     },
-    response: {
-      count: 2,
-      items: [
-        {
-          title: "Brain Tumor Detection System",
-          type: "Medical ML & Computer Vision",
-          tech: ["Python", "CNN", "Genetic Algorithm", "OpenCV"],
-          accuracy: "96.4%",
-          status: "Completed",
-        },
-        {
-          title: "Check Balance Web Application",
-          type: "Fullstack Web App",
-          tech: ["JavaScript", "HTML5", "CSS3", "REST APIs"],
-          status: "Deployed",
-        },
-      ],
-    },
+    response: buildProjectsResponse(1, 2),
   },
 ];
 
 export default function ApiPlayground() {
   const [selectedEndpoint, setSelectedEndpoint] = useState(ENDPOINTS[0]);
+  const [projectPage, setProjectPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [responseOutput, setResponseOutput] = useState(null); // Null by default; executes only when clicked!
   const [simulatedLatency, setSimulatedLatency] = useState(null);
   const timerRef = useRef(null);
 
+  const PAGE_LIMIT = 2;
+
+  const currentPath =
+    selectedEndpoint.id === "projects"
+      ? `/api/v1/projects?page=${projectPage}&limit=${PAGE_LIMIT}`
+      : selectedEndpoint.path;
+
   function handleSelectEndpoint(ep) {
     if (timerRef.current) clearTimeout(timerRef.current);
     setSelectedEndpoint(ep);
+    if (ep.id === "projects") {
+      setProjectPage(1);
+    }
     setLoading(false);
     setResponseOutput(null);
     setSimulatedLatency(null);
   }
 
-  function handleSendRequest() {
+  function handleSendRequest(pageOverride) {
     if (timerRef.current) clearTimeout(timerRef.current);
     setLoading(true);
+    const p = pageOverride ?? projectPage;
+    const path =
+      selectedEndpoint.id === "projects"
+        ? `/api/v1/projects?page=${p}&limit=${PAGE_LIMIT}`
+        : selectedEndpoint.path;
+
     timerRef.current = setTimeout(() => {
       setSimulatedLatency(selectedEndpoint.latency + Math.floor(Math.random() * 10 - 5));
+      const baseResponse =
+        selectedEndpoint.id === "projects"
+          ? buildProjectsResponse(p, PAGE_LIMIT)
+          : selectedEndpoint.response;
+
       setResponseOutput({
-        ...selectedEndpoint.response,
+        ...baseResponse,
         timestamp: new Date().toISOString(),
       });
       setLoading(false);
-      window.dispatchEvent(
-        new CustomEvent("portfolio-toast", {
-          detail: `${selectedEndpoint.method} ${selectedEndpoint.path} -> ${selectedEndpoint.status} ${selectedEndpoint.statusText}`,
-        })
-      );
-    }, 300);
+    }, 280);
+  }
+
+  function handlePageChange(newPage) {
+    setProjectPage(newPage);
+    handleSendRequest(newPage);
   }
 
   function handleCancel() {
@@ -129,7 +187,6 @@ export default function ApiPlayground() {
     setLoading(false);
     setResponseOutput(null);
     setSimulatedLatency(null);
-    window.dispatchEvent(new CustomEvent("portfolio-toast", { detail: "Request cancelled / cleared" }));
   }
 
   return (
@@ -197,7 +254,7 @@ export default function ApiPlayground() {
               <div className="lg:col-span-8 p-5 flex flex-col justify-between">
                 <div>
                   {/* URL Bar */}
-                  <div className="flex items-center gap-2 bg-surface-container-lowest p-2 rounded-xl border border-outline-variant/30 mb-4">
+                  <div className="flex items-center gap-2 bg-surface-container-lowest p-2 rounded-xl border border-outline-variant/30 mb-3">
                     <span
                       className={`px-2 py-1 rounded text-xs font-mono font-bold ${selectedEndpoint.method === "GET" ? "api-badge-get" : "api-badge-post"
                         }`}
@@ -205,7 +262,7 @@ export default function ApiPlayground() {
                       {selectedEndpoint.method}
                     </span>
                     <span className="text-xs font-mono text-on-surface flex-1 truncate">
-                      https://neerajkr.dev{selectedEndpoint.path}
+                      https://neerajkr.dev{currentPath}
                     </span>
 
                     {(responseOutput || loading) && (
@@ -220,7 +277,7 @@ export default function ApiPlayground() {
                     )}
 
                     <button
-                      onClick={handleSendRequest}
+                      onClick={() => handleSendRequest()}
                       disabled={loading}
                       className="px-4 py-1.5 bg-primary text-on-primary rounded-lg text-xs font-label font-bold flex items-center gap-1.5 hover:opacity-90 transition-opacity"
                     >
@@ -230,6 +287,37 @@ export default function ApiPlayground() {
                       <span>{loading ? "Sending..." : "Execute"}</span>
                     </button>
                   </div>
+
+                  {/* Compact Mobile-Friendly Segmented Pagination Switch */}
+                  {selectedEndpoint.id === "projects" && (
+                    <div className="mb-3.5 flex items-center justify-between gap-2 flex-wrap">
+                      <div className="bg-surface-container-lowest/90 p-1 rounded-xl border border-outline-variant/30 inline-flex items-center gap-1 shadow-sm">
+                        <button
+                          onClick={() => handlePageChange(1)}
+                          className={`px-3 py-1 rounded-lg font-mono text-xs font-semibold transition-all ${
+                            projectPage === 1
+                              ? "bg-primary text-on-primary shadow-sm shadow-primary/30"
+                              : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container"
+                          }`}
+                        >
+                          Page 1
+                        </button>
+                        <button
+                          onClick={() => handlePageChange(2)}
+                          className={`px-3 py-1 rounded-lg font-mono text-xs font-semibold transition-all ${
+                            projectPage === 2
+                              ? "bg-primary text-on-primary shadow-sm shadow-primary/30"
+                              : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container"
+                          }`}
+                        >
+                          Page 2
+                        </button>
+                      </div>
+                      <span className="text-[11px] font-mono text-outline">
+                        limit=2 · 3 items total
+                      </span>
+                    </div>
+                  )}
 
                   <p className="text-xs text-on-surface-variant font-label mb-3">
                     {selectedEndpoint.desc}
@@ -278,6 +366,31 @@ export default function ApiPlayground() {
                 <span>RESPONSE PAYLOAD (application/json)</span>
                 {responseOutput ? (
                   <div className="flex items-center gap-3">
+                    {selectedEndpoint.id === "projects" && responseOutput?.pagination && (
+                      <div className="flex items-center gap-2 font-mono text-[11px]">
+                        {responseOutput.pagination.has_prev && (
+                          <button
+                            onClick={() => handlePageChange(projectPage - 1)}
+                            className="text-primary hover:text-primary/80 flex items-center gap-0.5 hover:underline"
+                          >
+                            <span className="material-symbols-outlined text-xs">arrow_back</span>
+                            Prev
+                          </button>
+                        )}
+                        <span className="text-outline">
+                          Page {responseOutput.pagination.page}/{responseOutput.pagination.total_pages}
+                        </span>
+                        {responseOutput.pagination.has_next && (
+                          <button
+                            onClick={() => handlePageChange(projectPage + 1)}
+                            className="text-primary hover:text-primary/80 flex items-center gap-0.5 hover:underline"
+                          >
+                            Next
+                            <span className="material-symbols-outlined text-xs">arrow_forward</span>
+                          </button>
+                        )}
+                      </div>
+                    )}
                     <span>SIZE: {JSON.stringify(responseOutput).length} B</span>
                     <button
                       onClick={handleCancel}

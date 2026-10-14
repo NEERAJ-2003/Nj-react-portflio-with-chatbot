@@ -331,10 +331,10 @@ const KB = [
     answer: "Neeraj has solved 130+ problems on LeetCode as part of sharpening his data structures and algorithms skills."
   },
   {
-    keywords: ["achievement", "stats", "highlight", "accomplishment", "his stats", "quick stats",
+    keywords: ["achievement", "achievements", "stats", "highlight", "accomplishment", "his stats", "quick stats",
       "key numbers", "at a glance", "his achievements", "notable achievements", "accolades",
       "awards", "recognition"],
-    answer: "Quick stats: 130+ LeetCode problems solved, 5+ projects built, 9.15 CGPA in B.Tech."
+    answer: "Quick stats: 140+ LeetCode problems solved, 9+ projects built, 9.15 CGPA in B.Tech."
   },
   {
     keywords: ["resume", "cv", "download resume", "download cv", "can i get his resume",
