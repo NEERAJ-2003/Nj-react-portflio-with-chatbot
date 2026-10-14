@@ -1368,6 +1368,22 @@ body {
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35), 0 0 24px rgba(105, 156, 255, 0.12);
 }
 
+/* Smooth floating & breathing glow for Sentinel slide frame */
+@keyframes slideFloatSmooth {
+  0%, 100% {
+    transform: translateY(0);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), 0 0 10px rgba(105, 156, 255, 0.08);
+  }
+  50% {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 18px rgba(105, 156, 255, 0.22);
+  }
+}
+.slide-frame-animated {
+  transform-origin: top right;
+  animation: slideFloatSmooth 4s ease-in-out infinite;
+}
+
 .timeline-dot {
   animation: timeline-pulse 2.4s ease-out infinite;
 }

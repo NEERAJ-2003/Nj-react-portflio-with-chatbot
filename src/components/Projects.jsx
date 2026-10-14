@@ -13,6 +13,7 @@ export const PROJECTS_DATA = [
     image: "/sentinel_img.jpg",
     imagePosition: "left center",
     noZoom: true,
+    containImageMobile: true,
     summary:
       "Sentinel enforces cryptographic trust and governance for autonomous AI agents running on IBM Bob — intercepting every action, validating against policy, and attaching deterministic digital signatures before execution.",
     problem:
@@ -263,11 +264,15 @@ function TouchFanCard({ project, index, activeIndex, onTap, onSelectProject, onO
   const hasActive = activeIndex !== null;
   const hasImage  = !!project.image;
 
-  const cardHeight = isActive ? 380 : hasActive ? 90 : 130;
+  const cardHeight = isActive
+    ? (project.containImageMobile ? 400 : 380)
+    : (hasActive ? 90 : 130);
 
   const style = {
     height: cardHeight,
-    transition: "height 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+    transition: project.containImageMobile
+      ? "height 1.15s cubic-bezier(0.16, 1, 0.3, 1)"
+      : "height 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
     overflow: "hidden",
     position: "relative",
     borderRadius: "1.25rem",
@@ -277,18 +282,104 @@ function TouchFanCard({ project, index, activeIndex, onTap, onSelectProject, onO
 
   return (
     <div style={style} onClick={() => onTap(isActive ? null : index)}
-      className="border border-white/10">
+      className="border border-white/10 rounded-2xl overflow-hidden">
 
       {hasImage ? (
-        <div className="relative w-full h-full">
-          {/* Background image */}
-          {project.noZoom ? (
-            <div className="absolute inset-0" style={{
-              backgroundImage: `url(${project.image})`,
-              backgroundSize: "cover",
-              backgroundPosition: project.imagePosition || "center center",
-            }} />
-          ) : (
+        project.containImageMobile ? (
+          /* Framed slide layout for mobile (Sentinel) with smooth morphing from the right side */
+          <div className="relative w-full h-full bg-[#0a0e17] p-3.5 flex flex-col justify-between overflow-hidden">
+            {/* Top row / Hero presentation frame */}
+            <div
+              className="w-full relative"
+              style={{
+                minHeight: isActive ? "180px" : "86px",
+                transition: "min-height 1.2s cubic-bezier(0.16, 1, 0.3, 1)",
+              }}
+            >
+              
+              {/* Collapsed Left Text */}
+              <div
+                className={`transition-all duration-700 ease-out ${
+                  isActive ? "opacity-0 -translate-x-4 h-0 overflow-hidden pointer-events-none mb-0" : "max-w-[56%] z-10 opacity-100 translate-x-0 pt-1"
+                }`}
+              >
+                <span className="px-1.5 py-0.5 rounded-md text-[8px] font-label font-bold uppercase bg-primary/25 text-primary border border-primary/30 inline-block mb-1">
+                  {project.badge}
+                </span>
+                <p className="text-white font-bold text-sm font-headline leading-snug">{project.title}</p>
+                <p className="text-[11px] text-white/60 font-label truncate mt-0.5">{project.subtitle}</p>
+              </div>
+
+              {/* Animated Floating Slide Frame - scaling from the right side itself */}
+              <div
+                style={{
+                  transformOrigin: "top right",
+                  transition: "all 1.2s cubic-bezier(0.16, 1, 0.3, 1)",
+                }}
+                className={`absolute top-0 right-0 rounded-xl overflow-hidden border flex items-center justify-center p-1.5 shadow-lg shrink-0 origin-top-right ${
+                  isActive
+                    ? "w-full h-[180px] bg-black/40 border-primary/40 shadow-primary/20 shadow-xl z-20"
+                    : "w-[44%] h-[82px] bg-white/5 border-white/15 z-10 slide-frame-animated"
+                }`}
+              >
+                <img
+                  src={project.image}
+                  alt={project.title}
+                  style={{
+                    transformOrigin: "top right",
+                    objectPosition: isActive ? "center center" : "right center",
+                    transition: "all 1.2s cubic-bezier(0.16, 1, 0.3, 1)",
+                  }}
+                  className={`w-full h-full object-contain rounded-lg ${
+                    isActive ? "scale-100" : "scale-[0.98]"
+                  }`}
+                />
+              </div>
+            </div>
+
+            {/* Active Expanded Content (Details & Buttons) */}
+            <div
+              className={`transition-all duration-700 flex flex-col justify-between flex-1 mt-2.5 ${
+                isActive
+                  ? "opacity-100 translate-y-0 pointer-events-auto delay-150"
+                  : "opacity-0 translate-y-4 pointer-events-none h-0 overflow-hidden"
+              }`}
+            >
+              <div>
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-label font-bold uppercase bg-primary/20 text-primary border border-primary/30">
+                    {project.badge}
+                  </span>
+                  <h3 className="text-lg font-bold font-headline text-white">{project.title}</h3>
+                </div>
+                <p className="text-xs text-white/75 font-label mb-2.5 line-clamp-2 leading-relaxed">
+                  {project.summary}
+                </p>
+                <div className="flex flex-wrap gap-1 mb-2.5">
+                  {project.tech.slice(0, 4).map((t) => (
+                    <span key={t} className="px-2 py-0.5 bg-white/10 rounded-md text-white/80 text-[10px] font-label border border-white/10">{t}</span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Buttons */}
+              <div className="flex flex-wrap gap-2 pt-2 border-t border-white/10">
+                {project.repo && (
+                  <a href={project.repo} target="_blank" rel="noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="px-3.5 py-1.5 rounded-xl bg-white/10 text-white text-[11px] font-label font-bold flex items-center gap-1.5 border border-white/20">
+                    <span className="material-symbols-outlined text-sm">code</span>GitHub
+                  </a>
+                )}
+                <button onClick={(e) => { e.stopPropagation(); onSelectProject(project); }}
+                  className="px-3.5 py-1.5 rounded-xl bg-primary text-on-primary text-[11px] font-label font-bold flex items-center gap-1.5 shadow-md shadow-primary/25">
+                  <span className="material-symbols-outlined text-sm">visibility</span>Case Study
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="relative w-full h-full">
             <img src={project.image} alt={project.title}
               className="absolute inset-0 w-full h-full object-cover"
               style={{
@@ -297,64 +388,64 @@ function TouchFanCard({ project, index, activeIndex, onTap, onSelectProject, onO
                 objectPosition: project.imagePosition || "center center",
               }}
             />
-          )}
 
-          {/* Gradient */}
-          <div className="absolute inset-0" style={{
-            background: isActive
-              ? "linear-gradient(to top, rgba(0,0,0,0.93) 40%, rgba(0,0,0,0.5) 70%, rgba(0,0,0,0.1) 100%)"
-              : "linear-gradient(to top, rgba(0,0,0,0.75) 30%, rgba(0,0,0,0.2) 70%, rgba(0,0,0,0.05) 100%)",
-            transition: "background 0.65s ease",
-          }} />
+            {/* Gradient */}
+            <div className="absolute inset-0" style={{
+              background: isActive
+                ? "linear-gradient(to top, rgba(0,0,0,0.93) 40%, rgba(0,0,0,0.5) 70%, rgba(0,0,0,0.1) 100%)"
+                : "linear-gradient(to top, rgba(0,0,0,0.75) 30%, rgba(0,0,0,0.2) 70%, rgba(0,0,0,0.05) 100%)",
+              transition: "background 0.65s ease",
+            }} />
 
-          {/* Collapsed label */}
-          <div className="absolute bottom-0 left-0 right-0 p-3 pointer-events-none"
-            style={{ opacity: isActive ? 0 : 1, transition: "opacity 0.3s" }}>
-            <span className="px-1.5 py-0.5 rounded-md text-[8px] font-label font-bold uppercase bg-primary/25 text-primary border border-primary/30 inline-block mb-1">
-              {project.badge}
-            </span>
-            <p className="text-white font-bold text-sm font-headline leading-snug">{project.title}</p>
-          </div>
-
-          {/* Expanded content */}
-          <div className="absolute bottom-0 left-0 right-0 p-5 z-10"
-            style={{
-              opacity: isActive ? 1 : 0,
-              transform: isActive ? "translateY(0)" : "translateY(14px)",
-              transition: "opacity 0.35s 0.15s, transform 0.35s 0.15s",
-              pointerEvents: isActive ? "auto" : "none",
-            }}>
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-label font-bold uppercase bg-primary/20 text-primary border border-primary/30 inline-block mb-2">
-              {project.badge}
-            </span>
-            <h3 className="text-xl font-bold font-headline mb-1.5 text-white">{project.title}</h3>
-            <p className="text-xs text-white/70 font-label mb-3 line-clamp-2 leading-relaxed">{project.summary}</p>
-            <div className="flex flex-wrap gap-1 mb-3">
-              {project.tech.slice(0, 4).map((t) => (
-                <span key={t} className="px-2 py-0.5 bg-white/10 rounded-md text-white/80 text-[10px] font-label border border-white/10">{t}</span>
-              ))}
+            {/* Collapsed label */}
+            <div className="absolute bottom-0 left-0 right-0 p-3 pointer-events-none"
+              style={{ opacity: isActive ? 0 : 1, transition: "opacity 0.3s" }}>
+              <span className="px-1.5 py-0.5 rounded-md text-[8px] font-label font-bold uppercase bg-primary/25 text-primary border border-primary/30 inline-block mb-1">
+                {project.badge}
+              </span>
+              <p className="text-white font-bold text-sm font-headline leading-snug">{project.title}</p>
             </div>
-            <div className="flex flex-wrap gap-2">
-              {project.id === "brain-tumor" && (
-                <button onClick={(e) => { e.stopPropagation(); onOpenArch(); }}
-                  className="px-3 py-1.5 rounded-xl bg-primary text-on-primary text-[11px] font-label font-bold flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-sm">schema</span>Architecture
+
+            {/* Expanded content */}
+            <div className="absolute bottom-0 left-0 right-0 p-5 z-10"
+              style={{
+                opacity: isActive ? 1 : 0,
+                transform: isActive ? "translateY(0)" : "translateY(14px)",
+                transition: "opacity 0.35s 0.15s, transform 0.35s 0.15s",
+                pointerEvents: isActive ? "auto" : "none",
+              }}>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-label font-bold uppercase bg-primary/20 text-primary border border-primary/30 inline-block mb-2">
+                {project.badge}
+              </span>
+              <h3 className="text-xl font-bold font-headline mb-1.5 text-white">{project.title}</h3>
+              <p className="text-xs text-white/70 font-label mb-3 line-clamp-2 leading-relaxed">{project.summary}</p>
+              <div className="flex flex-wrap gap-1 mb-3">
+                {project.tech.slice(0, 4).map((t) => (
+                  <span key={t} className="px-2 py-0.5 bg-white/10 rounded-md text-white/80 text-[10px] font-label border border-white/10">{t}</span>
+                ))}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {project.id === "brain-tumor" && (
+                  <button onClick={(e) => { e.stopPropagation(); onOpenArch(); }}
+                    className="px-3 py-1.5 rounded-xl bg-primary text-on-primary text-[11px] font-label font-bold flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-sm">schema</span>Architecture
+                  </button>
+                )}
+                {project.repo && project.id !== "brain-tumor" && (
+                  <a href={project.repo} target="_blank" rel="noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="px-3 py-1.5 rounded-xl bg-white/10 text-white text-[11px] font-label font-bold flex items-center gap-1.5 border border-white/20">
+                    <span className="material-symbols-outlined text-sm">code</span>GitHub
+                  </a>
+                )}
+                <button onClick={(e) => { e.stopPropagation(); onSelectProject(project); }}
+                  className="px-3 py-1.5 rounded-xl bg-white/10 text-white text-[11px] font-label flex items-center gap-1.5 border border-white/20">
+                  <span className="material-symbols-outlined text-sm">visibility</span>Case Study
                 </button>
-              )}
-              {project.repo && project.id !== "brain-tumor" && (
-                <a href={project.repo} target="_blank" rel="noreferrer"
-                  onClick={(e) => e.stopPropagation()}
-                  className="px-3 py-1.5 rounded-xl bg-white/10 text-white text-[11px] font-label font-bold flex items-center gap-1.5 border border-white/20">
-                  <span className="material-symbols-outlined text-sm">code</span>GitHub
-                </a>
-              )}
-              <button onClick={(e) => { e.stopPropagation(); onSelectProject(project); }}
-                className="px-3 py-1.5 rounded-xl bg-white/10 text-white text-[11px] font-label flex items-center gap-1.5 border border-white/20">
-                <span className="material-symbols-outlined text-sm">visibility</span>Case Study
-              </button>
+              </div>
             </div>
           </div>
-        </div>
+        )
       ) : (
         /* Glass card (Check Balance) */
         <div className="glass-card h-full p-4 flex flex-col justify-between border-0">
