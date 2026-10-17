@@ -5,6 +5,10 @@ export default function DinoGame() {
   const scoreRef = useRef(null);
   const highScoreRef = useRef(null);
   const restartBtnRef = useRef(null);
+  const gameOverOverlayRef = useRef(null);
+  const finalScoreRef = useRef(null);
+  const newHighScoreBadgeRef = useRef(null);
+  const overlayRestartBtnRef = useRef(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -18,9 +22,9 @@ export default function DinoGame() {
     function resizeGameCanvas() {
       const cssW = canvas.clientWidth || canvas.offsetWidth || 320;
       let cssH;
-      if (cssW < 380) cssH = 140;
-      else if (cssW < 640) cssH = 170;
-      else cssH = 200;
+      if (cssW < 380) cssH = 200;
+      else if (cssW < 640) cssH = 240;
+      else cssH = 280;
 
       const dpr = window.devicePixelRatio || 1;
       canvas.style.height = cssH + "px";
@@ -30,7 +34,7 @@ export default function DinoGame() {
       canvas.cssWidth = cssW;
       canvas.cssHeight = cssH;
 
-      scale = cssW / 700;
+      scale = Math.max(0.65, cssW / 650);
     }
 
     function init() {
@@ -45,8 +49,9 @@ export default function DinoGame() {
       gameRunning = false;
       mode = "start";
 
-      highScore = localStorage.getItem("dinoHighScore") || 0;
+      highScore = parseInt(localStorage.getItem("dinoHighScore") || "0", 10) || 0;
       if (highScoreRef.current) highScoreRef.current.innerText = highScore;
+      if (scoreRef.current) scoreRef.current.innerText = "Score: 0";
     }
 
     let resizeTimeout;
@@ -66,6 +71,10 @@ export default function DinoGame() {
     window.addEventListener("resize", onResize);
 
     function jump() {
+      if (mode === "over") {
+        onRestart();
+        return;
+      }
       if (!dino.jumping && gameRunning) {
         dino.vy = 11 * scale;
         dino.jumping = true;
@@ -81,7 +90,11 @@ export default function DinoGame() {
       if (tag === "INPUT" || tag === "TEXTAREA") return;
       if (e.code === "Enter" || e.code === "Space") {
         e.preventDefault();
-        jump();
+        if (mode === "over") {
+          onRestart();
+        } else {
+          jump();
+        }
       }
     }
     document.addEventListener("keydown", onKeydown);
@@ -98,19 +111,36 @@ export default function DinoGame() {
       let y = H - dino.h - dino.y;
       const s = scale;
 
-      ctx.fillStyle = "#22c55e";
+      const dinoColor = mode === "over" ? "#ef4444" : "#22c55e";
+
+      ctx.fillStyle = dinoColor;
       ctx.fillRect(x + 8 * s, y + 12 * s, 22 * s, 18 * s); // body
       ctx.fillRect(x + 24 * s, y + 2 * s, 14 * s, 14 * s); // head
 
-      ctx.fillStyle = "#000";
-      ctx.fillRect(x + 32 * s, y + 6 * s, 3 * s, 3 * s); // eye
+      if (mode === "over") {
+        // Knockout "X" eye
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 1.5 * s;
+        const ex = x + 31 * s;
+        const ey = y + 5 * s;
+        const sz = 5 * s;
+        ctx.beginPath();
+        ctx.moveTo(ex, ey);
+        ctx.lineTo(ex + sz, ey + sz);
+        ctx.moveTo(ex + sz, ey);
+        ctx.lineTo(ex, ey + sz);
+        ctx.stroke();
+      } else {
+        ctx.fillStyle = "#000";
+        ctx.fillRect(x + 32 * s, y + 6 * s, 3 * s, 3 * s); // eye
+      }
 
-      ctx.fillStyle = "#22c55e";
+      ctx.fillStyle = dinoColor;
       ctx.fillRect(x + 30 * s, y + 12 * s, 6 * s, 2 * s); // mouth
       ctx.fillRect(x - 4 * s, y + 20 * s, 10 * s, 4 * s); // tail
       ctx.fillRect(x + 16 * s, y + 20 * s, 4 * s, 4 * s); // arms
 
-      if (frame % 20 < 10) {
+      if (frame % 20 < 10 && mode !== "over") {
         ctx.fillRect(x + 12 * s, y + 30 * s, 5 * s, 10 * s);
         ctx.fillRect(x + 22 * s, y + 30 * s, 5 * s, 10 * s);
       } else {
@@ -165,23 +195,30 @@ export default function DinoGame() {
 
     function drawStartScreen() {
       const W = canvas.cssWidth;
-      ctx.fillStyle = "white";
+      const H = canvas.cssHeight;
+      ctx.save();
       ctx.textAlign = "center";
-      const fontSize = Math.max(12, Math.round(16 * scale));
-      ctx.font = "bold " + fontSize + "px sans-serif";
-      ctx.fillText("Press ENTER or TAP to Start", W / 2, 45 * scale + 40);
-      ctx.fillText("(use ENTER to Play)", W / 2, 45 * scale + 65);
-      ctx.textAlign = "left";
+      const fontSize = Math.max(13, Math.round(15 * scale));
+      ctx.font = `700 ${fontSize}px sans-serif`;
+      ctx.fillStyle = "#699cff";
+      ctx.shadowColor = "rgba(105, 156, 255, 0.4)";
+      ctx.shadowBlur = 8;
+      ctx.fillText("▶ Press SPACE / ENTER or TAP to Start", W / 2, H / 2 - 4);
+      ctx.shadowBlur = 0;
+      ctx.font = `500 ${Math.max(11, Math.round(12 * scale))}px sans-serif`;
+      ctx.fillStyle = "#94a3b8";
+      ctx.fillText("Jump over obstacles to survive", W / 2, H / 2 + 20 * scale);
+      ctx.restore();
     }
 
     function drawGameOver() {
       const W = canvas.cssWidth;
-      ctx.fillStyle = "red";
-      ctx.textAlign = "center";
-      const fontSize = Math.max(13, Math.round(18 * scale));
-      ctx.font = "bold " + fontSize + "px sans-serif";
-      ctx.fillText("Game Over \uD83D\uDC80", W / 2, 50 * scale + 40);
-      ctx.textAlign = "left";
+      const H = canvas.cssHeight;
+      const grad = ctx.createRadialGradient(W / 2, H / 2, 20, W / 2, H / 2, Math.max(W, H) * 0.7);
+      grad.addColorStop(0, "rgba(239, 68, 68, 0.12)");
+      grad.addColorStop(1, "rgba(12, 14, 18, 0.75)");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, W, H);
     }
 
     function update() {
@@ -222,20 +259,48 @@ export default function DinoGame() {
       gameRunning = false;
       mode = "over";
 
-      if (score > highScore) {
+      const isNewHigh = score > highScore;
+      if (isNewHigh) {
+        highScore = score;
         localStorage.setItem("dinoHighScore", score);
+        if (highScoreRef.current) highScoreRef.current.innerText = score;
+      }
+
+      if (finalScoreRef.current) {
+        finalScoreRef.current.innerText = score;
+      }
+
+      if (newHighScoreBadgeRef.current) {
+        if (isNewHigh && score > 0) {
+          newHighScoreBadgeRef.current.classList.remove("hidden");
+          newHighScoreBadgeRef.current.classList.add("inline-flex");
+        } else {
+          newHighScoreBadgeRef.current.classList.add("hidden");
+          newHighScoreBadgeRef.current.classList.remove("inline-flex");
+        }
+      }
+
+      if (gameOverOverlayRef.current) {
+        gameOverOverlayRef.current.classList.remove("hidden");
+        gameOverOverlayRef.current.classList.add("flex");
       }
 
       if (restartBtnRef.current) restartBtnRef.current.classList.remove("hidden");
     }
 
     function onRestart() {
+      if (gameOverOverlayRef.current) {
+        gameOverOverlayRef.current.classList.add("hidden");
+        gameOverOverlayRef.current.classList.remove("flex");
+      }
+      if (restartBtnRef.current) restartBtnRef.current.classList.add("hidden");
       init();
       mode = "play";
       gameRunning = true;
-      if (restartBtnRef.current) restartBtnRef.current.classList.add("hidden");
     }
+
     restartBtnRef.current?.addEventListener("click", onRestart);
+    overlayRestartBtnRef.current?.addEventListener("click", onRestart);
 
     function loop() {
       ctx.clearRect(0, 0, canvas.cssWidth, canvas.cssHeight);
@@ -257,6 +322,7 @@ export default function DinoGame() {
       canvas.removeEventListener("click", jump);
       canvas.removeEventListener("touchstart", onTouch);
       restartBtnRef.current?.removeEventListener("click", onRestart);
+      overlayRestartBtnRef.current?.removeEventListener("click", onRestart);
     };
   }, []);
 
@@ -279,7 +345,56 @@ export default function DinoGame() {
       </div>
 
       <div className="w-full bg-surface-container-highest/60 rounded-2xl p-4 border border-outline-variant/20">
-        <canvas ref={canvasRef} className="w-full block rounded-xl cursor-pointer" style={{ touchAction: "manipulation" }} />
+        <div className="relative w-full rounded-xl overflow-hidden select-none">
+          <canvas
+            ref={canvasRef}
+            className="w-full block rounded-xl cursor-pointer"
+            style={{ touchAction: "manipulation" }}
+          />
+
+          {/* Polished Arcade Game Over Overlay */}
+          <div
+            ref={gameOverOverlayRef}
+            className="hidden absolute inset-0 z-10 flex-col items-center justify-center bg-surface-container-lowest/85 backdrop-blur-md p-4 sm:p-6 text-center select-none"
+          >
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-error/15 border border-error/30 text-error text-[11px] sm:text-xs font-mono font-bold tracking-widest uppercase mb-2 shadow-[0_0_15px_rgba(255,113,108,0.2)]">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-error opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-error"></span>
+              </span>
+              <span>Collision Detected</span>
+              <span className="text-sm">💀</span>
+            </div>
+
+            <h4 className="text-2xl sm:text-3xl md:text-4xl font-black font-headline tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-rose-400 to-amber-300 drop-shadow-[0_2px_12px_rgba(239,68,68,0.45)] mb-1">
+              GAME OVER
+            </h4>
+
+            <div className="flex items-center justify-center gap-2.5 my-2.5 text-xs sm:text-sm font-label flex-wrap">
+              <span className="px-3 py-1 rounded-lg bg-surface-container-high/90 border border-outline-variant/30 text-on-surface shadow-sm">
+                Final Score: <strong ref={finalScoreRef} className="text-primary font-bold ml-1">0</strong>
+              </span>
+              <span
+                ref={newHighScoreBadgeRef}
+                className="hidden px-3 py-1 rounded-lg bg-amber-500/20 border border-amber-500/40 text-amber-300 font-bold items-center gap-1.5 shadow-[0_0_12px_rgba(245,158,11,0.25)] animate-pulse"
+              >
+                <span>🏆 New Record!</span>
+              </span>
+            </div>
+
+            <button
+              ref={overlayRestartBtnRef}
+              className="group mt-1 px-5 sm:px-6 py-2 sm:py-2.5 rounded-xl bg-gradient-to-r from-primary via-primary-dim to-tertiary-dim text-on-primary-container font-headline font-bold text-xs sm:text-sm shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-[1.03] active:scale-[0.98] transition-all flex items-center gap-2 cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-sm sm:text-base group-hover:rotate-180 transition-transform duration-500">replay</span>
+              <span>Play Again</span>
+            </button>
+
+            <p className="text-[11px] text-outline font-label mt-2.5 hidden sm:block">
+              Press <kbd className="px-1.5 py-0.5 rounded bg-surface-container border border-outline-variant/30 text-on-surface font-mono text-[10px]">Space</kbd> or <kbd className="px-1.5 py-0.5 rounded bg-surface-container border border-outline-variant/30 text-on-surface font-mono text-[10px]">Enter</kbd> to restart
+            </p>
+          </div>
+        </div>
 
         <div className="flex justify-between items-center mt-3 text-sm font-label">
           <span ref={scoreRef} className="text-primary font-semibold">Score: 0</span>
@@ -294,9 +409,10 @@ export default function DinoGame() {
 
         <button
           ref={restartBtnRef}
-          className="hidden mt-4 w-full py-3 rounded-xl bg-gradient-to-r from-primary to-tertiary-dim text-on-primary-container font-bold shadow-lg hover:scale-[1.01] active:scale-[0.99] transition-all"
+          className="hidden mt-4 w-full py-3 rounded-xl bg-gradient-to-r from-primary to-tertiary-dim text-on-primary-container font-bold shadow-lg hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer flex items-center justify-center gap-2"
         >
-          Restart Game
+          <span className="material-symbols-outlined text-base">replay</span>
+          <span>Restart Game</span>
         </button>
       </div>
     </div>
