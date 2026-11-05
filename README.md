@@ -8,12 +8,11 @@ npm run build      # production build -> dist/
 ```
 
 ## Assets you need to add to `public/`
-These were referenced by filename in the original HTML but weren't part of
-the uploaded file, so they're not included here. Drop your existing files
-into `public/` with these exact names and everything will pick them up:
+The install icons are included. Drop your existing files into `public/` with
+these exact names if you want to replace the corresponding assets:
 
 - `favicon.png`
-- `icon-192.png`
+- `icon-192.png` and `icon-512.png` (PWA install icons)
 - `project_img.png` (Brain Tumor Detection project image)
 - `Neeraj_KR_Resume.pdf`
 
