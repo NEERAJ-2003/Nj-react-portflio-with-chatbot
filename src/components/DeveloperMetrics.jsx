@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import Reveal from "./Reveal";
 
 const LEETCODE_METRICS = {
-  total: 144,
+  total: 147,
   ranking: "Rank #1,292,007",
   categories: [
-    { name: "Easy", count: 127, total: 969, color: "text-emerald-400", bg: "bg-emerald-400", pct: Math.round((124 / 969) * 100) },
+    { name: "Easy", count: 130, total: 969, color: "text-emerald-400", bg: "bg-emerald-400", pct: Math.round((124 / 969) * 100) },
     { name: "Medium", count: 15, total: 2124, color: "text-amber-400", bg: "bg-amber-400", pct: Math.round((15 / 2124) * 100) },
     { name: "Hard", count: 2, total: 980, color: "text-rose-400", bg: "bg-rose-400", pct: Math.round((2 / 980) * 100) },
   ],
