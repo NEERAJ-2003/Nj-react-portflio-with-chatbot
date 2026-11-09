@@ -37,7 +37,7 @@ export default function Contact() {
           <div className="min-w-0">
             <Reveal delay={80}>
               <p className="text-base sm:text-lg text-on-surface-variant font-label leading-relaxed mb-8 break-words">
-                Currently open to software engineering opportunities, backend development roles (FastAPI/Django), and innovative technical projects. My inbox is always open.
+                Currently open to software engineering opportunities, backend development roles, and innovative technical projects. My inbox is always open.
               </p>
             </Reveal>
 

@@ -11,7 +11,7 @@ const LEETCODE_METRICS = {
   ],
   topics: [
     { label: "Algorithms", level: "Advanced", icon: "memory" },
-    { label: "Dynamic Programming", level: "Proficient", icon: "alt_route" },
+    { label: "DP", level: "Proficient", icon: "alt_route" },
     { label: "SQL & DB Queries", level: "Expert", icon: "database" },
     { label: "Trees & Graphs", level: "Proficient", icon: "account_tree" },
   ],

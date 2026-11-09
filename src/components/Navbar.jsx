@@ -6,7 +6,6 @@ const LINKS = [
   { href: "#skills", label: "Skills", icon: "terminal", desc: "Tech stack & tools" },
   { href: "#projects", label: "Projects", icon: "code", desc: "Featured systems" },
   { href: "#api-playground", label: "API Sandbox", icon: "api", desc: "Live REST simulator" },
-  { href: "#metrics", label: "Metrics", icon: "monitoring", desc: "GitHub & LeetCode stats" },
   { href: "#experience", label: "Experience", icon: "work_history", desc: "Career timeline" },
   { href: "#contact", label: "Contact", icon: "mail", desc: "Get in touch" },
 ];

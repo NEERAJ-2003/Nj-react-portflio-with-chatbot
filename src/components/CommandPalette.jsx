@@ -6,7 +6,6 @@ const ACTIONS = [
   { id: "skills", label: "Go to Skills", hint: "Section", icon: "code", href: "#skills" },
   { id: "projects", label: "Go to Projects", hint: "Section", icon: "folder", href: "#projects" },
   { id: "api-playground", label: "REST API Playground", hint: "Sandbox", icon: "api", href: "#api-playground" },
-  { id: "metrics", label: "Developer Metrics (GitHub & LeetCode)", hint: "Stats", icon: "monitoring", href: "#metrics" },
   { id: "experience", label: "Go to Experience", hint: "Section", icon: "work", href: "#experience" },
   { id: "contact", label: "Go to Contact", hint: "Section", icon: "mail", href: "#contact" },
   { id: "terminal", label: "Launch Interactive CLI Terminal", hint: ">_ Bash", icon: "terminal", event: "open-terminal" },
