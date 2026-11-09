@@ -122,12 +122,14 @@ function ProjectBackdrop({ project, isExpanded }) {
           }}
         />
 
-        {/* Lightweight Fintech Preview */}
+        {/* Lightweight Fintech Preview with smooth floating rotation on expand */}
         <div
-          className="absolute right-12 top-1/2 -translate-y-1/2 w-72 p-4 rounded-2xl bg-[#111726]/90 border border-white/10 shadow-xl pointer-events-none"
+          className="absolute right-12 top-1/2 -translate-y-1/2 w-72 p-4 rounded-2xl bg-[#111726]/90 border border-white/10 shadow-xl pointer-events-none transition-all duration-1000 ease-out"
           style={{
-            opacity: isExpanded ? 0.4 : 0.15,
-            transition: "opacity 0.4s ease",
+            opacity: isExpanded ? 0.45 : 0.15,
+            transform: isExpanded
+              ? "translateY(-50%) scale(1) rotate(-2deg)"
+              : "translateY(-48%) scale(0.94) rotate(0deg)",
           }}
         >
           <div className="flex items-center justify-between pb-2.5 border-b border-white/10">
@@ -177,7 +179,7 @@ function ProjectBackdrop({ project, isExpanded }) {
   );
 }
 
-/* ─── Fan Card (Desktop) ────────────────────────────────────────────── */
+/* ─── Fan Card (Desktop) with Ultra-Smooth, Relaxed Opening Animation ─ */
 function FanCard({
   project,
   index,
@@ -202,35 +204,46 @@ function FanCard({
       style={{
         flex: flexVal,
         minWidth: active ? "330px" : "110px",
-        transform: "translate3d(0, 0, 0)",
-        willChange: "flex",
-        /* Slower, cinematic deceleration curve */
-        transition: "flex 0.75s cubic-bezier(0.16, 1, 0.3, 1)",
+        transform: active ? "translate3d(0, -4px, 0)" : "translate3d(0, 0, 0)",
+        willChange: "flex, transform",
+        /* Slower, ultra-luxurious glide curve: 1.2s duration */
+        transition:
+          "flex 3s cubic-bezier(0.16, 1, 0.3, 1), transform 3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 1.5s ease, border-color 0.6s ease",
         contain: "paint",
       }}
       onMouseEnter={() => onHover(index)}
       onClick={() => onSelect(index)}
-      className={`rounded-3xl overflow-hidden cursor-pointer h-[480px] border transition-colors duration-300 relative ${
-        active
-          ? "border-primary/50 shadow-xl shadow-black/60"
-          : "border-white/10 hover:border-primary/30"
-      }`}
+      className={`rounded-3xl overflow-hidden cursor-pointer h-[480px] border relative ${active
+        ? "border-primary/50 shadow-2xl shadow-primary/15"
+        : "border-white/10 hover:border-primary/30 shadow-lg shadow-black/40"
+        }`}
     >
-      {/* 
-        Fixed-width 1100px canvas eliminates texture resampling during slow expansion
+      {/* Luminous Top Accent Glow on Open */}
+      <div
+        className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary/70 to-transparent transition-opacity duration-700 pointer-events-none z-20"
+        style={{ opacity: active ? 1 : 0 }}
+      />
+
+      {/*
+        Fixed-width 1100px canvas with smooth scale on open
       */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="w-[1100px] h-full absolute left-0 top-0">
+        <div
+          className="w-[1100px] h-full absolute left-0 top-0 transition-transform duration-1000 ease-out"
+          style={{
+            transform: active ? "scale(1.025)" : "scale(1.0)",
+          }}
+        >
           <ProjectBackdrop project={project} isExpanded={active} />
         </div>
       </div>
 
       {/* Active card high-contrast readability gradient */}
       <div
-        className="absolute inset-0 pointer-events-none"
+        className="absolute inset-0 pointer-events-none z-[5]"
         style={{
           opacity: active ? 1 : 0,
-          transition: "opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
+          transition: "opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1)",
           background:
             "linear-gradient(to top, rgba(12,14,18,0.98) 40%, rgba(12,14,18,0.7) 70%, rgba(12,14,18,0.2) 100%)",
         }}
@@ -238,19 +251,22 @@ function FanCard({
 
       {/* Inactive card veil: pure opacity blend */}
       <div
-        className="absolute inset-0 bg-[#0c0e12]/85 pointer-events-none"
+        className="absolute inset-0 bg-[#0c0e12]/85 pointer-events-none z-[6]"
         style={{
           opacity: active ? 0 : 1,
-          transition: "opacity 0.5s ease-in-out",
+          transition: "opacity 0.7s ease-in-out",
         }}
       />
 
-      {/* ── Collapsed Sidebar Presentation ── */}
+      {/* ── Collapsed Sidebar Presentation (Smooth dissolve out on open) ── */}
       <div
         className="absolute inset-0 z-10 flex flex-col items-center justify-between p-5 pointer-events-none"
         style={{
           opacity: active ? 0 : 1,
-          transition: "opacity 0.35s ease-in-out",
+          transform: active ? "scale(0.92) translateY(-8px)" : "scale(1) translateY(0)",
+          transition: active
+            ? "opacity 0.35s ease-out, transform 0.45s ease-out"
+            : "opacity 0.5s ease-out 0.25s, transform 0.5s ease-out 0.25s",
         }}
       >
         <div className="w-11 h-11 rounded-2xl bg-white/10 border border-white/15 flex items-center justify-center text-primary shadow-md">
@@ -272,41 +288,62 @@ function FanCard({
         </div>
       </div>
 
-      {/* 
-        Expanded Text Content:
-        Fixed inner width with a gentle 0.5s fade-in so text smoothly appears after the card starts expanding
-      */}
+      {/* ── Expanded Content (Smooth Staggered Float-Up on Open) ── */}
       <div
-        className="absolute bottom-0 left-0 p-6 md:p-8 w-[620px] max-w-[90vw] z-10 flex flex-col justify-end pointer-events-none"
+        className="absolute bottom-0 left-0 p-6 md:p-8 w-[640px] max-w-[90vw] z-10 flex flex-col justify-end pointer-events-none"
         style={{
           opacity: active ? 1 : 0,
-          transition: "opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.12s",
           pointerEvents: active ? "auto" : "none",
         }}
       >
-        {/* Badges row */}
-        <div className="flex items-center gap-2 mb-2.5">
-          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-label font-bold uppercase tracking-wide bg-primary/20 text-primary border border-primary/30">
-            {project.badge}
-          </span>
-          <span className="text-xs text-white/60 font-label">
-            • {project.category}
-          </span>
+        {/* Badges row & Title */}
+        <div
+          style={{
+            opacity: active ? 1 : 0,
+            transform: active ? "translate3d(0, 0, 0)" : "translate3d(0, 16px, 0)",
+            transition:
+              "opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.18s, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.18s",
+          }}
+        >
+          <div className="flex items-center gap-2 mb-2.5">
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-label font-bold uppercase tracking-wide bg-primary/20 text-primary border border-primary/30">
+              {project.badge}
+            </span>
+            <span className="text-xs text-white/60 font-label">
+              • {project.category}
+            </span>
+          </div>
+
+          <h3 className="text-2xl md:text-3xl font-bold font-headline mb-2 text-white">
+            {project.title}
+          </h3>
         </div>
 
-        {/* Title */}
-        <h3 className="text-2xl md:text-3xl font-bold font-headline mb-2 text-white">
-          {project.title}
-        </h3>
-
         {/* Summary */}
-        <p className="text-sm text-white/80 font-label mb-3.5 line-clamp-3 leading-relaxed">
-          {project.summary}
-        </p>
+        <div
+          style={{
+            opacity: active ? 1 : 0,
+            transform: active ? "translate3d(0, 0, 0)" : "translate3d(0, 18px, 0)",
+            transition:
+              "opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.26s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.26s",
+          }}
+        >
+          <p className="text-sm text-white/80 font-label mb-3.5 line-clamp-3 leading-relaxed">
+            {project.summary}
+          </p>
+        </div>
 
         {/* Key Metrics Row */}
         {project.metrics && (
-          <div className="flex flex-wrap items-center gap-2 mb-3.5">
+          <div
+            className="flex flex-wrap items-center gap-2 mb-3.5"
+            style={{
+              opacity: active ? 1 : 0,
+              transform: active ? "translate3d(0, 0, 0)" : "translate3d(0, 20px, 0)",
+              transition:
+                "opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.34s, transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.34s",
+            }}
+          >
             {project.metrics.map((m, mIdx) => (
               <div
                 key={mIdx}
@@ -320,7 +357,15 @@ function FanCard({
         )}
 
         {/* Tech tags */}
-        <div className="flex flex-wrap gap-1.5 mb-5">
+        <div
+          className="flex flex-wrap gap-1.5 mb-5"
+          style={{
+            opacity: active ? 1 : 0,
+            transform: active ? "translate3d(0, 0, 0)" : "translate3d(0, 22px, 0)",
+            transition:
+              "opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.42s, transform 0.95s cubic-bezier(0.16, 1, 0.3, 1) 0.42s",
+          }}
+        >
           {project.tech.slice(0, 5).map((t) => (
             <span
               key={t}
@@ -332,7 +377,15 @@ function FanCard({
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-wrap items-center gap-3">
+        <div
+          className="flex flex-wrap items-center gap-3"
+          style={{
+            opacity: active ? 1 : 0,
+            transform: active ? "translate3d(0, 0, 0)" : "translate3d(0, 24px, 0)",
+            transition:
+              "opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.50s, transform 1.0s cubic-bezier(0.16, 1, 0.3, 1) 0.50s",
+          }}
+        >
           {project.id === "brain-tumor" && (
             <button
               onClick={(e) => {
@@ -403,7 +456,7 @@ function TouchFanCard({ project, index, activeIndex, onTap, onSelectProject, onO
       style={{
         height: cardHeight,
         transform: "translate3d(0, 0, 0)",
-        transition: "height 0.45s cubic-bezier(0.16, 1, 0.3, 1)",
+        transition: "height 0.55s cubic-bezier(0.16, 1, 0.3, 1)",
         overflow: "hidden",
         position: "relative",
         borderRadius: "1.25rem",
@@ -412,9 +465,8 @@ function TouchFanCard({ project, index, activeIndex, onTap, onSelectProject, onO
         contain: "paint",
       }}
       onClick={handleToggle}
-      className={`border rounded-2xl overflow-hidden transition-colors duration-300 relative ${
-        isActive ? "border-primary/50 shadow-lg shadow-black/50" : "border-white/10"
-      }`}
+      className={`border rounded-2xl overflow-hidden transition-colors duration-300 relative ${isActive ? "border-primary/50 shadow-lg shadow-black/50" : "border-white/10"
+        }`}
     >
       {/* Background visual */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -452,12 +504,14 @@ function TouchFanCard({ project, index, activeIndex, onTap, onSelectProject, onO
         </span>
       </div>
 
-      {/* Expanded Content */}
+      {/* Expanded Content with float-up reveal */}
       <div
         className="absolute inset-0 p-5 flex flex-col justify-end z-10"
         style={{
           opacity: isActive ? 1 : 0,
-          transition: "opacity 0.35s ease-in-out",
+          transform: isActive ? "translate3d(0, 0, 0)" : "translate3d(0, 16px, 0)",
+          transition:
+            "opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.15s, transform 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.15s",
           pointerEvents: isActive ? "auto" : "none",
         }}
       >
@@ -554,7 +608,7 @@ export default function Projects({ onSelectProject }) {
   const [activeCategory, setActiveCategory] = useState("All");
   const [desktopActiveIndex, setDesktopActiveIndex] = useState(1); // Default to Brain Tumor on Desktop
   const [hoveredIndex, setHoveredIndex] = useState(null);
-  const [mobileActiveIndex, setMobileActiveIndex] = useState(null); // On mobile, all cards start collapsed in small size!
+  const [mobileActiveIndex, setMobileActiveIndex] = useState(null); // On mobile, all cards start collapsed in small size
   const [archModalOpen, setArchModalOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -596,19 +650,18 @@ export default function Projects({ onSelectProject }) {
     setMobileActiveIndex(null); // Keep collapsed on mobile filter change
   };
 
-  /* Slower, graceful hover intent handler */
+  /* Smooth hover opening handler: tracks active card so it stays opened without snapping back */
   const handleHover = (idx) => {
     if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
     hoverTimerRef.current = setTimeout(() => {
       setHoveredIndex(idx);
-    }, 45);
+      setDesktopActiveIndex(idx);
+    }, 30);
   };
 
   const handleMouseLeaveSection = () => {
     if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
-    hoverTimerRef.current = setTimeout(() => {
-      setHoveredIndex(null);
-    }, 60);
+    setHoveredIndex(null);
   };
 
   const handleSelectDesktop = (idx) => {
@@ -665,19 +718,17 @@ export default function Projects({ onSelectProject }) {
                 <button
                   key={cat}
                   onClick={() => handleCategoryChange(cat)}
-                  className={`px-4 py-2 rounded-xl text-xs font-label font-bold transition-all flex items-center gap-2 ${
-                    isCatActive
-                      ? "bg-primary text-on-primary shadow-md shadow-primary/20 scale-105"
-                      : "bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface border border-outline-variant/30"
-                  }`}
+                  className={`px-4 py-2 rounded-xl text-xs font-label font-bold transition-all flex items-center gap-2 ${isCatActive
+                    ? "bg-primary text-on-primary shadow-md shadow-primary/20 scale-105"
+                    : "bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface border border-outline-variant/30"
+                    }`}
                 >
                   <span>{cat}</span>
                   <span
-                    className={`text-[10px] px-1.5 py-0.2 rounded-full ${
-                      isCatActive
-                        ? "bg-black/20 text-on-primary font-mono"
-                        : "bg-white/10 text-on-surface-variant font-mono"
-                    }`}
+                    className={`text-[10px] px-1.5 py-0.2 rounded-full ${isCatActive
+                      ? "bg-black/20 text-on-primary font-mono"
+                      : "bg-white/10 text-on-surface-variant font-mono"
+                      }`}
                   >
                     {count}
                   </span>
@@ -735,11 +786,10 @@ export default function Projects({ onSelectProject }) {
                       <button
                         key={p.id}
                         onClick={() => handleSelectDesktop(idx)}
-                        className={`h-2 rounded-full transition-all duration-300 ${
-                          isDotActive
-                            ? "w-8 bg-primary shadow-sm shadow-primary/40"
-                            : "w-2 bg-white/20 hover:bg-white/40"
-                        }`}
+                        className={`h-2 rounded-full transition-all duration-300 ${isDotActive
+                          ? "w-8 bg-primary shadow-sm shadow-primary/40"
+                          : "w-2 bg-white/20 hover:bg-white/40"
+                          }`}
                         aria-label={`View ${p.title}`}
                       />
                     );
