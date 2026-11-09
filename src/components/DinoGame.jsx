@@ -203,7 +203,7 @@ export default function DinoGame() {
       ctx.fillStyle = "#699cff";
       ctx.shadowColor = "rgba(105, 156, 255, 0.4)";
       ctx.shadowBlur = 8;
-      ctx.fillText("▶ Press SPACE / ENTER or TAP to Start", W / 2, H / 2 - 4);
+      ctx.fillText("Press SPACE / ENTER or TAP to Start", W / 2, H / 2 - 4);
       ctx.shadowBlur = 0;
       ctx.font = `500 ${Math.max(11, Math.round(12 * scale))}px sans-serif`;
       ctx.fillStyle = "#94a3b8";
@@ -327,19 +327,19 @@ export default function DinoGame() {
   }, []);
 
   return (
-    <div className="glass-card p-6 md:p-8 rounded-3xl border border-primary/20 shadow-2xl">
-      <div className="flex items-center justify-between pb-5 mb-5 border-b border-primary/15">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-            <span className="material-symbols-outlined text-xl">sports_esports</span>
+    <div className="glass-card p-4 sm:p-6 md:p-8 rounded-3xl border border-primary/20 shadow-2xl min-w-0">
+      <div className="flex flex-wrap items-center justify-between gap-2 pb-4 mb-4 border-b border-primary/15 min-w-0">
+        <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+            <span className="material-symbols-outlined text-lg sm:text-xl">sports_esports</span>
           </div>
-          <div>
-            <h3 className="text-base font-bold font-headline text-on-surface">Dino Game</h3>
-            <p className="text-[11px] font-label text-outline">Interactive Arcade</p>
+          <div className="min-w-0">
+            <h3 className="text-sm sm:text-base font-bold font-headline text-on-surface truncate">Dino Game</h3>
+            <p className="text-[10px] sm:text-[11px] font-label text-outline truncate">Interactive Arcade</p>
           </div>
         </div>
-        <span className="text-xs font-label px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 flex items-center gap-1">
-          <span>Can you survive?</span>
+        <span className="text-[11px] sm:text-xs font-label px-2.5 sm:px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 inline-flex items-center gap-1 shrink-0">
+          <span className="hidden min-[380px]:inline">Can you survive?</span>
           <span>🦖</span>
         </span>
       </div>

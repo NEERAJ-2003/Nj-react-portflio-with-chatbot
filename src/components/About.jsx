@@ -41,17 +41,17 @@ function StatCard({ s, delay }) {
   }, [s.value, s.decimals]);
 
   return (
-    <Reveal delay={delay}>
+    <Reveal delay={delay} className="h-full">
       <div
         ref={ref}
-        className="glass-card p-6 rounded-2xl flex flex-col items-center justify-center text-center border border-outline-variant/20"
+        className="glass-card p-3.5 sm:p-5 md:p-6 rounded-2xl flex flex-col items-center justify-center text-center border border-outline-variant/20 h-full min-w-0"
       >
-        <span className={`material-symbols-outlined ${s.color} text-4xl mb-2`}>{s.icon}</span>
-        <span className="text-2xl font-bold font-headline">
+        <span className={`material-symbols-outlined ${s.color} text-3xl sm:text-4xl mb-1.5 sm:mb-2`}>{s.icon}</span>
+        <span className="text-xl sm:text-2xl font-bold font-headline">
           {display}
           {s.suffix}
         </span>
-        <span className="text-xs font-label uppercase text-outline">{s.label}</span>
+        <span className="text-[10px] min-[360px]:text-[11px] sm:text-xs font-label uppercase text-outline tracking-tight leading-tight mt-1">{s.label}</span>
       </div>
     </Reveal>
   );
@@ -60,8 +60,8 @@ function StatCard({ s, delay }) {
 export default function About() {
   return (
     <section className="py-24 bg-surface-container-low" id="about">
-      <div className="max-w-7xl mx-auto px-8">
-        <div className="grid md:grid-cols-5 gap-12 items-end">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 min-w-0">
+        <div className="grid md:grid-cols-5 gap-8 md:gap-12 items-stretch md:items-end">
           <div className="md:col-span-3">
             <Reveal>
               <h2 className="text-3xl md:text-5xl font-bold font-headline mb-8 flex items-center gap-4">
@@ -70,8 +70,8 @@ export default function About() {
               </h2>
             </Reveal>
             <Reveal delay={120}>
-              <div className="glass-card p-8 md:p-12 rounded-3xl relative overflow-hidden">
-                <p className="text-xl text-on-surface-variant font-label">
+              <div className="glass-card p-5 sm:p-8 md:p-12 rounded-3xl relative overflow-hidden">
+                <p className="text-lg sm:text-xl text-on-surface-variant font-label">
                   I'm a <span className="text-on-surface font-semibold">Software Engineer</span> with a strong foundation in building scalable, real-world applications using{" "}
                   <span className="text-primary-dim font-semibold">FastAPI, Django</span>. My work spans backend architecture,{" "}
                   <span className="text-primary-dim font-semibold">REST APIs</span>, and{" "}
@@ -96,7 +96,7 @@ export default function About() {
               </div>
             </Reveal>
           </div>
-          <div className="md:col-span-2 grid grid-cols-2 gap-4">
+          <div className="md:col-span-2 grid grid-cols-2 gap-2.5 sm:gap-4 items-stretch">
             {STATS.map((s, i) => (
               <StatCard key={s.label} s={s} delay={i * 90} />
             ))}

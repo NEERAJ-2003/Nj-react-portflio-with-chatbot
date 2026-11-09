@@ -145,7 +145,7 @@ export default function Navbar({ currentTheme, onSetTheme }) {
   return (
     <>
       <nav className={`site-nav ${scrolled ? "is-scrolled" : ""}`}>
-        <div className="flex justify-between items-center max-w-7xl mx-auto px-6 sm:px-8 h-20">
+        <div className="flex justify-between items-center max-w-7xl mx-auto px-4 sm:px-6 md:px-8 h-20 min-w-0">
           <a
             href="#home"
             className="text-xl font-bold font-headline text-on-surface tracking-tighter flex items-center gap-2"
@@ -300,10 +300,6 @@ export default function Navbar({ currentTheme, onSetTheme }) {
               </div>
             </div>
 
-            <div className="mobile-status-badge">
-              <span className="status-dot" />
-              <span>Available for Python / Backend roles</span>
-            </div>
 
             <a
               href="#contact"

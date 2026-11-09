@@ -7,8 +7,11 @@ const SOCIALS = [
 
 export default function Footer() {
   return (
-    <footer className="bg-slate-950 w-full pt-20 pb-10 bg-slate-900/50">
-      <div className="flex flex-col md:flex-row justify-between items-center px-6 md:px-12 border-t border-slate-800/30 max-w-7xl mx-auto space-y-6 md:space-y-0 text-center md:text-left">
+    <footer
+      className="bg-slate-950 w-full pt-16 sm:pt-20 pb-24 md:pb-10 bg-slate-900/50"
+      style={{ paddingBottom: "max(6rem, calc(4.5rem + env(safe-area-inset-bottom, 0px)))" }}
+    >
+      <div className="flex flex-col md:flex-row justify-between items-center px-4 sm:px-6 md:px-12 border-t border-slate-800/30 max-w-7xl mx-auto space-y-6 md:space-y-0 text-center md:text-left">
         <div className="text-lg font-black text-slate-200 font-headline">Neeraj K R</div>
         <div className="text-slate-500 font-body text-sm tracking-wide">
           &copy; 2026 Neeraj K R

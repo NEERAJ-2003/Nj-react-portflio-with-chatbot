@@ -444,7 +444,7 @@ function FanCard({
 /* ─── Touch Fan Card (Mobile) ────────────────────────────────────────── */
 function TouchFanCard({ project, index, activeIndex, onTap, onSelectProject, onOpenArch }) {
   const isActive = activeIndex === index;
-  const cardHeight = isActive ? 415 : 92;
+  const cardHeight = isActive ? 435 : 92;
 
   const handleToggle = () => {
     // If clicking on already expanded card, collapse it back to default small size (null)
@@ -468,18 +468,22 @@ function TouchFanCard({ project, index, activeIndex, onTap, onSelectProject, onO
       className={`border rounded-2xl overflow-hidden transition-colors duration-300 relative ${isActive ? "border-primary/50 shadow-lg shadow-black/50" : "border-white/10"
         }`}
     >
-      {/* Background visual */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* Background visual with mobile opacity dampener for high-contrast images */}
+      <div className={`absolute inset-0 overflow-hidden pointer-events-none ${project.id === "sentinel" ? "opacity-25" : ""}`}>
         <ProjectBackdrop project={project} isExpanded={isActive} />
       </div>
 
-      {/* Dark gradient for text legibility */}
+      {/* Dark gradient for text legibility - extra deep for Sentinel to prevent text bleed */}
       <div
         className="absolute inset-0 transition-opacity duration-300 pointer-events-none"
         style={{
-          background: isActive
-            ? "linear-gradient(to top, rgba(12,14,18,0.98) 45%, rgba(12,14,18,0.7) 75%, rgba(12,14,18,0.3) 100%)"
-            : "linear-gradient(to top, rgba(12,14,18,0.88) 50%, rgba(12,14,18,0.65) 100%)",
+          background: project.id === "sentinel"
+            ? (isActive
+                ? "linear-gradient(to top, rgba(12,14,18,0.98) 50%, rgba(12,14,18,0.92) 80%, rgba(12,14,18,0.80) 100%)"
+                : "linear-gradient(to top, rgba(12,14,18,0.96) 40%, rgba(12,14,18,0.88) 100%)")
+            : (isActive
+                ? "linear-gradient(to top, rgba(12,14,18,0.98) 45%, rgba(12,14,18,0.7) 75%, rgba(12,14,18,0.3) 100%)"
+                : "linear-gradient(to top, rgba(12,14,18,0.88) 50%, rgba(12,14,18,0.65) 100%)"),
         }}
       />
 
@@ -554,7 +558,7 @@ function TouchFanCard({ project, index, activeIndex, onTap, onSelectProject, onO
                 e.stopPropagation();
                 onOpenArch();
               }}
-              className="px-3.5 py-1.5 rounded-xl bg-primary text-on-primary text-[11px] font-label font-bold flex items-center gap-1.5 shadow-md shadow-primary/25"
+              className="px-3.5 py-2 rounded-xl bg-primary text-on-primary text-[11px] font-label font-bold flex items-center gap-1.5 shadow-md shadow-primary/25 min-h-[44px]"
             >
               <span className="material-symbols-outlined text-sm">schema</span>
               <span>Architecture</span>
@@ -567,7 +571,7 @@ function TouchFanCard({ project, index, activeIndex, onTap, onSelectProject, onO
               target="_blank"
               rel="noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="px-3.5 py-1.5 rounded-xl bg-primary text-on-primary text-[11px] font-label font-bold flex items-center gap-1.5 shadow-md shadow-primary/25"
+              className="px-3.5 py-2 rounded-xl bg-primary text-on-primary text-[11px] font-label font-bold flex items-center gap-1.5 shadow-md shadow-primary/25 min-h-[44px]"
             >
               <span>Live App</span>
               <span className="material-symbols-outlined text-sm">open_in_new</span>
@@ -580,7 +584,7 @@ function TouchFanCard({ project, index, activeIndex, onTap, onSelectProject, onO
               target="_blank"
               rel="noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="px-3.5 py-1.5 rounded-xl bg-white/10 text-white text-[11px] font-label font-bold flex items-center gap-1.5 border border-white/20"
+              className="px-3.5 py-2 rounded-xl bg-white/10 text-white text-[11px] font-label font-bold flex items-center gap-1.5 border border-white/20 min-h-[44px]"
             >
               <span className="material-symbols-outlined text-sm">code</span>
               <span>GitHub</span>
@@ -592,7 +596,7 @@ function TouchFanCard({ project, index, activeIndex, onTap, onSelectProject, onO
               e.stopPropagation();
               onSelectProject(project);
             }}
-            className="px-3 py-1.5 rounded-xl bg-white/10 text-white text-[11px] font-label flex items-center gap-1.5 border border-white/20"
+            className="px-3 py-2 rounded-xl bg-white/10 text-white text-[11px] font-label flex items-center gap-1.5 border border-white/20 min-h-[44px]"
           >
             <span className="material-symbols-outlined text-sm">visibility</span>
             <span>Case Study</span>
@@ -674,7 +678,7 @@ export default function Projects({ onSelectProject }) {
 
   return (
     <section className="py-24 bg-surface relative" id="projects">
-      <div className="max-w-7xl mx-auto px-6 md:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 min-w-0">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
           <div>

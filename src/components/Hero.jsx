@@ -174,14 +174,14 @@ export default function Hero({ onOpenResume }) {
   }, []);
 
   return (
-    <section ref={heroRef} className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden" id="home">
+    <section ref={heroRef} className="relative min-h-[100dvh] md:min-h-screen flex items-center justify-center pt-20 overflow-hidden" id="home">
       <canvas id="hero-canvas" ref={canvasRef} />
 
       <div className="absolute inset-0 mesh-gradient opacity-40" />
       <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary-dim rounded-full blur-[160px] opacity-20 animate-pulse-slow" />
       <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-tertiary-dim rounded-full blur-[160px] opacity-10 animate-pulse-slow" />
 
-      <div className="max-w-7xl mx-auto px-8 w-full relative z-10 text-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 w-full relative z-10 text-center min-w-0">
         <div className="hero-enter flex flex-wrap items-center justify-center gap-3 mb-8">
           <span className="status-pill">
             <span className="status-dot" />
@@ -190,8 +190,8 @@ export default function Hero({ onOpenResume }) {
           <span className="status-pill">Bengaluru · {clock || "--:--"} IST</span>
         </div>
         <h1
-          className="hero-name text-on-surface mb-6 leading-none drop-shadow-2xl whitespace-nowrap"
-          style={{ fontSize: "clamp(2.4rem, 9.5vw, 8.5rem)" }}
+          className="hero-name text-on-surface mb-6 leading-none drop-shadow-2xl sm:whitespace-nowrap"
+          style={{ fontSize: "clamp(1.75rem, 8.2vw, 8.5rem)" }}
         >
           NEERAJ
           <span className="text-transparent bg-clip-text bg-gradient-to-br from-primary via-primary-dim to-tertiary inline-block filter drop-shadow-[0_0_30px_rgba(105,156,255,0.4)]">
@@ -199,8 +199,8 @@ export default function Hero({ onOpenResume }) {
           </span>
         </h1>
 
-        <div className="hero-enter hero-enter-delay text-2xl md:text-4xl font-mono text-on-surface-variant mb-12 h-12 flex items-center justify-center tracking-tight">
-          <span className="typing-container text-primary font-medium" ref={typingRef} id="typing-text">
+        <div className="hero-enter hero-enter-delay text-xl sm:text-2xl md:text-4xl font-mono text-on-surface-variant mb-10 sm:mb-12 min-h-[3rem] flex items-center justify-center tracking-tight">
+          <span className="typing-container text-primary font-medium min-h-[1.5em]" ref={typingRef} id="typing-text">
             Python Developer
           </span>
         </div>

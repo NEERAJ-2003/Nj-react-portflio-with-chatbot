@@ -191,7 +191,7 @@ export default function ApiPlayground() {
 
   return (
     <section className="py-24 bg-surface-container-low/80 relative overflow-hidden" id="api-playground">
-      <div className="max-w-7xl mx-auto px-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 relative z-10 min-w-0">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
           <div>
             <Reveal>
@@ -251,41 +251,45 @@ export default function ApiPlayground() {
               </div>
 
               {/* Request Runner Area */}
-              <div className="lg:col-span-8 p-5 flex flex-col justify-between">
+              <div className="lg:col-span-8 p-3.5 sm:p-5 flex flex-col justify-between min-w-0">
                 <div>
                   {/* URL Bar */}
-                  <div className="flex items-center gap-2 bg-surface-container-lowest p-2 rounded-xl border border-outline-variant/30 mb-3">
-                    <span
-                      className={`px-2 py-1 rounded text-xs font-mono font-bold ${selectedEndpoint.method === "GET" ? "api-badge-get" : "api-badge-post"
-                        }`}
-                    >
-                      {selectedEndpoint.method}
-                    </span>
-                    <span className="text-xs font-mono text-on-surface flex-1 truncate">
-                      https://neerajkr.dev{currentPath}
-                    </span>
-
-                    {(responseOutput || loading) && (
-                      <button
-                        onClick={handleCancel}
-                        title="Cancel request / Clear response"
-                        className="px-3 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-lg text-xs font-label font-semibold flex items-center gap-1 transition-all"
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 bg-surface-container-lowest p-2 rounded-xl border border-outline-variant/30 mb-3 min-w-0">
+                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                      <span
+                        className={`px-2 py-1 rounded text-xs font-mono font-bold shrink-0 ${selectedEndpoint.method === "GET" ? "api-badge-get" : "api-badge-post"
+                          }`}
                       >
-                        <span className="material-symbols-outlined text-sm">close</span>
-                        <span>Cancel</span>
-                      </button>
-                    )}
-
-                    <button
-                      onClick={() => handleSendRequest()}
-                      disabled={loading}
-                      className="px-4 py-1.5 bg-primary text-on-primary rounded-lg text-xs font-label font-bold flex items-center gap-1.5 hover:opacity-90 transition-opacity"
-                    >
-                      <span className="material-symbols-outlined text-sm">
-                        {loading ? "sync" : "send"}
+                        {selectedEndpoint.method}
                       </span>
-                      <span>{loading ? "Sending..." : "Execute"}</span>
-                    </button>
+                      <span className="text-xs font-mono text-on-surface truncate min-w-0" title={`https://neerajkr.dev${currentPath}`}>
+                        https://neerajkr.dev{currentPath}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2 w-full sm:w-auto shrink-0 justify-end">
+                      {(responseOutput || loading) && (
+                        <button
+                          onClick={handleCancel}
+                          title="Cancel request / Clear response"
+                          className="flex-1 sm:flex-initial justify-center px-3 py-2 sm:py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-lg text-xs font-label font-semibold flex items-center gap-1 transition-all min-h-[44px] sm:min-h-0"
+                        >
+                          <span className="material-symbols-outlined text-sm">close</span>
+                          <span>Cancel</span>
+                        </button>
+                      )}
+
+                      <button
+                        onClick={() => handleSendRequest()}
+                        disabled={loading}
+                        className="flex-1 sm:flex-initial justify-center px-4 py-2 sm:py-1.5 bg-primary text-on-primary rounded-lg text-xs font-label font-bold flex items-center gap-1.5 hover:opacity-90 transition-opacity min-h-[44px] sm:min-h-0"
+                      >
+                        <span className="material-symbols-outlined text-sm">
+                          {loading ? "sync" : "send"}
+                        </span>
+                        <span>{loading ? "Sending..." : "Execute"}</span>
+                      </button>
+                    </div>
                   </div>
 
                   {/* Compact Mobile-Friendly Segmented Pagination Switch */}
@@ -337,9 +341,9 @@ export default function ApiPlayground() {
                 </div>
 
                 {/* Response Meta Header */}
-                <div className="flex items-center justify-between pt-3 border-t border-primary/10 text-xs font-label">
+                <div className="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-primary/10 text-xs font-label">
                   {responseOutput ? (
-                    <div className="flex items-center gap-3">
+                    <div className="flex flex-wrap items-center gap-3">
                       <span className="flex items-center gap-1 text-emerald-400 font-bold">
                         <span className="w-2 h-2 rounded-full bg-emerald-400" />
                         {selectedEndpoint.status} {selectedEndpoint.statusText}
@@ -355,14 +359,14 @@ export default function ApiPlayground() {
                       <span>Status: Awaiting execution</span>
                     </div>
                   )}
-                  <span className="text-outline text-[11px]">FastAPI 0.115 / Python 3.12</span>
+                  <span className="text-outline text-[11px] shrink-0">FastAPI 0.115 / Python 3.12</span>
                 </div>
               </div>
             </div>
 
             {/* JSON Output Viewer */}
-            <div className="p-5 bg-[#0a0d14] font-mono text-xs overflow-x-auto border-t border-primary/15 relative min-h-[220px]">
-              <div className="flex items-center justify-between text-[11px] text-outline mb-2 pb-2 border-b border-white/5 font-label">
+            <div className="p-3.5 sm:p-5 bg-[#0a0d14] font-mono text-xs overflow-x-auto border-t border-primary/15 relative min-h-[220px]">
+              <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-outline mb-2 pb-2 border-b border-white/5 font-label">
                 <span>RESPONSE PAYLOAD (application/json)</span>
                 {responseOutput ? (
                   <div className="flex items-center gap-3">

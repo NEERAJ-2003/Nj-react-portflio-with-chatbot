@@ -23,24 +23,24 @@ export default function ProjectModal({ project, onClose }) {
     <div className="portfolio-modal-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label={project.title}>
       <div className="portfolio-modal-content max-w-3xl" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-primary/15 bg-surface-container-low">
-          <div className="flex items-center gap-3">
-            <span className="material-symbols-outlined text-primary text-2xl">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-primary/15 bg-surface-container-low min-w-0">
+          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1 mr-2">
+            <span className="material-symbols-outlined text-primary text-2xl shrink-0">
               {project.icon || "terminal"}
             </span>
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="font-headline font-bold text-xl text-on-surface">{project.title}</h3>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-label font-bold tracking-wide uppercase bg-primary/20 text-primary">
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <h3 className="font-headline font-bold text-lg sm:text-xl text-on-surface truncate">{project.title}</h3>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-label font-bold tracking-wide uppercase bg-primary/20 text-primary shrink-0">
                   {project.category}
                 </span>
               </div>
-              <p className="text-xs text-on-surface-variant font-label">{project.subtitle}</p>
+              <p className="text-xs text-on-surface-variant font-label truncate">{project.subtitle}</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors"
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors shrink-0"
             aria-label="Close case study"
           >
             <span className="material-symbols-outlined">close</span>
@@ -48,7 +48,7 @@ export default function ProjectModal({ project, onClose }) {
         </div>
 
         {/* Scrollable Content */}
-        <div className="p-6 md:p-8 overflow-y-auto space-y-6">
+        <div className="p-4 sm:p-6 md:p-8 overflow-y-auto space-y-6 max-h-[80dvh] md:max-h-[80vh]">
           {project.image && (
             <div className="relative rounded-2xl overflow-hidden h-52 w-full border border-primary/20">
               <img src={project.image} alt={project.title} className="w-full h-full object-cover" />

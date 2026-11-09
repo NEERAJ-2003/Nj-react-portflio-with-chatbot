@@ -57,7 +57,7 @@ export default function DeveloperMetrics() {
 
   return (
     <section className="py-20 bg-surface relative overflow-hidden" id="metrics">
-      <div className="max-w-7xl mx-auto px-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 relative z-10 min-w-0">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <Reveal>
             <span className="px-3 py-1 rounded-full text-xs font-label bg-tertiary/10 text-tertiary border border-tertiary/20 inline-block mb-3">
@@ -77,25 +77,25 @@ export default function DeveloperMetrics() {
         <div className="grid md:grid-cols-2 gap-8">
           {/* GitHub Activity Card */}
           <Reveal delay={120}>
-            <div className="glass-card p-8 rounded-3xl border border-primary/20 flex flex-col justify-between h-full">
+            <div className="glass-card p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl border border-primary/20 flex flex-col justify-between h-full min-w-0">
               <div>
                 <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
                     <img
                       src={githubData.avatar_url}
                       alt="Neeraj KR GitHub"
-                      className="w-12 h-12 rounded-2xl border-2 border-primary/30 object-cover"
+                      className="w-12 h-12 rounded-2xl border-2 border-primary/30 object-cover shrink-0"
                     />
-                    <div>
-                      <h3 className="font-headline font-bold text-lg text-on-surface">NEERAJ-2003</h3>
-                      <p className="text-xs text-on-surface-variant font-label">GitHub Activity & Repositories</p>
+                    <div className="min-w-0">
+                      <h3 className="font-headline font-bold text-lg text-on-surface truncate">NEERAJ-2003</h3>
+                      <p className="text-xs text-on-surface-variant font-label truncate">GitHub Activity & Repositories</p>
                     </div>
                   </div>
                   <a
                     href="https://github.com/NEERAJ-2003"
                     target="_blank"
                     rel="noreferrer"
-                    className="p-2 rounded-xl bg-surface-container hover:bg-surface-container-high text-primary border border-primary/20 transition-all hover:scale-105 flex items-center justify-center"
+                    className="p-2 rounded-xl bg-surface-container hover:bg-surface-container-high text-primary border border-primary/20 transition-all hover:scale-105 flex items-center justify-center shrink-0 min-w-[44px] min-h-[44px]"
                     aria-label="Move to GitHub repository"
                     title="Move to GitHub repository"
                   >
@@ -108,24 +108,24 @@ export default function DeveloperMetrics() {
                 </p>
 
                 {/* GitHub Stats Grid */}
-                <div className="grid grid-cols-3 gap-3 mb-6">
-                  <div className="bg-surface-container p-3.5 rounded-2xl border border-outline-variant/30 text-center">
-                    <span className="text-2xl font-bold font-headline text-primary block">
+                <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-6 min-w-0">
+                  <div className="bg-surface-container p-2 sm:p-3 md:p-3.5 rounded-xl sm:rounded-2xl border border-outline-variant/30 text-center min-w-0">
+                    <span className="text-xl sm:text-2xl font-bold font-headline text-primary block">
                       {githubData.public_repos}
                     </span>
-                    <span className="text-[11px] font-label uppercase text-outline">Public Repos</span>
+                    <span className="text-[9px] min-[360px]:text-[10px] md:text-[11px] font-label uppercase tracking-tight sm:tracking-wider text-outline block leading-tight truncate">Public Repos</span>
                   </div>
-                  <div className="bg-surface-container p-3.5 rounded-2xl border border-outline-variant/30 text-center">
-                    <span className="text-2xl font-bold font-headline text-tertiary block">
+                  <div className="bg-surface-container p-2 sm:p-3 md:p-3.5 rounded-xl sm:rounded-2xl border border-outline-variant/30 text-center min-w-0">
+                    <span className="text-xl sm:text-2xl font-bold font-headline text-tertiary block">
                       {githubData.followers}
                     </span>
-                    <span className="text-[11px] font-label uppercase text-outline">Followers</span>
+                    <span className="text-[9px] min-[360px]:text-[10px] md:text-[11px] font-label uppercase tracking-tight sm:tracking-wider text-outline block leading-tight truncate">Followers</span>
                   </div>
-                  <div className="bg-surface-container p-3.5 rounded-2xl border border-outline-variant/30 text-center">
-                    <span className="text-2xl font-bold font-headline text-secondary block">
+                  <div className="bg-surface-container p-2 sm:p-3 md:p-3.5 rounded-xl sm:rounded-2xl border border-outline-variant/30 text-center min-w-0">
+                    <span className="text-xl sm:text-2xl font-bold font-headline text-secondary block">
                       {githubData.following}
                     </span>
-                    <span className="text-[11px] font-label uppercase text-outline">Following</span>
+                    <span className="text-[9px] min-[360px]:text-[10px] md:text-[11px] font-label uppercase tracking-tight sm:tracking-wider text-outline block leading-tight truncate">Following</span>
                   </div>
                 </div>
 
@@ -134,7 +134,7 @@ export default function DeveloperMetrics() {
                   <span className="text-[11px] font-label uppercase tracking-wider text-outline block mb-2">
                     Recent Contribution Cadence
                   </span>
-                  <div className="grid grid-cols-12 gap-1.5 p-3 rounded-xl bg-surface-container border border-outline-variant/20">
+                  <div className="grid grid-cols-12 gap-1 sm:gap-1.5 p-2 sm:p-3 rounded-xl bg-surface-container border border-outline-variant/20 overflow-hidden">
                     {Array.from({ length: 24 }).map((_, i) => {
                       const level = (i * 7 + 3) % 5;
                       const opacities = ["opacity-20", "opacity-40", "opacity-60", "opacity-80", "opacity-100"];
@@ -150,7 +150,7 @@ export default function DeveloperMetrics() {
                 </div>
               </div>
 
-              <div className="mt-6 pt-4 border-t border-primary/10 flex items-center justify-between text-xs font-label">
+              <div className="mt-6 pt-4 border-t border-primary/10 flex flex-wrap items-center justify-between gap-2 text-xs font-label">
                 <span className="text-on-surface-variant flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                   Active open source contributions
@@ -170,21 +170,21 @@ export default function DeveloperMetrics() {
 
           {/* LeetCode Mastery Card */}
           <Reveal delay={200}>
-            <div className="glass-card p-8 rounded-3xl border border-tertiary/20 flex flex-col justify-between h-full">
+            <div className="glass-card p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl border border-tertiary/20 flex flex-col justify-between h-full min-w-0">
               <div>
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-6">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
                       <span className="material-symbols-outlined text-2xl">code_blocks</span>
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <h3 className="font-headline font-bold text-lg text-on-surface">LeetCode Mastery</h3>
-                      <p className="text-xs text-on-surface-variant font-label">
+                      <p className="text-xs text-on-surface-variant font-label truncate">
                         {LEETCODE_METRICS.total}+ Problems Solved · {LEETCODE_METRICS.ranking}
                       </p>
                     </div>
                   </div>
-                  <span className="px-3 py-1 rounded-full text-xs font-label bg-amber-500/15 text-amber-300 font-bold">
+                  <span className="px-3 py-1 rounded-full text-xs font-label bg-amber-500/15 text-amber-300 font-bold shrink-0">
                     {LEETCODE_METRICS.total} Solved
                   </span>
                 </div>
@@ -210,18 +210,18 @@ export default function DeveloperMetrics() {
                 </div>
 
                 {/* Topic Badges */}
-                <div className="grid grid-cols-2 gap-2.5">
+                <div className="grid grid-cols-1 min-[360px]:grid-cols-2 gap-2 sm:gap-2.5 min-w-0">
                   {LEETCODE_METRICS.topics.map((t) => (
                     <div
                       key={t.label}
-                      className="p-2.5 rounded-xl bg-surface-container border border-outline-variant/30 flex items-center gap-2.5"
+                      className="p-2 sm:p-2.5 rounded-xl bg-surface-container border border-outline-variant/30 flex items-center gap-2 min-w-0"
                     >
-                      <span className="material-symbols-outlined text-tertiary text-lg">{t.icon}</span>
-                      <div>
-                        <span className="text-xs text-on-surface font-medium block leading-tight">
+                      <span className="material-symbols-outlined text-tertiary text-lg shrink-0">{t.icon}</span>
+                      <div className="min-w-0 flex-1">
+                        <span className="text-xs text-on-surface font-medium block leading-tight truncate" title={t.label}>
                           {t.label}
                         </span>
-                        <span className="text-[10px] text-outline font-label uppercase">
+                        <span className="text-[10px] text-outline font-label uppercase block leading-tight">
                           {t.level}
                         </span>
                       </div>
@@ -230,7 +230,7 @@ export default function DeveloperMetrics() {
                 </div>
               </div>
 
-              <div className="mt-6 pt-4 border-t border-tertiary/10 flex items-center justify-between text-xs font-label">
+              <div className="mt-6 pt-4 border-t border-tertiary/10 flex flex-col min-[480px]:flex-row items-start min-[480px]:items-center justify-between gap-1.5 min-[480px]:gap-0 text-xs font-label">
                 <span className="text-on-surface-variant">Focus: Clean Time & Space Complexity</span>
                 <span className="text-tertiary font-medium">O(log N) & O(1) Targets</span>
               </div>

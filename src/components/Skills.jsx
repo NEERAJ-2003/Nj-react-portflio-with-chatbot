@@ -38,10 +38,10 @@ function SkillBar({ b, delay }) {
   }, []);
 
   return (
-    <div ref={ref} style={{ transitionDelay: `${delay}ms` }}>
-      <div className="flex justify-between mb-2">
-        <span className="font-label text-on-surface">{b.label}</span>
-        <span className={b.pctColor}>{b.pct}%</span>
+    <div ref={ref} style={{ transitionDelay: `${delay}ms` }} className="min-w-0">
+      <div className="flex justify-between mb-2 text-xs sm:text-sm font-label">
+        <span className="text-on-surface truncate pr-2">{b.label}</span>
+        <span className={`${b.pctColor} shrink-0 font-mono font-semibold`}>{b.pct}%</span>
       </div>
       <div className="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
         <div
@@ -56,8 +56,8 @@ function SkillBar({ b, delay }) {
 export default function Skills() {
   return (
     <section className="py-24 bg-surface-container-low" id="skills">
-      <div className="max-w-7xl mx-auto px-8">
-        <div className="grid md:grid-cols-2 gap-16 items-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 min-w-0">
+        <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-center">
           <div>
             <Reveal>
               <h2 className="text-3xl md:text-5xl font-bold font-headline mb-8">
@@ -65,7 +65,7 @@ export default function Skills() {
               </h2>
             </Reveal>
             <Reveal delay={80}>
-              <p className="text-lg text-on-surface-variant font-label">Leveraging modern frameworks and languages to build production-grade software solutions.</p>
+              <p className="text-base sm:text-lg text-on-surface-variant font-label">Leveraging modern frameworks and languages to build production-grade software solutions.</p>
             </Reveal>
             <br />
             <div className="space-y-6">
@@ -74,13 +74,15 @@ export default function Skills() {
               ))}
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-2 gap-2.5 sm:gap-4 md:gap-6 items-stretch">
             {CARDS.map((c, i) => (
-              <Reveal key={c.title} delay={i * 100}>
-                <SpotlightCard className={`glass-card p-8 rounded-3xl group transition-colors ${c.hover}`}>
-                  <span className={`material-symbols-outlined ${c.color} text-5xl mb-4`}>{c.icon}</span>
-                  <h4 className="font-headline font-bold text-xl mb-2">{c.title}</h4>
-                  <p className="text-xs text-on-surface-variant font-label">{c.desc}</p>
+              <Reveal key={c.title} delay={i * 100} className="h-full">
+                <SpotlightCard className={`glass-card p-3.5 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl group transition-colors ${c.hover} h-full flex flex-col justify-between min-w-0`}>
+                  <div>
+                    <span className={`material-symbols-outlined ${c.color} text-3xl sm:text-4xl md:text-5xl mb-2 sm:mb-4 block`}>{c.icon}</span>
+                    <h4 className="font-headline font-bold text-base sm:text-lg md:text-xl mb-1 sm:mb-2">{c.title}</h4>
+                  </div>
+                  <p className="text-[11px] sm:text-xs text-on-surface-variant font-label leading-tight">{c.desc}</p>
                 </SpotlightCard>
               </Reveal>
             ))}

@@ -21,7 +21,7 @@ export default function ResumeModal({ isOpen, onClose }) {
 
   return (
     <div className="portfolio-modal-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label="Resume Preview">
-      <div className="portfolio-modal-content h-[90vh] max-w-5xl flex flex-col" onClick={(e) => e.stopPropagation()}>
+      <div className="portfolio-modal-content h-[90dvh] md:h-[90vh] max-w-5xl flex flex-col" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 border-b border-primary/15 bg-surface-container-low shrink-0 gap-2">
           <div className="flex items-center gap-2.5 min-w-0 flex-1">

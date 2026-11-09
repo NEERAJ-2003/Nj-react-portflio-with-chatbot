@@ -69,6 +69,8 @@ html {
   scroll-behavior: smooth;
   scrollbar-width: thin;
   scrollbar-color: rgba(105, 156, 255, 0.45) transparent;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 html::-webkit-scrollbar { width: 10px; }
 html::-webkit-scrollbar-thumb {
@@ -80,7 +82,9 @@ html::-webkit-scrollbar-thumb {
 body {
   background-color: var(--color-surface);
   color: var(--color-on-surface);
+  max-width: 100%;
   overflow-x: hidden;
+  position: relative;
 }
 
 @keyframes pulse-slow {
@@ -99,6 +103,9 @@ body {
 .typing-container {
   font-family: var(--font-mono), "JetBrains Mono", "Fira Code", monospace;
   letter-spacing: -0.02em;
+  display: inline-block;
+  min-height: 1.25em;
+  vertical-align: middle;
 }
 
 .typing-container::after {
@@ -515,6 +522,29 @@ body {
   }
   #chat-toggle-wrap.chat-toggle-open {
     display: none !important;
+  }
+  #chat-toggle-wrap {
+    bottom: max(16px, env(safe-area-inset-bottom, 16px));
+    right: max(16px, env(safe-area-inset-right, 16px));
+    width: 48px;
+    height: 48px;
+  }
+  #chat-toggle-btn {
+    width: 48px;
+    height: 48px;
+  }
+  #chat-toggle-btn svg {
+    width: 22px;
+    height: 22px;
+  }
+  .freya-teaser-pill {
+    display: none !important;
+  }
+  .back-to-top {
+    left: max(16px, env(safe-area-inset-left, 16px));
+    bottom: max(16px, env(safe-area-inset-bottom, 16px));
+    width: 44px;
+    height: 44px;
   }
   #chat-input-area {
     padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
@@ -1474,8 +1504,10 @@ body {
 
 /* ── Mobile Hamburger Button ── */
 .hamburger-btn {
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1876,8 +1908,13 @@ body {
 .hero-name {
   font-family: var(--font-display);
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.04em;
   font-style: normal;
+}
+@media (min-width: 768px) {
+  .hero-name {
+    letter-spacing: 0.12em;
+  }
 }
 
 .brain-zoom {
