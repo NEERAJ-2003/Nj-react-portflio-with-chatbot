@@ -8,7 +8,6 @@ export default function DinoGame() {
   const gameOverOverlayRef = useRef(null);
   const finalScoreRef = useRef(null);
   const newHighScoreBadgeRef = useRef(null);
-  const overlayRestartBtnRef = useRef(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -300,7 +299,7 @@ export default function DinoGame() {
     }
 
     restartBtnRef.current?.addEventListener("click", onRestart);
-    overlayRestartBtnRef.current?.addEventListener("click", onRestart);
+    gameOverOverlayRef.current?.addEventListener("click", onRestart);
 
     function loop() {
       ctx.clearRect(0, 0, canvas.cssWidth, canvas.cssHeight);
@@ -322,7 +321,7 @@ export default function DinoGame() {
       canvas.removeEventListener("click", jump);
       canvas.removeEventListener("touchstart", onTouch);
       restartBtnRef.current?.removeEventListener("click", onRestart);
-      overlayRestartBtnRef.current?.removeEventListener("click", onRestart);
+      gameOverOverlayRef.current?.removeEventListener("click", onRestart);
     };
   }, []);
 
@@ -355,7 +354,8 @@ export default function DinoGame() {
           {/* Polished Arcade Game Over Overlay */}
           <div
             ref={gameOverOverlayRef}
-            className="hidden absolute inset-0 z-10 flex-col items-center justify-center bg-surface-container-lowest/85 backdrop-blur-md p-4 sm:p-6 text-center select-none"
+            className="hidden absolute inset-0 z-10 flex-col items-center justify-center bg-surface-container-lowest/85 backdrop-blur-md p-4 sm:p-6 text-center select-none cursor-pointer"
+            title="Click to restart"
           >
             <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-error/15 border border-error/30 text-error text-[11px] sm:text-xs font-mono font-bold tracking-widest uppercase mb-2 shadow-[0_0_15px_rgba(255,113,108,0.2)]">
               <span className="relative flex h-2 w-2">
@@ -363,7 +363,6 @@ export default function DinoGame() {
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-error"></span>
               </span>
               <span>Collision Detected</span>
-              <span className="text-sm">💀</span>
             </div>
 
             <h4 className="text-2xl sm:text-3xl md:text-4xl font-black font-headline tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-rose-400 to-amber-300 drop-shadow-[0_2px_12px_rgba(239,68,68,0.45)] mb-1">
@@ -381,18 +380,6 @@ export default function DinoGame() {
                 <span>🏆 New Record!</span>
               </span>
             </div>
-
-            <button
-              ref={overlayRestartBtnRef}
-              className="group mt-1 px-5 sm:px-6 py-2 sm:py-2.5 rounded-xl bg-gradient-to-r from-primary via-primary-dim to-tertiary-dim text-on-primary-container font-headline font-bold text-xs sm:text-sm shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-[1.03] active:scale-[0.98] transition-all flex items-center gap-2 cursor-pointer"
-            >
-              <span className="material-symbols-outlined text-sm sm:text-base group-hover:rotate-180 transition-transform duration-500">replay</span>
-              <span>Play Again</span>
-            </button>
-
-            <p className="text-[11px] text-outline font-label mt-2.5 hidden sm:block">
-              Press <kbd className="px-1.5 py-0.5 rounded bg-surface-container border border-outline-variant/30 text-on-surface font-mono text-[10px]">Space</kbd> or <kbd className="px-1.5 py-0.5 rounded bg-surface-container border border-outline-variant/30 text-on-surface font-mono text-[10px]">Enter</kbd> to restart
-            </p>
           </div>
         </div>
 
