@@ -456,7 +456,9 @@ function TouchFanCard({ project, index, activeIndex, onTap, onSelectProject, onO
       style={{
         height: cardHeight,
         transform: "translate3d(0, 0, 0)",
-        transition: "height 0.55s cubic-bezier(0.16, 1, 0.3, 1)",
+        willChange: "height, box-shadow, border-color",
+        transition:
+          "height 0.85s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.85s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.5s ease",
         overflow: "hidden",
         position: "relative",
         borderRadius: "1.25rem",
@@ -465,17 +467,33 @@ function TouchFanCard({ project, index, activeIndex, onTap, onSelectProject, onO
         contain: "paint",
       }}
       onClick={handleToggle}
-      className={`border rounded-2xl overflow-hidden transition-colors duration-300 relative ${isActive ? "border-primary/50 shadow-lg shadow-black/50" : "border-white/10"
-        }`}
+      className={`border rounded-2xl overflow-hidden relative ${
+        isActive
+          ? "border-primary/50 shadow-2xl shadow-primary/15"
+          : "border-white/10 shadow-md shadow-black/40"
+      }`}
     >
-      {/* Background visual with mobile opacity dampener for high-contrast images */}
+      {/* Luminous Top Accent Glow on Open */}
+      <div
+        className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary/70 to-transparent transition-opacity duration-700 pointer-events-none z-20"
+        style={{ opacity: isActive ? 1 : 0 }}
+      />
+
+      {/* Background visual with smooth zoom and mobile opacity dampener for high-contrast images */}
       <div className={`absolute inset-0 overflow-hidden pointer-events-none ${project.id === "sentinel" ? "opacity-25" : ""}`}>
-        <ProjectBackdrop project={project} isExpanded={isActive} />
+        <div
+          className="w-full h-full transition-transform duration-1000 ease-out"
+          style={{
+            transform: isActive ? "scale(1.04)" : "scale(1.0)",
+          }}
+        >
+          <ProjectBackdrop project={project} isExpanded={isActive} />
+        </div>
       </div>
 
       {/* Dark gradient for text legibility - extra deep for Sentinel to prevent text bleed */}
       <div
-        className="absolute inset-0 transition-opacity duration-300 pointer-events-none"
+        className="absolute inset-0 transition-opacity duration-700 pointer-events-none"
         style={{
           background: project.id === "sentinel"
             ? (isActive
@@ -487,13 +505,19 @@ function TouchFanCard({ project, index, activeIndex, onTap, onSelectProject, onO
         }}
       />
 
-      {/* Collapsed Bar (Top header visible when collapsed or tapped) */}
+      {/* Collapsed Bar (Top header visible when collapsed, smoothly dissolves and lifts on open) */}
       <div
-        className="absolute inset-0 p-4 flex items-center justify-between z-10 transition-opacity duration-300 pointer-events-none"
-        style={{ opacity: isActive ? 0 : 1 }}
+        className="absolute inset-0 p-4 flex items-center justify-between z-10 pointer-events-none"
+        style={{
+          opacity: isActive ? 0 : 1,
+          transform: isActive ? "translate3d(0, -6px, 0)" : "translate3d(0, 0, 0)",
+          transition: isActive
+            ? "opacity 0.35s ease-out, transform 0.45s ease-out"
+            : "opacity 0.5s ease-out 0.25s, transform 0.5s ease-out 0.25s",
+        }}
       >
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center text-primary shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center text-primary shrink-0 transition-transform duration-500">
             <span className="material-symbols-outlined text-xl">{project.icon || "code"}</span>
           </div>
           <div>
@@ -503,19 +527,25 @@ function TouchFanCard({ project, index, activeIndex, onTap, onSelectProject, onO
             <p className="text-white font-bold text-sm font-headline leading-tight">{project.title}</p>
           </div>
         </div>
-        <span className="material-symbols-outlined text-white/50 text-xl transition-transform duration-300">
+        <span
+          className="material-symbols-outlined text-white/50 text-xl transition-transform duration-600 ease-out"
+          style={{
+            transform: isActive ? "rotate(180deg)" : "rotate(0deg)",
+          }}
+        >
           expand_more
         </span>
       </div>
 
-      {/* Expanded Content with float-up reveal */}
+      {/* Expanded Content with buttery smooth float-up reveal */}
       <div
         className="absolute inset-0 p-5 flex flex-col justify-end z-10"
         style={{
           opacity: isActive ? 1 : 0,
-          transform: isActive ? "translate3d(0, 0, 0)" : "translate3d(0, 16px, 0)",
-          transition:
-            "opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.15s, transform 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.15s",
+          transform: isActive ? "translate3d(0, 0, 0)" : "translate3d(0, 18px, 0)",
+          transition: isActive
+            ? "opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.22s, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.22s"
+            : "opacity 0.25s ease-out, transform 0.3s ease-out",
           pointerEvents: isActive ? "auto" : "none",
         }}
       >
