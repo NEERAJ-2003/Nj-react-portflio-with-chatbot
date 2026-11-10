@@ -2175,6 +2175,40 @@ body {
   to   { opacity: 1; transform: scale(1)    translateY(0);    }
 }
 
+/* ─── Case Study Modal Smooth Natural Scrolling (Same As Mobile Experience) ─── */
+.case-study-scroll {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
+}
+
+@media (min-width: 1024px) {
+  .case-study-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(105, 156, 255, 0.4) transparent;
+  }
+
+  .case-study-scroll::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .case-study-scroll::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 8px 0;
+  }
+
+  .case-study-scroll::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgba(105, 156, 255, 0.45) 0%, rgba(156, 72, 234, 0.45) 100%);
+    border-radius: 9999px;
+    transition: background 0.25s ease;
+  }
+
+  .case-study-scroll::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, rgba(105, 156, 255, 0.75) 0%, rgba(156, 72, 234, 0.75) 100%);
+  }
+}
+
 
 
 /* ══════════════════════════════════════════════════════════════════

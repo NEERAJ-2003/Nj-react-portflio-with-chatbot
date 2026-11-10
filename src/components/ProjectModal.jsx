@@ -1,6 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export default function ProjectModal({ project, onClose }) {
+  const scrollRef = useRef(null);
+
   useEffect(() => {
     function onKey(e) {
       if (e.key === "Escape") onClose();
@@ -16,6 +18,13 @@ export default function ProjectModal({ project, onClose }) {
       window.removeEventListener("keydown", onKey);
     };
   }, [project, onClose]);
+
+  // Reset scroll to top on project open
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = 0;
+    }
+  }, [project]);
 
   if (!project) return null;
 
@@ -48,7 +57,10 @@ export default function ProjectModal({ project, onClose }) {
         </div>
 
         {/* Scrollable Content */}
-        <div className="p-4 sm:p-6 md:p-8 overflow-y-auto space-y-6 max-h-[80dvh] md:max-h-[80vh]">
+        <div
+          ref={scrollRef}
+          className="case-study-scroll p-4 sm:p-6 md:p-8 overflow-y-auto space-y-6 max-h-[80dvh] md:max-h-[80vh]"
+        >
           {project.image && (
             <div className="relative rounded-2xl overflow-hidden h-52 w-full border border-primary/20">
               <img src={project.image} alt={project.title} className="w-full h-full object-cover" />

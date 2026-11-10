@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 export const ARCH_NODES = [
   {
@@ -73,6 +73,7 @@ export const ARCH_NODES = [
 
 export default function ArchitectureModal({ isOpen, onClose }) {
   const [activeBlock, setActiveBlock] = useState(null);
+  const scrollRef = useRef(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -95,6 +96,13 @@ export default function ArchitectureModal({ isOpen, onClose }) {
       window.removeEventListener("keydown", onKey);
     };
   }, [isOpen, onClose]);
+
+  // Reset scroll to top on modal open
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = 0;
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -140,7 +148,10 @@ export default function ArchitectureModal({ isOpen, onClose }) {
         </div>
 
         {/* Scrollable Content */}
-        <div className="p-4 sm:p-6 md:p-8 overflow-y-auto space-y-6 max-h-[80dvh] md:max-h-[80vh]">
+        <div
+          ref={scrollRef}
+          className="case-study-scroll p-4 sm:p-6 md:p-8 overflow-y-auto space-y-6 max-h-[80dvh] md:max-h-[80vh]"
+        >
           <div>
             <h4 className="text-sm font-label uppercase tracking-widest text-primary font-bold mb-2 flex items-center gap-2">
               <span className="material-symbols-outlined text-base">hub</span>
