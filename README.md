@@ -4,7 +4,7 @@
 
 ---
 
-## 🚀 Key Highlights & Systems
+## Key Highlights & Systems
 
 - **Featured Engineering Projects**:
   - **Sentinel**: Cryptographic trust and governance middleware for autonomous AI agents on IBM Bob (sub-10ms overhead, Ed25519 signing).
@@ -22,7 +22,7 @@
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Frontend**: React 19, Vite, Tailwind CSS v4, HTML5 Canvas
 - **Architecture & APIs**: REST Architecture, FastAPI & Django patterns, JWT Authentication
@@ -31,7 +31,7 @@
 
 ---
 
-## 💻 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Node.js (v18 or newer)
@@ -62,7 +62,7 @@
 
 ---
 
-## 📬 Contact & Connect
+## Contact & Connect
 
 - **Developer**: Neeraj K R
 - **Email**: [devbyneeraj@gmail.com](mailto:devbyneeraj@gmail.com)
