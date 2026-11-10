@@ -1,41 +1,70 @@
-# Portfolio (React + Vite)
+# Neeraj K R — Developer Portfolio
 
-## Setup
-```bash
-npm install
-npm run dev       # local dev server
-npm run build      # production build -> dist/
-```
+> Modern, interactive developer portfolio showcasing backend engineering systems, machine learning pipelines, and interactive developer sandboxes.
 
-## Assets you need to add to `public/`
-The install icons are included. Drop your existing files into `public/` with
-these exact names if you want to replace the corresponding assets:
+---
 
-- `favicon.png`
-- `icon-192.png` and `icon-512.png` (PWA install icons)
-- `project_img.png` (Brain Tumor Detection project image)
-- `Neeraj_KR_Resume.pdf`
+## 🚀 Key Highlights & Systems
 
-## What's included
-- `src/components/` — one component per section (Navbar, Hero, About,
-  Experience, Skills, Projects, Contact, Footer)
-- `src/components/DinoGame.jsx` — the Chrome-dino-style easter egg, canvas
-  logic preserved as-is inside a `useEffect`
-- `src/components/Chatbot.jsx` + `src/chatbot/chatbotEngine.js` — the Freya
-  chatbot widget, with all keyword-matching logic (skills engine, contact
-  engine, knowledge base, smalltalk) ported over unchanged
-- `src/index.css` — Tailwind v4 theme with your custom color tokens, fonts,
-  glassmorphism, mesh-gradient, and chat-widget styles
+- **Featured Engineering Projects**:
+  - **Sentinel**: Cryptographic trust and governance middleware for autonomous AI agents on IBM Bob (sub-10ms overhead, Ed25519 signing).
+  - **Brain Tumor Detection System**: Clinical-grade computer vision pipeline using Deep CNNs and Genetic Algorithm threshold optimization (96.4% accuracy).
+  - **Traceo**: End-to-end activity and productivity tracking ecosystem with a native Python Win32 daemon, Chrome Manifest V3 extension, and FastAPI backend.
+  - **Check Balance Web App**: Client-side financial ledger engine with optimistic UI updates and zero dependencies.
+- **Live REST API Console**:
+  - Interactive FastAPI developer sandbox to inspect live endpoints, real-time response payloads, status codes, and latency benchmarks.
+- **Freya AI Assistant**:
+  - Client-side portfolio chatbot equipped with speech synthesis, voice recognition input, and full domain knowledge context.
+- **Interactive Dino Arcade**:
+  - High-performance, canvas-based arcade game with responsive scaling and local high-score tracking.
+- **Design System & Themes**:
+  - Glassmorphic dark UI built with Tailwind CSS v4 featuring dynamic accent color customization (Cobalt, Emerald, Violet, Amber).
 
-## Notes on the port
-- Tailwind v4 is used (`@tailwindcss/vite` plugin + `@theme` in `index.css`)
-  instead of the old CDN `tailwind.config` script, since that only works in
-  plain HTML.
-- The magnetic-letter hover effect on "NEERAJ K R" was referencing an
-  undefined `allChars`/`MAG`/`STR` in your original file (a leftover editing
-  bug that silently broke it). I implemented it properly in `Hero.jsx` using
-  a ref + `querySelectorAll` on `.name-char` / `.name-char-accent`.
-- `localStorage` for the dino high score, the canvas game loop, magnetic
-  hover math, and the typing effect are all functionally identical to your
-  original code — just moved into `useEffect` hooks so they clean up
-  properly on unmount.
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend**: React 19, Vite, Tailwind CSS v4, HTML5 Canvas
+- **Architecture & APIs**: REST Architecture, FastAPI & Django patterns, JWT Authentication
+- **Languages**: Python, JavaScript (ESNext), SQL
+- **Tooling & Performance**: Web Speech API, Service Workers, Responsive Clamp Typography
+
+---
+
+## 💻 Getting Started
+
+### Prerequisites
+- Node.js (v18 or newer)
+- npm or yarn
+
+### Installation & Setup
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/NEERAJ-2003/portfolio-with-chatbot.git
+   cd portfolio-with-chatbot
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Start the local development server:**
+   ```bash
+   npm run dev
+   ```
+
+4. **Build for production:**
+   ```bash
+   npm run build
+   ```
+
+---
+
+## 📬 Contact & Connect
+
+- **Developer**: Neeraj K R
+- **Email**: [devbyneeraj@gmail.com](mailto:devbyneeraj@gmail.com)
+- **GitHub**: [@NEERAJ-2003](https://github.com/NEERAJ-2003)
+- **Role**: Software Engineer · Python & Backend Developer
