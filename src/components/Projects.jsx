@@ -223,24 +223,32 @@ function FanCard({
   onOpenArch,
   totalCount,
 }) {
+  const anyExpanded = hoveredIndex !== null || activeIndex !== null;
   const isHovered = hoveredIndex === index;
   const isSelected = activeIndex === index;
   const isExpanded = hoveredIndex !== null ? isHovered : isSelected;
   const active = totalCount === 1 ? true : isExpanded;
 
-  // Calibrated flex proportions
-  const flexVal = totalCount === 1 ? "1 1 100%" : active ? "3.5 1 0%" : "0.75 1 0%";
+  // Calibrated flex proportions:
+  // When no card is expanded (default state), all cards share equal width (1 1 0%)
+  // When any card is expanded, the active card takes 3.5 flex while the others take 0.75 flex
+  const flexVal = totalCount === 1
+    ? "1 1 100%"
+    : !anyExpanded
+      ? "1 1 0%"
+      : active
+        ? "3.5 1 0%"
+        : "0.75 1 0%";
 
   return (
     <div
       style={{
         flex: flexVal,
-        minWidth: active ? "330px" : "110px",
+        minWidth: !anyExpanded ? "160px" : active ? "330px" : "110px",
         transform: active ? "translate3d(0, -4px, 0)" : "translate3d(0, 0, 0)",
         willChange: "flex, transform",
-        /* Slower, ultra-luxurious glide curve: 1.2s duration */
         transition:
-          "flex 3s cubic-bezier(0.16, 1, 0.3, 1), transform 3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 1.5s ease, border-color 0.6s ease",
+          "flex 4s cubic-bezier(0.16, 1, 0.3, 1), transform 4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s ease, border-color 0.4s ease",
         contain: "paint",
       }}
       onMouseEnter={() => onHover(index)}
@@ -499,11 +507,10 @@ function TouchFanCard({ project, index, activeIndex, onTap, onSelectProject, onO
         contain: "paint",
       }}
       onClick={handleToggle}
-      className={`border rounded-2xl overflow-hidden relative ${
-        isActive
-          ? "border-primary/50 shadow-2xl shadow-primary/15"
-          : "border-white/10 shadow-md shadow-black/40"
-      }`}
+      className={`border rounded-2xl overflow-hidden relative ${isActive
+        ? "border-primary/50 shadow-2xl shadow-primary/15"
+        : "border-white/10 shadow-md shadow-black/40"
+        }`}
     >
       {/* Luminous Top Accent Glow on Open */}
       <div
@@ -529,11 +536,11 @@ function TouchFanCard({ project, index, activeIndex, onTap, onSelectProject, onO
         style={{
           background: project.id === "sentinel"
             ? (isActive
-                ? "linear-gradient(to top, rgba(12,14,18,0.98) 50%, rgba(12,14,18,0.92) 80%, rgba(12,14,18,0.80) 100%)"
-                : "linear-gradient(to top, rgba(12,14,18,0.96) 40%, rgba(12,14,18,0.88) 100%)")
+              ? "linear-gradient(to top, rgba(12,14,18,0.98) 50%, rgba(12,14,18,0.92) 80%, rgba(12,14,18,0.80) 100%)"
+              : "linear-gradient(to top, rgba(12,14,18,0.96) 40%, rgba(12,14,18,0.88) 100%)")
             : (isActive
-                ? "linear-gradient(to top, rgba(12,14,18,0.98) 45%, rgba(12,14,18,0.7) 75%, rgba(12,14,18,0.3) 100%)"
-                : "linear-gradient(to top, rgba(12,14,18,0.88) 50%, rgba(12,14,18,0.65) 100%)"),
+              ? "linear-gradient(to top, rgba(12,14,18,0.98) 45%, rgba(12,14,18,0.7) 75%, rgba(12,14,18,0.3) 100%)"
+              : "linear-gradient(to top, rgba(12,14,18,0.88) 50%, rgba(12,14,18,0.65) 100%)"),
         }}
       />
 
@@ -672,7 +679,7 @@ function TouchFanCard({ project, index, activeIndex, onTap, onSelectProject, onO
 /* ─── Main Projects Section ─────────────────────────────────────────── */
 export default function Projects({ onSelectProject }) {
   const [activeCategory, setActiveCategory] = useState("All");
-  const [desktopActiveIndex, setDesktopActiveIndex] = useState(1); // Default to Brain Tumor on Desktop
+  const [desktopActiveIndex, setDesktopActiveIndex] = useState(null); // Default: all cards closed with equal size
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [mobileActiveIndex, setMobileActiveIndex] = useState(null); // On mobile, all cards start collapsed in small size
   const [archModalOpen, setArchModalOpen] = useState(false);
@@ -711,17 +718,16 @@ export default function Projects({ onSelectProject }) {
   const handleCategoryChange = (cat) => {
     if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
     setActiveCategory(cat);
-    setDesktopActiveIndex(0);
+    setDesktopActiveIndex(null);
     setHoveredIndex(null);
     setMobileActiveIndex(null); // Keep collapsed on mobile filter change
   };
 
-  /* Smooth hover opening handler: tracks active card so it stays opened without snapping back */
+  /* Smooth hover opening handler: previews card on hover */
   const handleHover = (idx) => {
     if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
     hoverTimerRef.current = setTimeout(() => {
       setHoveredIndex(idx);
-      setDesktopActiveIndex(idx);
     }, 30);
   };
 
@@ -730,9 +736,10 @@ export default function Projects({ onSelectProject }) {
     setHoveredIndex(null);
   };
 
+  /* Clicking a card locks it open, or toggles it closed back to equal size */
   const handleSelectDesktop = (idx) => {
     if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
-    setDesktopActiveIndex(idx);
+    setDesktopActiveIndex((prev) => (prev === idx ? null : idx));
     setHoveredIndex(null);
   };
 
