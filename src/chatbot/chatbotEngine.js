@@ -265,6 +265,14 @@ const KB = [
   },
   {
     keywords: [
+      "traceo", "traceo project", "activity tracker", "productivity tracker",
+      "desktop agent", "chrome extension", "telemetry", "tell me about traceo",
+      "explain traceo", "how did you build traceo", "what is traceo"
+    ],
+    answer: "Traceo is an end-to-end activity and productivity tracking ecosystem. It integrates a native Python Win32 daemon (monitoring foreground window intervals with offline disk queuing), a Chrome Manifest V3 extension (tracking web dwell time & YouTube learning), and a FastAPI + PostgreSQL backend feeding a real-time React analytics dashboard with strict user privacy controls. GitHub: github.com/poojakp2003/Traceo"
+  },
+  {
+    keywords: [
       "check balance", "check balance project", "balance project", "balance app",
       "account balance project", "explain check balance", "tell me about check balance", "check balance live"
     ],
@@ -276,7 +284,7 @@ const KB = [
       "projects has he built", "list projects", "show projects", "tell me about your projects",
       "tell me about his projects", "featured projects", "main projects"
     ],
-    answer: "Neeraj has worked on several projects. Featured projects include the Brain Tumor Detection System (medical imaging with CNNs & Genetic Algorithms, 96.4% accuracy) with an interactive Architecture pipeline modal, and Check Balance (real-time financial auditing app deployed on Vercel)."
+    answer: "Neeraj's featured projects include: 1) Sentinel (Cryptographic Trust & AI Governance for autonomous agents), 2) Brain Tumor Detection System (medical ML pipeline with CNNs and Genetic Algorithms, 96.4% accuracy), 3) Traceo (cross-platform productivity telemetry ecosystem with Python daemon, Chrome extension, FastAPI backend, and React dashboard), and 4) Check Balance (real-time financial auditing web app)."
   },
   {
     keywords: [

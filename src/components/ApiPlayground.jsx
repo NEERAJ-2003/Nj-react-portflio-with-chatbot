@@ -19,6 +19,14 @@ const ALL_PROJECTS = [
     status: "Completed",
   },
   {
+    title: "Traceo",
+    type: "Productivity & Activity Telemetry",
+    badge: "Fullstack System",
+    tech: ["FastAPI", "PostgreSQL", "React", "Python", "Chrome Extension"],
+    accuracy: "Real-time Sync",
+    status: "Completed",
+  },
+  {
     title: "Check Balance Web Application",
     type: "Fullstack Web App",
     badge: "Web App",
@@ -119,7 +127,7 @@ const ENDPOINTS = [
     latency: 32,
     headers: {
       "Content-Type": "application/json",
-      "X-Total-Count": "3",
+      "X-Total-Count": "4",
       "X-Page": "1",
       "X-Per-Page": "2",
     },
@@ -318,7 +326,7 @@ export default function ApiPlayground() {
                         </button>
                       </div>
                       <span className="text-[11px] font-mono text-outline">
-                        limit=2 · 3 items total
+                        limit=2 · 4 items total
                       </span>
                     </div>
                   )}

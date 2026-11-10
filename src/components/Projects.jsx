@@ -69,6 +69,38 @@ export const PROJECTS_DATA = [
     repo: "https://github.com/NEERAJ-2003",
   },
   {
+    id: "traceo",
+    title: "Traceo",
+    subtitle: "Cross-platform activity, browser navigation & productivity telemetry ecosystem",
+    category: "Web Apps",
+    badge: "Fullstack System",
+    icon: "monitoring",
+    image: "/traceo_img.jpg",
+    imagePosition: "center 25%",
+    summary:
+      "An intelligent, end-to-end cross-platform activity and productivity tracking ecosystem. Seamlessly captures active desktop application usage, browser navigation, and YouTube learning sessions into a modern real-time analytics dashboard with strict user privacy controls.",
+    problem:
+      "Modern professionals struggle to understand their true focus and time distribution across applications, browser tabs, and video research without sacrificing data sovereignty or running intrusive, unbuffered tracking utilities.",
+    architecture:
+      "Engineered with a 4-tier modular architecture: a native Python Win32 daemon monitors foreground window intervals with offline disk queuing; a Chrome Manifest V3 extension captures domain dwell and YouTube playback; a FastAPI backend enforces JWT security and privacy filters; and a React 18 dashboard visualizes productivity trends via PostgreSQL.",
+    flowSteps: [
+      { title: "Foreground & Browser Telemetry", detail: "Desktop agent and Chrome extension capture active focus intervals and video playback with offline buffer resilience." },
+      { title: "Privacy Guard & Ingestion", detail: "FastAPI REST API validates JWT credentials and strictly enforces user-configured tracking permissions before storage." },
+      { title: "Analytics & Aggregation Engine", detail: "SQLAlchemy models compute daily, 7-day, and 30-day productivity trends, top applications, and domain distributions." },
+    ],
+    challenges: [
+      "Filtering rapid sub-second Alt-Tab application cycling and background OS processes without CPU overhead.",
+      "Ensuring zero data loss during network disruptions using localized JSON buffer queues and automatic batch flushing upon reconnection.",
+    ],
+    metrics: [
+      { value: "4-in-1", label: "Agent · Ext · API · UI" },
+      { value: "< 1s", label: "Telemetry Sync" },
+      { value: "100%", label: "Privacy Sovereignty" },
+    ],
+    tech: ["FastAPI", "PostgreSQL", "React", "Python", "Chrome Extension", "SQLAlchemy"],
+    repo: "https://github.com/poojakp2003/Traceo",
+  },
+  {
     id: "check-balance",
     title: "Check Balance Web App",
     subtitle: "Real-time interactive financial ledger & balance computation engine",
