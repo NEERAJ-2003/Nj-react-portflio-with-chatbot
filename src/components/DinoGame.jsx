@@ -1101,6 +1101,15 @@ export default function DinoGame() {
                 <span>🏆 New Record!</span>
               </span>
             </div>
+
+            {/* Restart button — inside the overlay, below final score */}
+            <button
+              ref={restartBtnRef}
+              className="hidden mt-5 px-8 py-2.5 rounded-xl bg-gradient-to-r from-primary to-tertiary-dim text-on-primary-container font-bold shadow-lg hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer flex items-center justify-center gap-2 text-sm"
+            >
+              <span className="material-symbols-outlined text-base">replay</span>
+              <span>Restart Game</span>
+            </button>
           </div>
         </div>
 
@@ -1115,13 +1124,6 @@ export default function DinoGame() {
           Press <kbd className="px-1.5 py-0.5 rounded bg-surface-container border border-outline-variant/30 text-on-surface font-mono text-[10px]">Space</kbd> / <kbd className="px-1.5 py-0.5 rounded bg-surface-container border border-outline-variant/30 text-on-surface font-mono text-[10px]">Enter</kbd> or Tap screen to flip gravity
         </p>
 
-        <button
-          ref={restartBtnRef}
-          className="hidden mt-4 w-full py-3 rounded-xl bg-gradient-to-r from-primary to-tertiary-dim text-on-primary-container font-bold shadow-lg hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer flex items-center justify-center gap-2"
-        >
-          <span className="material-symbols-outlined text-base">replay</span>
-          <span>Restart Game</span>
-        </button>
       </div>
     </div>
   );
