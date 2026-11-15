@@ -556,8 +556,13 @@ export default function DinoGame() {
       }
       trail.forEach((t) => (t.alpha -= 0.05));
 
-      // Spawner check: O(1) per frame
-      if (nextSpawnX < canvas.cssWidth + 300 * scale) {
+      // Scroll nextSpawnX in sync with the world so the spawner tracks correctly
+      nextSpawnX -= currentSpeed;
+
+      // Loop-spawn until the lookahead buffer (screen-width + 400px) is filled
+      // This ensures blocks appear continuously in every mode, not just at start
+      const LOOKAHEAD = canvas.cssWidth + 400 * scale;
+      while (nextSpawnX < LOOKAHEAD) {
         spawnChunk();
       }
 
