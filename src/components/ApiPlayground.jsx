@@ -165,10 +165,6 @@ export default function ApiPlayground() {
     if (timerRef.current) clearTimeout(timerRef.current);
     setLoading(true);
     const p = pageOverride ?? projectPage;
-    const path =
-      selectedEndpoint.id === "projects"
-        ? `/api/v1/projects?page=${p}&limit=${PAGE_LIMIT}`
-        : selectedEndpoint.path;
 
     timerRef.current = setTimeout(() => {
       setSimulatedLatency(selectedEndpoint.latency + Math.floor(Math.random() * 10 - 5));
