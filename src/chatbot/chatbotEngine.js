@@ -75,7 +75,7 @@ const SKILL_KNOWN = [
     percent: null,
     aliases: ["dsa", "leetcode", "data structures", "algorithms", "coding practice",
       "problem solving", "competitive programming", "coding challenges"],
-    extra: "130+ problems solved on LeetCode as part of sharpening data structures & algorithms."
+    extra: "150+ problems solved on LeetCode as part of sharpening data structures & algorithms."
   },
 ];
 
@@ -342,7 +342,7 @@ const KB = [
     keywords: ["achievement", "achievements", "stats", "highlight", "accomplishment", "his stats", "quick stats",
       "key numbers", "at a glance", "his achievements", "notable achievements", "accolades",
       "awards", "recognition"],
-    answer: "Quick stats: 140+ LeetCode problems solved, 9+ projects built, 9.15 CGPA in B.Tech."
+    answer: "Quick stats: 150+ LeetCode problems solved, 9+ projects built, 9.15 CGPA in B.Tech."
   },
   {
     keywords: ["resume", "cv", "download resume", "download cv", "can i get his resume",

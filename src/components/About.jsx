@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import Reveal from "./Reveal";
 
 const STATS = [
-  { icon: "code", value: 140, suffix: "+", label: "LeetCode", color: "text-primary" },
+  { icon: "code", value: 150, suffix: "+", label: "LeetCode", color: "text-primary" },
   { icon: "auto_awesome", value: 9, suffix: "+", label: "Projects", color: "text-tertiary" },
   { icon: "school", value: 9.15, suffix: "", label: "CGPA", color: "text-secondary", decimals: 2 },
   { icon: "schedule", value: 24, suffix: "/7", label: "Round the Clock", color: "text-primary-dim" },
