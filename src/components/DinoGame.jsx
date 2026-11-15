@@ -1080,7 +1080,7 @@ export default function DinoGame() {
           {/* Polished Arcade Game Over Overlay */}
           <div
             ref={gameOverOverlayRef}
-            className="hidden absolute inset-0 z-10 flex-col items-center justify-center bg-surface-container-lowest/85 backdrop-blur-md p-4 sm:p-6 text-center select-none cursor-pointer"
+            className="hidden absolute inset-0 z-10 flex-col items-center justify-center bg-black p-4 sm:p-6 text-center select-none cursor-pointer"
             title="Click to restart"
           >
             <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-error/15 border border-error/30 text-error text-[11px] sm:text-xs font-mono font-bold tracking-widest uppercase mb-2 shadow-[0_0_15px_rgba(255,113,108,0.2)]">
