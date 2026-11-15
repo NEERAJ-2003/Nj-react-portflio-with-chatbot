@@ -484,27 +484,31 @@ function FanCard({
 /* ─── Touch Fan Card (Mobile) ────────────────────────────────────────── */
 function TouchFanCard({ project, index, activeIndex, onTap, onSelectProject, onOpenArch }) {
   const isActive = activeIndex === index;
-  const cardHeight = isActive ? 435 : 92;
 
   const handleToggle = () => {
-    // If clicking on already expanded card, collapse it back to default small size (null)
     onTap(isActive ? null : index);
   };
 
   return (
     <div
       style={{
-        height: cardHeight,
-        transform: "translate3d(0, 0, 0)",
-        willChange: "height, box-shadow, border-color",
-        transition:
-          "height 0.85s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.85s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.5s ease",
+        height: isActive ? 435 : 92,
+        /* Force this element onto its own GPU compositing layer.
+           Browsers can then animate height by re-rastering only this layer,
+           which stays smooth at 120fps on ProMotion displays. */
+        transform: "translateZ(0)",
+        willChange: "height",
+        transition: "height 0.72s cubic-bezier(0.16, 1, 0.3, 1)",
         overflow: "hidden",
         position: "relative",
         borderRadius: "1.25rem",
-        cursor: "pointer",
         flexShrink: 0,
-        contain: "paint",
+        /* Isolate paint to this card only — neighbours don't repaint */
+        contain: "layout paint style",
+        /* Kill 300ms tap delay without disabling scroll */
+        touchAction: "manipulation",
+        WebkitTapHighlightColor: "transparent",
+        cursor: "pointer",
       }}
       onClick={handleToggle}
       className={`border rounded-2xl overflow-hidden relative ${isActive
@@ -512,27 +516,33 @@ function TouchFanCard({ project, index, activeIndex, onTap, onSelectProject, onO
         : "border-white/10 shadow-md shadow-black/40"
         }`}
     >
-      {/* Luminous Top Accent Glow on Open */}
+      {/* Luminous accent glow */}
       <div
-        className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary/70 to-transparent transition-opacity duration-700 pointer-events-none z-20"
-        style={{ opacity: isActive ? 1 : 0 }}
+        className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary/70 to-transparent pointer-events-none z-20"
+        style={{
+          opacity: isActive ? 1 : 0,
+          transition: "opacity 0.5s ease",
+        }}
       />
 
-      {/* Background visual with smooth zoom and mobile opacity dampener for high-contrast images */}
+      {/* Background image / visual — zooms subtly on open */}
       <div className={`absolute inset-0 overflow-hidden pointer-events-none ${project.id === "sentinel" ? "opacity-25" : ""}`}>
         <div
-          className="w-full h-full transition-transform duration-1000 ease-out"
           style={{
+            width: "100%",
+            height: "100%",
             transform: isActive ? "scale(1.04)" : "scale(1.0)",
+            transition: "transform 1s ease-out",
+            willChange: "transform",
           }}
         >
           <ProjectBackdrop project={project} isExpanded={isActive} />
         </div>
       </div>
 
-      {/* Dark gradient for text legibility - extra deep for Sentinel to prevent text bleed */}
+      {/* Legibility gradient */}
       <div
-        className="absolute inset-0 transition-opacity duration-700 pointer-events-none"
+        className="absolute inset-0 pointer-events-none transition-opacity duration-700"
         style={{
           background: project.id === "sentinel"
             ? (isActive
@@ -544,19 +554,20 @@ function TouchFanCard({ project, index, activeIndex, onTap, onSelectProject, onO
         }}
       />
 
-      {/* Collapsed Bar (Top header visible when collapsed, smoothly dissolves and lifts on open) */}
+      {/* ── Collapsed header bar — dissolves out when expanding ── */}
       <div
         className="absolute inset-0 p-4 flex items-center justify-between z-10 pointer-events-none"
         style={{
           opacity: isActive ? 0 : 1,
-          transform: isActive ? "translate3d(0, -6px, 0)" : "translate3d(0, 0, 0)",
+          transform: isActive ? "translate3d(0,-6px,0)" : "translate3d(0,0,0)",
           transition: isActive
-            ? "opacity 0.35s ease-out, transform 0.45s ease-out"
-            : "opacity 0.5s ease-out 0.25s, transform 0.5s ease-out 0.25s",
+            ? "opacity 0.3s ease-out, transform 0.4s ease-out"
+            : "opacity 0.45s ease-out 0.22s, transform 0.45s ease-out 0.22s",
+          willChange: "opacity, transform",
         }}
       >
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center text-primary shrink-0 transition-transform duration-500">
+          <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center text-primary shrink-0">
             <span className="material-symbols-outlined text-xl">{project.icon || "code"}</span>
           </div>
           <div>
@@ -567,24 +578,27 @@ function TouchFanCard({ project, index, activeIndex, onTap, onSelectProject, onO
           </div>
         </div>
         <span
-          className="material-symbols-outlined text-white/50 text-xl transition-transform duration-600 ease-out"
+          className="material-symbols-outlined text-white/50 text-xl"
           style={{
             transform: isActive ? "rotate(180deg)" : "rotate(0deg)",
+            transition: "transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+            willChange: "transform",
           }}
         >
           expand_more
         </span>
       </div>
 
-      {/* Expanded Content with buttery smooth float-up reveal */}
+      {/* ── Expanded content — floats up after card opens ── */}
       <div
         className="absolute inset-0 p-5 flex flex-col justify-end z-10"
         style={{
           opacity: isActive ? 1 : 0,
-          transform: isActive ? "translate3d(0, 0, 0)" : "translate3d(0, 18px, 0)",
+          transform: isActive ? "translate3d(0,0,0)" : "translate3d(0,16px,0)",
           transition: isActive
-            ? "opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.22s, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.22s"
-            : "opacity 0.25s ease-out, transform 0.3s ease-out",
+            ? "opacity 0.55s cubic-bezier(0.16,1,0.3,1) 0.18s, transform 0.6s cubic-bezier(0.16,1,0.3,1) 0.18s"
+            : "opacity 0.2s ease-out, transform 0.25s ease-out",
+          willChange: "opacity, transform",
           pointerEvents: isActive ? "auto" : "none",
         }}
       >
@@ -598,7 +612,6 @@ function TouchFanCard({ project, index, activeIndex, onTap, onSelectProject, onO
         <h3 className="text-lg font-bold font-headline text-white mb-1 leading-snug">{project.title}</h3>
         <p className="text-xs text-white/75 font-label mb-2.5 line-clamp-2 leading-relaxed">{project.summary}</p>
 
-        {/* Metrics */}
         {project.metrics && (
           <div className="flex flex-wrap gap-1.5 mb-2.5">
             {project.metrics.map((m, mIdx) => (
@@ -610,7 +623,6 @@ function TouchFanCard({ project, index, activeIndex, onTap, onSelectProject, onO
           </div>
         )}
 
-        {/* Tech tags */}
         <div className="flex flex-wrap gap-1 mb-3">
           {project.tech.slice(0, 4).map((t) => (
             <span key={t} className="px-2 py-0.5 bg-white/10 rounded-md text-white/80 text-[10px] font-label border border-white/10">
@@ -619,15 +631,12 @@ function TouchFanCard({ project, index, activeIndex, onTap, onSelectProject, onO
           ))}
         </div>
 
-        {/* Buttons */}
         <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-white/10">
           {project.id === "brain-tumor" && (
             <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onOpenArch();
-              }}
-              className="px-3.5 py-2 rounded-xl bg-primary text-on-primary text-[11px] font-label font-bold flex items-center gap-1.5 shadow-md shadow-primary/25 min-h-[44px]"
+              onClick={(e) => { e.stopPropagation(); onOpenArch(); }}
+              style={{ touchAction: "manipulation" }}
+              className="px-3.5 py-2 rounded-xl bg-primary text-on-primary text-[11px] font-label font-bold flex items-center gap-1.5 shadow-md shadow-primary/25 min-h-[44px] active:scale-95 transition-transform"
             >
               <span className="material-symbols-outlined text-sm">schema</span>
               <span>Architecture</span>
@@ -636,11 +645,10 @@ function TouchFanCard({ project, index, activeIndex, onTap, onSelectProject, onO
 
           {project.liveUrl && (
             <a
-              href={project.liveUrl}
-              target="_blank"
-              rel="noreferrer"
+              href={project.liveUrl} target="_blank" rel="noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="px-3.5 py-2 rounded-xl bg-primary text-on-primary text-[11px] font-label font-bold flex items-center gap-1.5 shadow-md shadow-primary/25 min-h-[44px]"
+              style={{ touchAction: "manipulation" }}
+              className="px-3.5 py-2 rounded-xl bg-primary text-on-primary text-[11px] font-label font-bold flex items-center gap-1.5 shadow-md shadow-primary/25 min-h-[44px] active:scale-95 transition-transform"
             >
               <span>Live App</span>
               <span className="material-symbols-outlined text-sm">open_in_new</span>
@@ -649,11 +657,10 @@ function TouchFanCard({ project, index, activeIndex, onTap, onSelectProject, onO
 
           {project.repo && (
             <a
-              href={project.repo}
-              target="_blank"
-              rel="noreferrer"
+              href={project.repo} target="_blank" rel="noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="px-3.5 py-2 rounded-xl bg-white/10 text-white text-[11px] font-label font-bold flex items-center gap-1.5 border border-white/20 min-h-[44px]"
+              style={{ touchAction: "manipulation" }}
+              className="px-3.5 py-2 rounded-xl bg-white/10 text-white text-[11px] font-label font-bold flex items-center gap-1.5 border border-white/20 min-h-[44px] active:scale-95 transition-transform"
             >
               <span className="material-symbols-outlined text-sm">code</span>
               <span>GitHub</span>
@@ -661,11 +668,9 @@ function TouchFanCard({ project, index, activeIndex, onTap, onSelectProject, onO
           )}
 
           <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onSelectProject(project);
-            }}
-            className="px-3 py-2 rounded-xl bg-white/10 text-white text-[11px] font-label flex items-center gap-1.5 border border-white/20 min-h-[44px]"
+            onClick={(e) => { e.stopPropagation(); onSelectProject(project); }}
+            style={{ touchAction: "manipulation" }}
+            className="px-3 py-2 rounded-xl bg-white/10 text-white text-[11px] font-label flex items-center gap-1.5 border border-white/20 min-h-[44px] active:scale-95 transition-transform"
           >
             <span className="material-symbols-outlined text-sm">visibility</span>
             <span>Case Study</span>

@@ -2142,14 +2142,27 @@ body {
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: rgba(4, 6, 10, 0.82);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(4, 6, 10, 0.80);
+  /* Light blur on desktop; mobile gets a cheaper version via media query below */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.5rem;
-  animation: modalFadeIn 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  /* Tight padding on mobile so modal fills more screen */
+  padding: clamp(0.5rem, 2vw, 1.5rem);
+  /* GPU-composited fade only — no layout changes */
+  animation: modalFadeIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: opacity;
+  touch-action: manipulation;
+}
+
+/* Reduce backdrop cost on mobile (blur is expensive on weaker GPUs) */
+@media (max-width: 767px) {
+  .portfolio-modal-overlay {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
 }
 
 @keyframes modalFadeIn {
@@ -2158,21 +2171,25 @@ body {
 }
 
 .portfolio-modal-content {
-  background: rgba(17, 20, 27, 0.95);
+  background: rgba(17, 20, 27, 0.97);
   border: 1px solid rgba(105, 156, 255, 0.22);
-  box-shadow: 0 32px 100px rgba(0, 0, 0, 0.75), 0 0 40px var(--theme-accent-glow);
-  border-radius: 24px;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.7), 0 0 32px var(--theme-accent-glow);
+  border-radius: 20px;
   width: min(900px, 100%);
-  max-height: 90vh;
+  /* Use dvh on mobile so it respects browser chrome (address bar) */
+  max-height: min(90vh, 90dvh);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  animation: modalScaleUp 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  /* Only transform + opacity — both compositor-only, never triggers layout */
+  animation: modalSlideUp 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+  touch-action: pan-y;
 }
 
-@keyframes modalScaleUp {
-  from { opacity: 0; transform: scale(0.92) translateY(24px); }
-  to   { opacity: 1; transform: scale(1)    translateY(0);    }
+@keyframes modalSlideUp {
+  from { opacity: 0; transform: translate3d(0, 28px, 0) scale(0.97); }
+  to   { opacity: 1; transform: translate3d(0, 0,    0) scale(1);    }
 }
 
 /* ─── Case Study Modal Smooth Natural Scrolling (Same As Mobile Experience) ─── */

@@ -29,8 +29,19 @@ export default function ProjectModal({ project, onClose }) {
   if (!project) return null;
 
   return (
-    <div className="portfolio-modal-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label={project.title}>
-      <div className="portfolio-modal-content max-w-3xl" onClick={(e) => e.stopPropagation()}>
+    <div
+      className="portfolio-modal-overlay"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={project.title}
+      style={{ touchAction: "manipulation" }}
+    >
+      <div
+        className="portfolio-modal-content max-w-3xl"
+        onClick={(e) => e.stopPropagation()}
+        style={{ touchAction: "pan-y" }}
+      >
         {/* Header */}
         <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-primary/15 bg-surface-container-low min-w-0">
           <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1 mr-2">
