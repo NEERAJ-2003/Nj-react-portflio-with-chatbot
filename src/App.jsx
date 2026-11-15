@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import SplashScreen from "./components/SplashScreen";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import TechMarquee from "./components/TechMarquee";
@@ -17,10 +18,15 @@ import ResumeModal from "./components/ResumeModal";
 import ProjectModal from "./components/ProjectModal";
 
 export default function App() {
+  const [splashDone, setSplashDone] = useState(false);
   const [progress, setProgress] = useState(0);
   const [theme, setTheme] = useState(() => localStorage.getItem("portfolio-theme") || "cobalt");
   const [resumeOpen, setResumeOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
+
+  function handleSplashDone() {
+    setSplashDone(true);
+  }
 
   function applyTheme(newTheme) {
     setTheme(newTheme);
@@ -92,6 +98,11 @@ export default function App() {
 
   return (
     <>
+      {!splashDone && <SplashScreen onDone={handleSplashDone} />}
+      <div className={[
+        "transition-opacity duration-500",
+        splashDone ? "opacity-100" : "opacity-0 pointer-events-none",
+      ].join(" ")}>
       <div className="scroll-progress" style={{ width: `${progress}%` }} />
       <Navbar
         currentTheme={theme}
@@ -118,6 +129,7 @@ export default function App() {
       {/* Modals */}
       <ResumeModal isOpen={resumeOpen} onClose={() => setResumeOpen(false)} />
       <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
+      </div>
     </>
   );
 }
