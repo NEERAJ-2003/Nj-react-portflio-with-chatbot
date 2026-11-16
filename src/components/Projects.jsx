@@ -154,11 +154,11 @@ function ProjectBackdrop({ project, isExpanded }) {
           }}
         />
 
-        {/* Lightweight Fintech Preview with smooth floating rotation on expand */}
+        {/* Fintech Preview widget — right-aligned, stays inside card at any width */}
         <div
-          className="absolute right-12 top-1/2 -translate-y-1/2 w-72 p-4 rounded-2xl bg-[#111726]/90 border border-white/10 shadow-xl pointer-events-none transition-all duration-1000 ease-out"
+          className="absolute right-4 top-1/2 w-64 max-w-[55%] p-4 rounded-2xl bg-[#111726]/90 border border-white/10 shadow-xl pointer-events-none transition-all duration-1000 ease-out"
           style={{
-            opacity: isExpanded ? 0.45 : 0.15,
+            opacity: isExpanded ? 0.55 : 0.18,
             transform: isExpanded
               ? "translateY(-50%) scale(1) rotate(-2deg)"
               : "translateY(-48%) scale(0.94) rotate(0deg)",
@@ -265,11 +265,13 @@ function FanCard({
       />
 
       {/*
-        Fixed-width 1100px canvas with smooth scale on open
+        Full-width backdrop canvas clipped by the card's overflow:hidden.
+        Images use object-cover so they fill fine. The check-balance fintech
+        widget is relatively positioned so it stays inside the visible area.
       */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div
-          className="w-[1100px] h-full absolute left-0 top-0 transition-transform duration-1000 ease-out"
+          className="w-full h-full absolute inset-0 transition-transform duration-1000 ease-out"
           style={{
             transform: active ? "scale(1.025)" : "scale(1.0)",
           }}
