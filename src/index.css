@@ -85,7 +85,6 @@ body {
   max-width: 100%;
   overflow-x: hidden;
   position: relative;
-  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 @keyframes pulse-slow {
@@ -2030,6 +2029,55 @@ body {
 }
 
 
+
+/* ══════════════════════════════════════════════════════════════════
+   BUTTER-SMOOTH THEME & MODE COLOR TRANSITIONS (120 FPS CROSSFADE)
+   ══════════════════════════════════════════════════════════════════ */
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  will-change: opacity;
+  animation-duration: 280ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+::view-transition-old(root) {
+  animation-name: theme-fade-out;
+}
+::view-transition-new(root) {
+  animation-name: theme-fade-in;
+}
+
+@keyframes theme-fade-out {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes theme-fade-in {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+html,
+body {
+  transition: background-color 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              color 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.site-nav,
+.mobile-menu-drawer,
+.mobile-menu-content,
+.mobile-nav-item,
+.glass-card,
+.portfolio-modal-content,
+#chat-window,
+#chat-body,
+#chat-input-area,
+.cmd-palette-box {
+  transition: background-color 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              color 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
 
 /* ══════════════════════════════════════════════════════════════════
    BASE THEME: TRUE MATTE BLACK (#171717 / #28282B) VS MATTE WHITE

@@ -30,9 +30,17 @@ export default function App() {
   }
 
   function applyMode(newMode) {
-    setMode(newMode);
-    localStorage.setItem("portfolio-mode", newMode);
-    document.documentElement.setAttribute("data-mode", newMode);
+    const update = () => {
+      setMode(newMode);
+      localStorage.setItem("portfolio-mode", newMode);
+      document.documentElement.setAttribute("data-mode", newMode);
+    };
+
+    if (document.startViewTransition) {
+      document.startViewTransition(update);
+    } else {
+      update();
+    }
   }
 
   function toggleMode() {
@@ -40,18 +48,26 @@ export default function App() {
   }
 
   function applyTheme(newTheme) {
-    setTheme(newTheme);
-    localStorage.setItem("portfolio-theme", newTheme);
-    document.documentElement.setAttribute("data-theme", newTheme);
+    const update = () => {
+      setTheme(newTheme);
+      localStorage.setItem("portfolio-theme", newTheme);
+      document.documentElement.setAttribute("data-theme", newTheme);
+    };
+
+    if (document.startViewTransition) {
+      document.startViewTransition(update);
+    } else {
+      update();
+    }
   }
 
   useEffect(() => {
-    applyMode(mode);
-  }, [mode]);
+    applyMode(mode, false);
+  }, []);
 
   useEffect(() => {
-    applyTheme(theme);
-  }, [theme]);
+    applyTheme(theme, false);
+  }, []);
 
   // Service worker
   useEffect(() => {

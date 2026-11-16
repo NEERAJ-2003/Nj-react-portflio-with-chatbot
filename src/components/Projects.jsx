@@ -513,9 +513,9 @@ function TouchFanCard({ project, index, activeIndex, onTap, onSelectProject, onO
         cursor: "pointer",
       }}
       onClick={handleToggle}
-      className={`border rounded-2xl overflow-hidden relative ${isActive
+      className={`border rounded-2xl overflow-hidden relative bg-surface-container-low transition-colors duration-300 ${isActive
         ? "border-primary/50 shadow-2xl shadow-primary/15"
-        : "border-white/10 shadow-md shadow-black/40"
+        : "border-outline-variant/30 shadow-md shadow-black/20"
         }`}
     >
       {/* Luminous accent glow */}
