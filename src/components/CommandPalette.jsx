@@ -12,7 +12,7 @@ const ACTIONS = [
   { id: "resume-preview", label: "Preview Resume in Modal", hint: "PDF Viewer", icon: "description", event: "open-resume-modal" },
   { id: "resume-download", label: "Download resume file", hint: "PDF", icon: "download", href: "/Neeraj_KR_Resume.pdf", download: true },
   { id: "mode-toggle", label: "Toggle Dark / Light Mode", hint: "Appearance", icon: "contrast", event: "toggle-theme-mode" },
-  { id: "mode-dark", label: "Mode: Matte Dark (Default)", hint: "Appearance", icon: "dark_mode", event: "set-mode-dark" },
+  { id: "mode-dark", label: "Mode: Midnight Blue (Default)", hint: "Appearance", icon: "dark_mode", event: "set-mode-dark" },
   { id: "mode-light", label: "Mode: Clean Light", hint: "Appearance", icon: "light_mode", event: "set-mode-light" },
   { id: "theme-cobalt", label: "Theme: Cobalt Blue (Default)", hint: "Color", icon: "palette", event: "set-theme-cobalt" },
   { id: "theme-emerald", label: "Theme: Cyber Emerald", hint: "Color", icon: "palette", event: "set-theme-emerald" },

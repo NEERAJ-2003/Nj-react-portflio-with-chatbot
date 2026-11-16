@@ -358,7 +358,7 @@ export default function Navbar({ currentMode = "dark", onToggleMode, currentThem
                   <span className="material-symbols-outlined text-sm text-primary">
                     {currentMode === "dark" ? "dark_mode" : "light_mode"}
                   </span>
-                  <span>{currentMode === "dark" ? "Dark (Matt Black)" : "Light (Matt White)"}</span>
+                  <span>{currentMode === "dark" ? "Dark (Midnight Blue)" : "Light (Clean White)"}</span>
                 </button>
               </div>
             )}

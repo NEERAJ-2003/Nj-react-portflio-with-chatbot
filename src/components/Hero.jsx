@@ -30,14 +30,6 @@ export default function Hero({ onOpenResume }) {
       [220, 130, 255],
     ];
 
-    const orbs = [
-      { xf: 0.18, yf: 0.22, size: 0.55 },
-      { xf: 0.82, yf: 0.18, size: 0.45 },
-      { xf: 0.75, yf: 0.8, size: 0.5 },
-      { xf: 0.22, yf: 0.78, size: 0.4 },
-      { xf: 0.5, yf: 0.5, size: 0.32 },
-    ];
-
     const particles = Array.from({ length: 42 }, () => ({
       x: Math.random(),
       y: Math.random(),
@@ -63,20 +55,6 @@ export default function Hero({ onOpenResume }) {
       const raw = phase - Math.floor(phase);
       const smooth = raw < 0.5 ? 2 * raw * raw : 1 - Math.pow(-2 * raw + 2, 2) / 2;
       const col = colors[fromIdx].map((v, i) => Math.round(lv(v, colors[toIdx][i], smooth)));
-
-      orbs.forEach((orb, i) => {
-        const ox = orb.xf * W + Math.sin(t * 0.38 + i * 1.3) * W * 0.055;
-        const oy = orb.yf * H + Math.cos(t * 0.32 + i * 1.1) * H * 0.055;
-        const r = Math.min(W, H) * orb.size;
-        const g = ctx.createRadialGradient(ox, oy, 0, ox, oy, r);
-        g.addColorStop(0, `rgba(${col[0]},${col[1]},${col[2]},0.10)`);
-        g.addColorStop(0.4, `rgba(${col[0]},${col[1]},${col[2]},0.04)`);
-        g.addColorStop(1, `rgba(${col[0]},${col[1]},${col[2]},0)`);
-        ctx.fillStyle = g;
-        ctx.beginPath();
-        ctx.arc(ox, oy, r, 0, Math.PI * 2);
-        ctx.fill();
-      });
 
       particles.forEach((p) => {
         p.x += p.vx + Math.sin(t + p.y * 8) * 0.00008;
@@ -176,10 +154,6 @@ export default function Hero({ onOpenResume }) {
   return (
     <section ref={heroRef} className="relative min-h-[100dvh] md:min-h-screen flex items-center justify-center pt-20 overflow-hidden" id="home">
       <canvas id="hero-canvas" ref={canvasRef} />
-
-      <div className="absolute inset-0 mesh-gradient opacity-40" />
-      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary-dim rounded-full blur-[160px] opacity-20 animate-pulse-slow" />
-      <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-tertiary-dim rounded-full blur-[160px] opacity-10 animate-pulse-slow" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 w-full relative z-10 text-center min-w-0">
         <div className="hero-enter flex flex-wrap items-center justify-center gap-3 mb-8">

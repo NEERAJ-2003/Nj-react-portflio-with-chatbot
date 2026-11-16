@@ -142,21 +142,21 @@ function ProjectBackdrop({ project, isExpanded }) {
         className="w-full h-full relative"
         style={{
           background:
-            "radial-gradient(circle at 80% 20%, rgba(105, 156, 255, 0.16) 0%, transparent 55%), radial-gradient(circle at 20% 80%, rgba(16, 185, 129, 0.14) 0%, transparent 55%), linear-gradient(135deg, #0c1424 0%, #060b14 100%)",
+            "radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.04) 0%, transparent 55%), linear-gradient(135deg, #222225 0%, #171717 100%)",
         }}
       >
         {/* Subtle grid pattern */}
         <div
-          className="absolute inset-0 opacity-20 pointer-events-none"
+          className="absolute inset-0 opacity-15 pointer-events-none"
           style={{
-            backgroundImage: "radial-gradient(rgba(105, 156, 255, 0.35) 1px, transparent 1px)",
+            backgroundImage: "radial-gradient(rgba(255, 255, 255, 0.2) 1px, transparent 1px)",
             backgroundSize: "22px 22px",
           }}
         />
 
         {/* Fintech Preview widget — right-aligned, stays inside card at any width */}
         <div
-          className="absolute right-4 top-1/2 w-64 max-w-[55%] p-4 rounded-2xl bg-[#111726]/90 border border-white/10 shadow-xl pointer-events-none transition-all duration-1000 ease-out"
+          className="absolute right-4 top-1/2 w-64 max-w-[55%] p-4 rounded-2xl bg-[#28282b]/95 border border-white/10 shadow-xl pointer-events-none transition-all duration-1000 ease-out"
           style={{
             opacity: isExpanded ? 0.55 : 0.18,
             transform: isExpanded
@@ -287,13 +287,13 @@ function FanCard({
           opacity: active ? 1 : 0,
           transition: "opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1)",
           background:
-            "linear-gradient(to top, rgba(12,14,18,0.98) 40%, rgba(12,14,18,0.7) 70%, rgba(12,14,18,0.2) 100%)",
+            "linear-gradient(to top, rgba(23,23,23,0.98) 40%, rgba(23,23,23,0.7) 70%, rgba(23,23,23,0.2) 100%)",
         }}
       />
 
       {/* Inactive card veil: pure opacity blend */}
       <div
-        className="absolute inset-0 bg-[#0c0e12]/85 pointer-events-none z-[6]"
+        className="absolute inset-0 bg-[#171717]/85 pointer-events-none z-[6]"
         style={{
           opacity: active ? 0 : 1,
           transition: "opacity 0.7s ease-in-out",
@@ -548,11 +548,11 @@ function TouchFanCard({ project, index, activeIndex, onTap, onSelectProject, onO
         style={{
           background: project.id === "sentinel"
             ? (isActive
-              ? "linear-gradient(to top, rgba(12,14,18,0.98) 50%, rgba(12,14,18,0.92) 80%, rgba(12,14,18,0.80) 100%)"
-              : "linear-gradient(to top, rgba(12,14,18,0.96) 40%, rgba(12,14,18,0.88) 100%)")
+              ? "linear-gradient(to top, rgba(23,23,23,0.98) 50%, rgba(23,23,23,0.92) 80%, rgba(23,23,23,0.80) 100%)"
+              : "linear-gradient(to top, rgba(23,23,23,0.96) 40%, rgba(23,23,23,0.88) 100%)")
             : (isActive
-              ? "linear-gradient(to top, rgba(12,14,18,0.98) 45%, rgba(12,14,18,0.7) 75%, rgba(12,14,18,0.3) 100%)"
-              : "linear-gradient(to top, rgba(12,14,18,0.88) 50%, rgba(12,14,18,0.65) 100%)"),
+              ? "linear-gradient(to top, rgba(23,23,23,0.98) 45%, rgba(23,23,23,0.7) 75%, rgba(23,23,23,0.3) 100%)"
+              : "linear-gradient(to top, rgba(23,23,23,0.88) 50%, rgba(23,23,23,0.65) 100%)"),
         }}
       />
 
