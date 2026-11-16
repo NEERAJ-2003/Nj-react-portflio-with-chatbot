@@ -369,8 +369,8 @@ export default function ApiPlayground() {
             </div>
 
             {/* JSON Output Viewer */}
-            <div className="p-3.5 sm:p-5 bg-[#0a0d14] font-mono text-xs overflow-x-auto border-t border-primary/15 relative min-h-[220px]">
-              <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-outline mb-2 pb-2 border-b border-white/5 font-label">
+            <div className="p-3.5 sm:p-5 bg-surface-container-lowest text-on-surface font-mono text-xs overflow-x-auto border-t border-primary/15 relative min-h-[220px]">
+              <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-outline mb-2 pb-2 border-b border-outline-variant/20 font-label">
                 <span>RESPONSE PAYLOAD (application/json)</span>
                 {responseOutput ? (
                   <div className="flex items-center gap-3">

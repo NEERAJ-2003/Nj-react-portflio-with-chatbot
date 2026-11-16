@@ -17,7 +17,7 @@ const THEMES = [
   { id: "amber", name: "Amber", color: "#ffb020" },
 ];
 
-export default function Navbar({ currentTheme, onSetTheme }) {
+export default function Navbar({ currentMode = "dark", onToggleMode, currentTheme, onSetTheme }) {
   const [active, setActive] = useState("#home");
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -167,11 +167,25 @@ export default function Navbar({ currentTheme, onSetTheme }) {
               </a>
             ))}
 
+            {/* Dark / Light Mode Toggle Button */}
+            {onToggleMode && (
+              <button
+                onClick={onToggleMode}
+                className="w-8 h-8 rounded-lg bg-surface-container hover:bg-surface-container-high border border-outline-variant/30 flex items-center justify-center text-on-surface transition-colors cursor-pointer"
+                title={currentMode === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+                aria-label={currentMode === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+              >
+                <span className="material-symbols-outlined text-base">
+                  {currentMode === "dark" ? "light_mode" : "dark_mode"}
+                </span>
+              </button>
+            )}
+
             {/* Theme Picker Dropdown */}
             <div className="relative">
               <button
                 onClick={() => setThemeMenuOpen(!themeMenuOpen)}
-                className="w-8 h-8 rounded-lg bg-surface-container hover:bg-surface-container-high border border-outline-variant/30 flex items-center justify-center text-on-surface transition-colors"
+                className="w-8 h-8 rounded-lg bg-surface-container hover:bg-surface-container-high border border-outline-variant/30 flex items-center justify-center text-on-surface transition-colors cursor-pointer"
                 title="Change Color Theme"
                 aria-label="Change Color Theme"
               >
@@ -179,7 +193,46 @@ export default function Navbar({ currentTheme, onSetTheme }) {
               </button>
 
               {themeMenuOpen && (
-                <div className="absolute right-0 mt-2 w-36 py-2 bg-surface-container-high/95 backdrop-blur-md rounded-2xl border border-primary/20 shadow-2xl z-50">
+                <div className="absolute right-0 mt-2 w-44 py-2 bg-surface-container-high/95 backdrop-blur-md rounded-2xl border border-primary/20 shadow-2xl z-50">
+                  {/* Mode Selector Segment */}
+                  {onToggleMode && (
+                    <>
+                      <div className="px-3 py-1 text-[10px] font-label font-bold uppercase tracking-wider text-outline flex items-center justify-between">
+                        <span>Mode</span>
+                        <span className="text-[9px] uppercase px-1.5 py-0.5 rounded bg-surface-container text-on-surface font-mono">
+                          {currentMode}
+                        </span>
+                      </div>
+                      <div className="px-2 py-1 flex gap-1 mb-1">
+                        <button
+                          type="button"
+                          onClick={() => currentMode !== "dark" && onToggleMode()}
+                          className={`flex-1 py-1 rounded-lg text-xs font-label flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                            currentMode === "dark"
+                              ? "bg-primary text-on-primary font-bold shadow-sm"
+                              : "hover:bg-surface-container text-on-surface-variant"
+                          }`}
+                        >
+                          <span className="material-symbols-outlined text-xs">dark_mode</span>
+                          <span>Dark</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => currentMode !== "light" && onToggleMode()}
+                          className={`flex-1 py-1 rounded-lg text-xs font-label flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                            currentMode === "light"
+                              ? "bg-primary text-on-primary font-bold shadow-sm"
+                              : "hover:bg-surface-container text-on-surface-variant"
+                          }`}
+                        >
+                          <span className="material-symbols-outlined text-xs">light_mode</span>
+                          <span>Light</span>
+                        </button>
+                      </div>
+                      <div className="my-1 border-t border-outline-variant/20" />
+                    </>
+                  )}
+
                   <div className="px-3 py-1 text-[10px] font-label font-bold uppercase tracking-wider text-outline">
                     Accent Color
                   </div>
@@ -190,7 +243,7 @@ export default function Navbar({ currentTheme, onSetTheme }) {
                         onSetTheme(theme.id);
                         setThemeMenuOpen(false);
                       }}
-                      className="w-full px-3 py-1.5 text-xs font-label flex items-center justify-between hover:bg-surface-container transition-colors text-left"
+                      className="w-full px-3 py-1.5 text-xs font-label flex items-center justify-between hover:bg-surface-container transition-colors text-left cursor-pointer"
                     >
                       <div className="flex items-center gap-2">
                         <span
@@ -221,6 +274,18 @@ export default function Navbar({ currentTheme, onSetTheme }) {
 
           {/* Mobile Right Controls */}
           <div className="lg:hidden flex items-center gap-2">
+            {onToggleMode && (
+              <button
+                onClick={onToggleMode}
+                className="w-10 h-10 rounded-xl bg-surface-container hover:bg-surface-container-high border border-outline-variant/30 flex items-center justify-center text-on-surface transition-colors cursor-pointer"
+                title={currentMode === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+                aria-label={currentMode === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+              >
+                <span className="material-symbols-outlined text-lg">
+                  {currentMode === "dark" ? "light_mode" : "dark_mode"}
+                </span>
+              </button>
+            )}
             <button
               id="menu-btn"
               className={`hamburger-btn ${menuOpen ? "is-open" : ""}`}
@@ -281,6 +346,23 @@ export default function Navbar({ currentTheme, onSetTheme }) {
           </div>
 
           <div className="mobile-menu-footer">
+            {/* Mobile Mode Switcher Row */}
+            {onToggleMode && (
+              <div className="flex items-center justify-between p-3 rounded-xl bg-surface-container mb-3">
+                <span className="text-xs font-label text-outline uppercase tracking-wider">Appearance</span>
+                <button
+                  type="button"
+                  onClick={onToggleMode}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-container-high border border-outline-variant/30 text-xs font-label font-bold text-on-surface cursor-pointer active:scale-95 transition-transform"
+                >
+                  <span className="material-symbols-outlined text-sm text-primary">
+                    {currentMode === "dark" ? "dark_mode" : "light_mode"}
+                  </span>
+                  <span>{currentMode === "dark" ? "Dark (Matt Black)" : "Light (Matt White)"}</span>
+                </button>
+              </div>
+            )}
+
             {/* Mobile Theme Switcher Row */}
             <div className="flex items-center justify-between p-3 rounded-xl bg-surface-container mb-4">
               <span className="text-xs font-label text-outline uppercase tracking-wider">Accent Theme</span>
@@ -289,8 +371,8 @@ export default function Navbar({ currentTheme, onSetTheme }) {
                   <button
                     key={theme.id}
                     onClick={() => onSetTheme(theme.id)}
-                    className={`w-6 h-6 rounded-full border-2 transition-transform ${
-                      currentTheme === theme.id ? "scale-110 border-white" : "border-transparent opacity-70"
+                    className={`w-6 h-6 rounded-full border-2 transition-transform cursor-pointer ${
+                      currentTheme === theme.id ? "scale-110 border-primary shadow-sm shadow-primary/50" : "border-transparent opacity-70"
                     }`}
                     style={{ backgroundColor: theme.color }}
                     aria-label={`Switch to ${theme.name} theme`}

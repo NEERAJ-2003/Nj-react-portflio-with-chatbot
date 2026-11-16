@@ -20,6 +20,7 @@ import ProjectModal from "./components/ProjectModal";
 export default function App() {
   const [splashDone, setSplashDone] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [mode, setMode] = useState(() => localStorage.getItem("portfolio-mode") || "dark");
   const [theme, setTheme] = useState(() => localStorage.getItem("portfolio-theme") || "cobalt");
   const [resumeOpen, setResumeOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
@@ -28,15 +29,25 @@ export default function App() {
     setSplashDone(true);
   }
 
+  function applyMode(newMode) {
+    setMode(newMode);
+    localStorage.setItem("portfolio-mode", newMode);
+    document.documentElement.setAttribute("data-mode", newMode);
+  }
+
+  function toggleMode() {
+    applyMode(mode === "dark" ? "light" : "dark");
+  }
+
   function applyTheme(newTheme) {
     setTheme(newTheme);
     localStorage.setItem("portfolio-theme", newTheme);
-    if (newTheme === "cobalt") {
-      document.documentElement.removeAttribute("data-theme");
-    } else {
-      document.documentElement.setAttribute("data-theme", newTheme);
-    }
+    document.documentElement.setAttribute("data-theme", newTheme);
   }
+
+  useEffect(() => {
+    applyMode(mode);
+  }, [mode]);
 
   useEffect(() => {
     applyTheme(theme);
@@ -80,12 +91,24 @@ export default function App() {
     function handleSetThemeAmber() {
       applyTheme("amber");
     }
+    function handleToggleThemeMode() {
+      toggleMode();
+    }
+    function handleSetModeDark() {
+      applyMode("dark");
+    }
+    function handleSetModeLight() {
+      applyMode("light");
+    }
 
     window.addEventListener("open-resume-modal", handleOpenResume);
     window.addEventListener("set-theme-cobalt", handleSetThemeCobalt);
     window.addEventListener("set-theme-emerald", handleSetThemeEmerald);
     window.addEventListener("set-theme-violet", handleSetThemeViolet);
     window.addEventListener("set-theme-amber", handleSetThemeAmber);
+    window.addEventListener("toggle-theme-mode", handleToggleThemeMode);
+    window.addEventListener("set-mode-dark", handleSetModeDark);
+    window.addEventListener("set-mode-light", handleSetModeLight);
 
     return () => {
       window.removeEventListener("open-resume-modal", handleOpenResume);
@@ -93,8 +116,11 @@ export default function App() {
       window.removeEventListener("set-theme-emerald", handleSetThemeEmerald);
       window.removeEventListener("set-theme-violet", handleSetThemeViolet);
       window.removeEventListener("set-theme-amber", handleSetThemeAmber);
+      window.removeEventListener("toggle-theme-mode", handleToggleThemeMode);
+      window.removeEventListener("set-mode-dark", handleSetModeDark);
+      window.removeEventListener("set-mode-light", handleSetModeLight);
     };
-  }, []);
+  }, [mode]);
 
   return (
     <>
@@ -105,6 +131,8 @@ export default function App() {
       ].join(" ")}>
       <div className="scroll-progress" style={{ width: `${progress}%` }} />
       <Navbar
+        currentMode={mode}
+        onToggleMode={toggleMode}
         currentTheme={theme}
         onSetTheme={applyTheme}
       />

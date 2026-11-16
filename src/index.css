@@ -74,9 +74,9 @@ html {
 }
 html::-webkit-scrollbar { width: 10px; }
 html::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #699cff, #9c48ea);
+  background: linear-gradient(180deg, var(--color-primary, #699cff), var(--color-tertiary, #9c48ea));
   border-radius: 999px;
-  border: 2px solid #0c0e12;
+  border: 2px solid var(--color-surface, #0c0e12);
 }
 
 body {
@@ -85,6 +85,7 @@ body {
   max-width: 100%;
   overflow-x: hidden;
   position: relative;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 @keyframes pulse-slow {
@@ -2032,15 +2033,77 @@ body {
 
 
 /* ══════════════════════════════════════════════════════════════════
-   ACCENT COLOR THEMES
+   BASE THEME: MATTE BLACK & WHITE (DEFAULT DARK) VS MATTE WHITE (LIGHT)
    ══════════════════════════════════════════════════════════════════ */
-:root {
+
+:root,
+[data-mode="dark"] {
+  color-scheme: dark;
+
+  /* Matte Black Base Palette */
+  --color-background: #090b0e;
+  --color-surface: #0c0e12;
+  --color-surface-dim: #090b0e;
+  --color-surface-bright: #222630;
+  --color-surface-container-lowest: #000000;
+  --color-surface-container-low: #101318;
+  --color-surface-container: #151820;
+  --color-surface-container-high: #1c202a;
+  --color-surface-container-highest: #232834;
+  --color-surface-variant: #1e222c;
+
+  /* Crisp White Typography & Outlines */
+  --color-on-surface: #f8fafc;
+  --color-on-surface-variant: #94a3b8;
+  --color-on-background: #f8fafc;
+  --color-outline: #64748b;
+  --color-outline-variant: #334155;
+  --color-inverse-surface: #f8fafc;
+  --color-inverse-on-surface: #0f172a;
+}
+
+[data-mode="light"] {
+  color-scheme: light;
+
+  /* Clean Matte White Base Palette */
+  --color-background: #f8fafc;
+  --color-surface: #ffffff;
+  --color-surface-dim: #f1f5f9;
+  --color-surface-bright: #ffffff;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f8fafc;
+  --color-surface-container: #f1f5f9;
+  --color-surface-container-high: #e2e8f0;
+  --color-surface-container-highest: #cbd5e1;
+  --color-surface-variant: #e2e8f0;
+
+  /* Crisp Matte Dark Slate Typography & Outlines */
+  --color-on-surface: #090b10;
+  --color-on-surface-variant: #475569;
+  --color-on-background: #090b10;
+  --color-outline: #64748b;
+  --color-outline-variant: #cbd5e1;
+  --color-inverse-surface: #0f172a;
+  --color-inverse-on-surface: #f8fafc;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   4 ACCENT COLOR THEMES (COBALT, EMERALD, VIOLET, AMBER)
+   ══════════════════════════════════════════════════════════════════ */
+
+/* 1. Cobalt Blue (Default) */
+:root,
+[data-theme="cobalt"],
+[data-mode="dark"][data-theme="cobalt"],
+[data-mode="dark"]:not([data-theme]) {
   --color-primary: #699cff;
+  --color-primary-dim: #4388fd;
   --color-tertiary: #9c48ea;
+  --color-tertiary-dim: #7b2cbf;
+  --color-primary-container: #4388fd;
   --theme-accent-glow: rgba(105, 156, 255, 0.4);
   --theme-accent-border: rgba(105, 156, 255, 0.25);
 
-  /* Voice Theme Custom Properties (Cobalt Default) */
   --voice-accent: #38bdf8;
   --voice-accent-secondary: #699cff;
   --voice-glow: rgba(56, 189, 248, 0.45);
@@ -2057,7 +2120,35 @@ body {
   --voice-btn-glow: 0 4px 22px rgba(67, 120, 245, 0.6), 0 0 16px rgba(156, 72, 234, 0.4);
 }
 
-[data-theme="emerald"] {
+[data-mode="light"][data-theme="cobalt"],
+[data-mode="light"]:not([data-theme]) {
+  --color-primary: #2563eb;
+  --color-primary-dim: #1d4ed8;
+  --color-tertiary: #7c3aed;
+  --color-tertiary-dim: #6d28d9;
+  --color-primary-container: #3b82f6;
+  --theme-accent-glow: rgba(37, 99, 235, 0.25);
+  --theme-accent-border: rgba(37, 99, 235, 0.25);
+
+  --voice-accent: #0284c7;
+  --voice-accent-secondary: #2563eb;
+  --voice-glow: rgba(2, 132, 199, 0.35);
+  --voice-ring-1: rgba(37, 99, 235, 0.4);
+  --voice-ring-1-glow: rgba(37, 99, 235, 0.25);
+  --voice-ring-2: rgba(124, 58, 237, 0.25);
+  --voice-ring-2-glow: rgba(124, 58, 237, 0.18);
+  --voice-ring-3: rgba(14, 165, 233, 0.15);
+  --voice-ring-3-glow: rgba(14, 165, 233, 0.1);
+  --voice-orb-bg: radial-gradient(circle at 35% 35%, rgba(37, 99, 235, 0.8) 0%, rgba(124, 58, 237, 0.6) 60%, rgba(240, 246, 255, 0.95) 100%);
+  --voice-orb-glow: 0 0 20px rgba(37, 99, 235, 0.4);
+  --voice-btn-gradient: linear-gradient(135deg, #2563eb 0%, #1d4ed8 55%, #7c3aed 100%);
+  --voice-btn-hover-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 55%, #8b5cf6 100%);
+  --voice-btn-glow: 0 4px 18px rgba(37, 99, 235, 0.4), 0 0 12px rgba(124, 58, 237, 0.3);
+}
+
+/* 2. Cyber Emerald */
+[data-theme="emerald"],
+[data-mode="dark"][data-theme="emerald"] {
   --color-primary: #00f5a0;
   --color-primary-dim: #00c982;
   --color-tertiary: #00e5ff;
@@ -2066,7 +2157,6 @@ body {
   --theme-accent-glow: rgba(0, 245, 160, 0.4);
   --theme-accent-border: rgba(0, 245, 160, 0.25);
 
-  /* Voice Theme Custom Properties (Cyber Emerald) */
   --voice-accent: #00f5a0;
   --voice-accent-secondary: #00e5ff;
   --voice-glow: rgba(0, 245, 160, 0.5);
@@ -2083,7 +2173,34 @@ body {
   --voice-btn-glow: 0 4px 22px rgba(0, 245, 160, 0.65), 0 0 16px rgba(0, 229, 255, 0.5);
 }
 
-[data-theme="violet"] {
+[data-mode="light"][data-theme="emerald"] {
+  --color-primary: #059669;
+  --color-primary-dim: #047857;
+  --color-tertiary: #0284c7;
+  --color-tertiary-dim: #0369a1;
+  --color-primary-container: #10b981;
+  --theme-accent-glow: rgba(5, 150, 105, 0.25);
+  --theme-accent-border: rgba(5, 150, 105, 0.25);
+
+  --voice-accent: #059669;
+  --voice-accent-secondary: #0284c7;
+  --voice-glow: rgba(5, 150, 105, 0.35);
+  --voice-ring-1: rgba(5, 150, 105, 0.4);
+  --voice-ring-1-glow: rgba(5, 150, 105, 0.25);
+  --voice-ring-2: rgba(2, 132, 199, 0.25);
+  --voice-ring-2-glow: rgba(2, 132, 199, 0.18);
+  --voice-ring-3: rgba(16, 185, 129, 0.15);
+  --voice-ring-3-glow: rgba(16, 185, 129, 0.1);
+  --voice-orb-bg: radial-gradient(circle at 35% 35%, rgba(5, 150, 105, 0.8) 0%, rgba(2, 132, 199, 0.6) 60%, rgba(240, 253, 244, 0.95) 100%);
+  --voice-orb-glow: 0 0 20px rgba(5, 150, 105, 0.4);
+  --voice-btn-gradient: linear-gradient(135deg, #059669 0%, #047857 55%, #0284c7 100%);
+  --voice-btn-hover-gradient: linear-gradient(135deg, #10b981 0%, #059669 55%, #0ea5e9 100%);
+  --voice-btn-glow: 0 4px 18px rgba(5, 150, 105, 0.4), 0 0 12px rgba(2, 132, 199, 0.3);
+}
+
+/* 3. Synthwave Violet */
+[data-theme="violet"],
+[data-mode="dark"][data-theme="violet"] {
   --color-primary: #bf5af2;
   --color-primary-dim: #a040d2;
   --color-tertiary: #ff529a;
@@ -2092,7 +2209,6 @@ body {
   --theme-accent-glow: rgba(191, 90, 242, 0.4);
   --theme-accent-border: rgba(191, 90, 242, 0.25);
 
-  /* Voice Theme Custom Properties (Synthwave Violet) */
   --voice-accent: #ff529a;
   --voice-accent-secondary: #bf5af2;
   --voice-glow: rgba(191, 90, 242, 0.5);
@@ -2109,7 +2225,34 @@ body {
   --voice-btn-glow: 0 4px 22px rgba(191, 90, 242, 0.65), 0 0 16px rgba(255, 82, 154, 0.5);
 }
 
-[data-theme="amber"] {
+[data-mode="light"][data-theme="violet"] {
+  --color-primary: #9333ea;
+  --color-primary-dim: #7e22ce;
+  --color-tertiary: #e11d48;
+  --color-tertiary-dim: #be123c;
+  --color-primary-container: #a855f7;
+  --theme-accent-glow: rgba(147, 51, 234, 0.25);
+  --theme-accent-border: rgba(147, 51, 234, 0.25);
+
+  --voice-accent: #e11d48;
+  --voice-accent-secondary: #9333ea;
+  --voice-glow: rgba(147, 51, 234, 0.35);
+  --voice-ring-1: rgba(147, 51, 234, 0.4);
+  --voice-ring-1-glow: rgba(147, 51, 234, 0.25);
+  --voice-ring-2: rgba(225, 29, 72, 0.25);
+  --voice-ring-2-glow: rgba(225, 29, 72, 0.18);
+  --voice-ring-3: rgba(168, 85, 247, 0.15);
+  --voice-ring-3-glow: rgba(168, 85, 247, 0.1);
+  --voice-orb-bg: radial-gradient(circle at 35% 35%, rgba(147, 51, 234, 0.8) 0%, rgba(225, 29, 72, 0.6) 60%, rgba(253, 242, 248, 0.95) 100%);
+  --voice-orb-glow: 0 0 20px rgba(147, 51, 234, 0.4);
+  --voice-btn-gradient: linear-gradient(135deg, #9333ea 0%, #7e22ce 55%, #e11d48 100%);
+  --voice-btn-hover-gradient: linear-gradient(135deg, #a855f7 0%, #9333ea 55%, #f43f5e 100%);
+  --voice-btn-glow: 0 4px 18px rgba(147, 51, 234, 0.4), 0 0 12px rgba(225, 29, 72, 0.3);
+}
+
+/* 4. Solar Amber */
+[data-theme="amber"],
+[data-mode="dark"][data-theme="amber"] {
   --color-primary: #ffb020;
   --color-primary-dim: #e69500;
   --color-tertiary: #ff6b35;
@@ -2118,7 +2261,6 @@ body {
   --theme-accent-glow: rgba(255, 176, 32, 0.4);
   --theme-accent-border: rgba(255, 176, 32, 0.25);
 
-  /* Voice Theme Custom Properties (Solar Amber) */
   --voice-accent: #ffb020;
   --voice-accent-secondary: #ff6b35;
   --voice-glow: rgba(255, 176, 32, 0.5);
@@ -2133,6 +2275,149 @@ body {
   --voice-btn-gradient: linear-gradient(135deg, #ffb020 0%, #ff8c1a 55%, #ff6b35 100%);
   --voice-btn-hover-gradient: linear-gradient(135deg, #ffc04d 0%, #ffa033 55%, #ff8252 100%);
   --voice-btn-glow: 0 4px 22px rgba(255, 176, 32, 0.65), 0 0 16px rgba(255, 107, 53, 0.5);
+}
+
+[data-mode="light"][data-theme="amber"] {
+  --color-primary: #d97706;
+  --color-primary-dim: #b45309;
+  --color-tertiary: #ea580c;
+  --color-tertiary-dim: #c2410c;
+  --color-primary-container: #f59e0b;
+  --theme-accent-glow: rgba(217, 119, 6, 0.25);
+  --theme-accent-border: rgba(217, 119, 6, 0.25);
+
+  --voice-accent: #d97706;
+  --voice-accent-secondary: #ea580c;
+  --voice-glow: rgba(217, 119, 6, 0.35);
+  --voice-ring-1: rgba(217, 119, 6, 0.4);
+  --voice-ring-1-glow: rgba(217, 119, 6, 0.25);
+  --voice-ring-2: rgba(234, 88, 12, 0.25);
+  --voice-ring-2-glow: rgba(234, 88, 12, 0.18);
+  --voice-ring-3: rgba(245, 158, 11, 0.15);
+  --voice-ring-3-glow: rgba(245, 158, 11, 0.1);
+  --voice-orb-bg: radial-gradient(circle at 35% 35%, rgba(217, 119, 6, 0.8) 0%, rgba(234, 88, 12, 0.6) 60%, rgba(255, 251, 235, 0.95) 100%);
+  --voice-orb-glow: 0 0 20px rgba(217, 119, 6, 0.4);
+  --voice-btn-gradient: linear-gradient(135deg, #d97706 0%, #b45309 55%, #ea580c 100%);
+  --voice-btn-hover-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 55%, #f97316 100%);
+  --voice-btn-glow: 0 4px 18px rgba(217, 119, 6, 0.4), 0 0 12px rgba(234, 88, 12, 0.3);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   LIGHT MODE COMPONENT ADAPTATIONS
+   ══════════════════════════════════════════════════════════════════ */
+
+[data-mode="light"] body {
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+}
+
+[data-mode="light"] html::-webkit-scrollbar-thumb {
+  border: 2px solid #ffffff;
+}
+
+[data-mode="light"] .glass-card {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  border-left: 1px solid rgba(0, 0, 0, 0.08);
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+}
+
+[data-mode="light"] .site-nav {
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.6), transparent);
+}
+
+[data-mode="light"] .site-nav.is-scrolled {
+  background: rgba(255, 255, 255, 0.88);
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+}
+
+[data-mode="light"] .nav-link {
+  color: #475569;
+}
+
+[data-mode="light"] .nav-link:hover,
+[data-mode="light"] .nav-link.active {
+  color: var(--color-primary);
+}
+
+[data-mode="light"] .hamburger-btn {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+[data-mode="light"] .hamburger-line {
+  background: #0f172a;
+}
+
+[data-mode="light"] .mobile-menu-content {
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 24px 60px -10px rgba(0, 0, 0, 0.12);
+}
+
+[data-mode="light"] .mobile-nav-item {
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+[data-mode="light"] .mobile-nav-label {
+  color: #0f172a;
+}
+
+[data-mode="light"] .mobile-nav-desc {
+  color: #64748b;
+}
+
+[data-mode="light"] .mobile-nav-arrow {
+  color: #94a3b8;
+}
+
+[data-mode="light"] .marquee-wrap {
+  background: rgba(241, 245, 249, 0.7);
+  border-top-color: rgba(0, 0, 0, 0.08);
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-mode="light"] .marquee-chip {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #334155;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+[data-mode="light"] .portfolio-modal-overlay {
+  background: rgba(15, 23, 42, 0.45);
+}
+
+[data-mode="light"] .portfolio-modal-content {
+  background: rgba(255, 255, 255, 0.98);
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.15);
+}
+
+[data-mode="light"] #chat-window {
+  background: rgba(255, 255, 255, 0.98);
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 24px 64px -12px rgba(0, 0, 0, 0.18);
+}
+
+[data-mode="light"] .back-to-top {
+  background: rgba(255, 255, 255, 0.95);
+  color: #0f172a;
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+[data-mode="light"] .cmd-palette-box {
+  background: rgba(255, 255, 255, 0.98);
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.2);
+}
+
+[data-mode="light"] .cmd-input {
+  color: #0f172a;
 }
 
 /* ══════════════════════════════════════════════════════════════════
@@ -2253,6 +2538,24 @@ body {
 .json-string { color: #ce9178; }
 .json-number { color: #b5cea8; }
 .json-boolean { color: #569cd6; }
+
+[data-mode="light"] .json-pretty {
+  color: #0f172a;
+}
+[data-mode="light"] .json-key { color: #0284c7; font-weight: 600; }
+[data-mode="light"] .json-string { color: #b45309; }
+[data-mode="light"] .json-number { color: #16a34a; }
+[data-mode="light"] .json-boolean { color: #9333ea; }
+[data-mode="light"] .api-badge-get {
+  background: rgba(16, 185, 129, 0.12);
+  color: #047857;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+[data-mode="light"] .api-badge-post {
+  background: rgba(37, 99, 235, 0.12);
+  color: #1d4ed8;
+  border: 1px solid rgba(37, 99, 235, 0.25);
+}
 
 /* ══════════════════════════════════════════════════════════════════
    CHATBOT QUICK CHIPS
