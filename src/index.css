@@ -2031,31 +2031,22 @@ body {
 
 
 /* ══════════════════════════════════════════════════════════════════
-   BUTTER-SMOOTH THEME & MODE COLOR TRANSITIONS (120 FPS CROSSFADE)
+   CIRCULAR RIPPLE TRANSITION — pure canvas, no View Transitions API
+   Animation is fully handled by src/utils/pixelTransition.js
    ══════════════════════════════════════════════════════════════════ */
 
+/* Kill any browser default view-transition crossfade completely */
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  will-change: opacity;
-  animation-duration: 280ms;
-  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  animation: none !important;
+  opacity: 1 !important;
 }
 
-::view-transition-old(root) {
-  animation-name: theme-fade-out;
-}
-::view-transition-new(root) {
-  animation-name: theme-fade-in;
-}
-
-@keyframes theme-fade-out {
-  0%   { opacity: 1; }
-  100% { opacity: 0; }
-}
-
-@keyframes theme-fade-in {
-  0%   { opacity: 0; }
-  100% { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
 }
 
 html,

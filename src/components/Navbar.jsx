@@ -170,26 +170,24 @@ export default function Navbar({ currentMode = "dark", onToggleMode, currentThem
             {/* Dark / Light Mode Toggle Button with Butter-Smooth Morph */}
             {onToggleMode && (
               <button
-                onClick={onToggleMode}
+                onClick={(e) => onToggleMode(e)}
                 className="relative w-8 h-8 rounded-lg bg-surface-container hover:bg-surface-container-high border border-outline-variant/30 flex items-center justify-center text-on-surface overflow-hidden transition-all duration-300 active:scale-90 hover:scale-105 cursor-pointer shadow-sm hover:shadow"
                 title={currentMode === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
                 aria-label={currentMode === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
               >
                 <span
-                  className={`material-symbols-outlined text-base absolute transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-                    currentMode === "dark"
+                  className={`material-symbols-outlined text-base absolute transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${currentMode === "dark"
                       ? "rotate-0 scale-100 opacity-100 text-amber-300"
                       : "rotate-90 scale-0 opacity-0 text-amber-300"
-                  }`}
+                    }`}
                 >
                   light_mode
                 </span>
                 <span
-                  className={`material-symbols-outlined text-base absolute transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-                    currentMode === "light"
+                  className={`material-symbols-outlined text-base absolute transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${currentMode === "light"
                       ? "rotate-0 scale-100 opacity-100 text-primary"
                       : "-rotate-90 scale-0 opacity-0 text-primary"
-                  }`}
+                    }`}
                 >
                   dark_mode
                 </span>
@@ -221,24 +219,22 @@ export default function Navbar({ currentMode = "dark", onToggleMode, currentThem
                       <div className="px-2 py-1 flex gap-1 mb-1">
                         <button
                           type="button"
-                          onClick={() => currentMode !== "dark" && onToggleMode()}
-                          className={`flex-1 py-1 rounded-lg text-xs font-label flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                            currentMode === "dark"
+                          onClick={(e) => currentMode !== "dark" && onToggleMode(e)}
+                          className={`flex-1 py-1 rounded-lg text-xs font-label flex items-center justify-center gap-1.5 transition-all cursor-pointer ${currentMode === "dark"
                               ? "bg-primary text-on-primary font-bold shadow-sm"
                               : "hover:bg-surface-container text-on-surface-variant"
-                          }`}
+                            }`}
                         >
                           <span className="material-symbols-outlined text-xs">dark_mode</span>
                           <span>Dark</span>
                         </button>
                         <button
                           type="button"
-                          onClick={() => currentMode !== "light" && onToggleMode()}
-                          className={`flex-1 py-1 rounded-lg text-xs font-label flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                            currentMode === "light"
+                          onClick={(e) => currentMode !== "light" && onToggleMode(e)}
+                          className={`flex-1 py-1 rounded-lg text-xs font-label flex items-center justify-center gap-1.5 transition-all cursor-pointer ${currentMode === "light"
                               ? "bg-primary text-on-primary font-bold shadow-sm"
                               : "hover:bg-surface-container text-on-surface-variant"
-                          }`}
+                            }`}
                         >
                           <span className="material-symbols-outlined text-xs">light_mode</span>
                           <span>Light</span>
@@ -291,26 +287,24 @@ export default function Navbar({ currentMode = "dark", onToggleMode, currentThem
           <div className="lg:hidden flex items-center gap-2">
             {onToggleMode && (
               <button
-                onClick={onToggleMode}
+                onClick={(e) => onToggleMode(e)}
                 className="relative w-10 h-10 rounded-xl bg-surface-container hover:bg-surface-container-high border border-outline-variant/30 flex items-center justify-center text-on-surface overflow-hidden transition-all duration-300 active:scale-90 hover:scale-105 cursor-pointer shadow-sm"
                 title={currentMode === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
                 aria-label={currentMode === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
               >
                 <span
-                  className={`material-symbols-outlined text-lg absolute transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-                    currentMode === "dark"
+                  className={`material-symbols-outlined text-lg absolute transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${currentMode === "dark"
                       ? "rotate-0 scale-100 opacity-100 text-amber-300"
                       : "rotate-90 scale-0 opacity-0 text-amber-300"
-                  }`}
+                    }`}
                 >
                   light_mode
                 </span>
                 <span
-                  className={`material-symbols-outlined text-lg absolute transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-                    currentMode === "light"
+                  className={`material-symbols-outlined text-lg absolute transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${currentMode === "light"
                       ? "rotate-0 scale-100 opacity-100 text-primary"
                       : "-rotate-90 scale-0 opacity-0 text-primary"
-                  }`}
+                    }`}
                 >
                   dark_mode
                 </span>
@@ -388,24 +382,22 @@ export default function Navbar({ currentMode = "dark", onToggleMode, currentThem
                 <div className="flex items-center gap-1 p-1 rounded-xl bg-surface-container-lowest border border-outline-variant/30">
                   <button
                     type="button"
-                    onClick={() => currentMode !== "dark" && onToggleMode()}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-label font-bold transition-all duration-300 cursor-pointer active:scale-95 ${
-                      currentMode === "dark"
+                    onClick={(e) => currentMode !== "dark" && onToggleMode(e)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-label font-bold transition-all duration-300 cursor-pointer active:scale-95 ${currentMode === "dark"
                         ? "bg-surface-container-high text-on-surface shadow-sm border border-outline-variant/40"
                         : "text-on-surface-variant hover:text-on-surface"
-                    }`}
+                      }`}
                   >
                     <span className="material-symbols-outlined text-sm text-amber-300">dark_mode</span>
                     <span>Dark</span>
                   </button>
                   <button
                     type="button"
-                    onClick={() => currentMode !== "light" && onToggleMode()}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-label font-bold transition-all duration-300 cursor-pointer active:scale-95 ${
-                      currentMode === "light"
+                    onClick={(e) => currentMode !== "light" && onToggleMode(e)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-label font-bold transition-all duration-300 cursor-pointer active:scale-95 ${currentMode === "light"
                         ? "bg-surface text-on-surface shadow-sm border border-outline-variant/40"
                         : "text-on-surface-variant hover:text-on-surface"
-                    }`}
+                      }`}
                   >
                     <span className="material-symbols-outlined text-sm text-primary">light_mode</span>
                     <span>Light</span>
@@ -422,9 +414,8 @@ export default function Navbar({ currentMode = "dark", onToggleMode, currentThem
                   <button
                     key={theme.id}
                     onClick={() => onSetTheme(theme.id)}
-                    className={`w-6 h-6 rounded-full border-2 transition-transform cursor-pointer ${
-                      currentTheme === theme.id ? "scale-110 border-primary shadow-sm shadow-primary/50" : "border-transparent opacity-70"
-                    }`}
+                    className={`w-6 h-6 rounded-full border-2 transition-transform cursor-pointer ${currentTheme === theme.id ? "scale-110 border-primary shadow-sm shadow-primary/50" : "border-transparent opacity-70"
+                      }`}
                     style={{ backgroundColor: theme.color }}
                     aria-label={`Switch to ${theme.name} theme`}
                   />

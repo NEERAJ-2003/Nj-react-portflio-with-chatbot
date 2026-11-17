@@ -16,6 +16,7 @@ import BackToTop from "./components/BackToTop";
 import ToastHost from "./components/ToastHost";
 import ResumeModal from "./components/ResumeModal";
 import ProjectModal from "./components/ProjectModal";
+import { triggerPixelTransition } from "./utils/pixelTransition";
 
 export default function App() {
   const [splashDone, setSplashDone] = useState(false);
@@ -29,36 +30,34 @@ export default function App() {
     setSplashDone(true);
   }
 
-  function applyMode(newMode) {
+  function applyMode(newMode, originEvent = null) {
     const update = () => {
       setMode(newMode);
       localStorage.setItem("portfolio-mode", newMode);
       document.documentElement.setAttribute("data-mode", newMode);
     };
 
-    if (document.startViewTransition) {
-      document.startViewTransition(update);
-    } else {
+    if (originEvent === false) {
       update();
+      return;
     }
+
+    triggerPixelTransition({
+      targetMode: newMode,
+      originEvent,
+      onSwap: update,
+      duration: 900,
+    });
   }
 
-  function toggleMode() {
-    applyMode(mode === "dark" ? "light" : "dark");
+  function toggleMode(originEvent) {
+    applyMode(mode === "dark" ? "light" : "dark", originEvent);
   }
 
   function applyTheme(newTheme) {
-    const update = () => {
-      setTheme(newTheme);
-      localStorage.setItem("portfolio-theme", newTheme);
-      document.documentElement.setAttribute("data-theme", newTheme);
-    };
-
-    if (document.startViewTransition) {
-      document.startViewTransition(update);
-    } else {
-      update();
-    }
+    setTheme(newTheme);
+    localStorage.setItem("portfolio-theme", newTheme);
+    document.documentElement.setAttribute("data-theme", newTheme);
   }
 
   useEffect(() => {
@@ -145,34 +144,34 @@ export default function App() {
         "transition-opacity duration-500",
         splashDone ? "opacity-100" : "opacity-0 pointer-events-none",
       ].join(" ")}>
-      <div className="scroll-progress" style={{ width: `${progress}%` }} />
-      <Navbar
-        currentMode={mode}
-        onToggleMode={toggleMode}
-        currentTheme={theme}
-        onSetTheme={applyTheme}
-      />
-      <Hero
-        onOpenResume={() => setResumeOpen(true)}
-      />
-      <TechMarquee />
-      <About />
-      <Skills />
-      <Projects onSelectProject={(p) => setSelectedProject(p)} />
-      <ApiPlayground />
-      <DeveloperMetrics />
-      <Experience />
-      <Contact />
-      <Footer />
+        <div className="scroll-progress" style={{ width: `${progress}%` }} />
+        <Navbar
+          currentMode={mode}
+          onToggleMode={toggleMode}
+          currentTheme={theme}
+          onSetTheme={applyTheme}
+        />
+        <Hero
+          onOpenResume={() => setResumeOpen(true)}
+        />
+        <TechMarquee />
+        <About />
+        <Skills />
+        <Projects onSelectProject={(p) => setSelectedProject(p)} />
+        <ApiPlayground />
+        <DeveloperMetrics />
+        <Experience />
+        <Contact />
+        <Footer />
 
-      {/* Interactive Overlays */}
-      <Chatbot />
-      <BackToTop />
-      <ToastHost />
+        {/* Interactive Overlays */}
+        <Chatbot />
+        <BackToTop />
+        <ToastHost />
 
-      {/* Modals */}
-      <ResumeModal isOpen={resumeOpen} onClose={() => setResumeOpen(false)} />
-      <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
+        {/* Modals */}
+        <ResumeModal isOpen={resumeOpen} onClose={() => setResumeOpen(false)} />
+        <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
       </div>
     </>
   );
