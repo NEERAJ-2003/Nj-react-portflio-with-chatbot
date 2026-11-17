@@ -240,7 +240,7 @@ export function triggerPixelTransition({
   targetMode,
   originEvent = null,
   onSwap,
-  duration = 1100,
+  duration = 1500,
 }) {
   if (isTransitioning) return;
 

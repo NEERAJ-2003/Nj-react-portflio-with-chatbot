@@ -46,7 +46,7 @@ export default function App() {
       targetMode: newMode,
       originEvent,
       onSwap: update,
-      duration: 1100,
+      duration: 1500,
     });
   }
 
