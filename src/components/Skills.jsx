@@ -3,8 +3,8 @@ import Reveal from "./Reveal";
 import SpotlightCard from "./SpotlightCard";
 
 const BARS = [
-  { label: "Python (Django)", pct: 90, pctColor: "text-primary", barColor: "from-primary to-primary-dim" },
-  { label: "FastAPI", pct: 85, pctColor: "text-primary-dim", barColor: "from-cyan-400 to-primary" },
+  { label: "Python", pct: 90, pctColor: "text-primary", barColor: "from-primary to-primary-dim" },
+  { label: "FastAPI / Django", pct: 85, pctColor: "text-primary-dim", barColor: "from-cyan-400 to-primary" },
   { label: "Rest API", pct: 85, pctColor: "text-tertiary", barColor: "from-amber-400 to-amber-600" },
   { label: "SQL & PostgreSQL", pct: 85, pctColor: "text-tertiary", barColor: "from-tertiary to-tertiary-dim" },
   { label: "Frontend (HTML, CSS, JS)", pct: 80, pctColor: "text-secondary", barColor: "from-secondary to-on-secondary-container" },
