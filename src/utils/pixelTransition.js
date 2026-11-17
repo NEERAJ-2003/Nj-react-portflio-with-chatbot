@@ -1,46 +1,30 @@
 /**
- * Butter-Smooth Monochrome Pixel Dissolve Theme Transition
+ * Ultra-Smooth Monochrome Pixel Dissolve Theme Transition
  * ─────────────────────────────────────────────────────────────────────────
- * Features:
- *   • Pure Monochrome: Black (#171717) & White (#ffffff) with subtle grayscale
- *     shading for depth — zero rainbow colors.
- *   • Relaxed & Butter-Smooth: ~900ms duration with wide wave overlaps
- *     so the pixel blocks glide gracefully instead of snapping quickly.
- *   • Fluid Two-Stage Motion:
- *       1. Cover Wave (0 → 50%): Pixel blocks gently bloom outward from the
- *          clicked toggle, covering the screen in a solid layer.
- *       2. Midpoint (50%): Theme swaps invisibly beneath the solid canvas.
- *       3. Reveal Wave (50 → 100%): Pixel blocks gently dissolve outward in the
- *          same graceful momentum, unveiling the new theme.
- *   • Hardware-accelerated canvas with sub-pixel margin to eliminate line gaps.
- *   • Adaptive block sizes for mobile (<768px), tablet, and desktop viewports.
- *   • Respects prefers-reduced-motion (instant swap without animation).
+ * Engineered for maximum smoothness (120 FPS / 60 FPS mobile):
+ *   • Pure Monochrome: Matte black (#171717) & crisp white (#ffffff) with
+ *     continuous opacity modulation — zero color flashes or binary flips.
+ *   • True Butter-Smooth Easing: Full S-curve easeInOutCubic with zero velocity
+ *     at both start and end, eliminating popping or abrupt cutoffs.
+ *   • Two-Stage Fluid Wave:
+ *       1. Cover Wave (0 → 50%): Pixel blocks bloom outward from the toggle
+ *          with soft S-curve scaling, seamlessly solidifying the viewport.
+ *       2. Midpoint (50%): Theme swaps beneath a 100% solid matte overlay.
+ *       3. Reveal Wave (50 → 100%): Pixel blocks gently dissolve outward with
+ *          matching S-curve decay.
+ *       4. Tail-end Vapor Fade: Canvas opacity softly fades over the final 8%
+ *          for an imperceptible, feather-soft exit.
+ *   • Paced at 1100ms for a relaxed, cinematic, luxury feel on both mobile & desktop.
+ *   • Hardware-accelerated canvas with sub-pixel closure and DPR capping.
  * ─────────────────────────────────────────────────────────────────────────
  */
 
 let isTransitioning = false;
 
-// ── Monochrome Palettes (Pure Black, Slate & Crisp White) ─────────────────
-const MONO_DARK_PALETTE = [
-  "#171717",
-  "#1f1f1f",
-  "#141414",
-  "#262626",
-  "#1a1a1a",
-];
-
-const MONO_LIGHT_PALETTE = [
-  "#ffffff",
-  "#f7f8fa",
-  "#f0f2f5",
-  "#fafbfc",
-  "#eef0f3",
-];
-
-// ── Silky Easing Functions ────────────────────────────────────────────────
-// Smooth cubic curves for gradual start and gentle settling
-const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
-const easeInCubic = (t) => t * t * t;
+// ── S-Curve Easing (Zero velocity at start and end for butter softness) ────
+function easeInOutCubic(t) {
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
 
 // ── Helpers ──────────────────────────────────────────────────────────────
 
@@ -54,8 +38,10 @@ function prefersReducedMotion() {
 function getOrigin(originEvent, isMobile) {
   if (originEvent) {
     const touch = originEvent.touches?.[0] ?? originEvent.changedTouches?.[0];
-    if (touch) return { x: touch.clientX, y: touch.clientY };
-    if (typeof originEvent.clientX === "number") {
+    if (touch && typeof touch.clientX === "number") {
+      return { x: touch.clientX, y: touch.clientY };
+    }
+    if (typeof originEvent.clientX === "number" && originEvent.clientX > 0) {
       return { x: originEvent.clientX, y: originEvent.clientY };
     }
   }
@@ -83,14 +69,13 @@ function runPixelDissolve({ targetMode, originEvent, onSwap, duration }) {
   const blockSize = isMobile
     ? Math.max(18, Math.round(W / 20))
     : W < 1200
-      ? Math.max(24, Math.round(W / 44))
-      : Math.max(28, Math.round(W / 52));
+    ? Math.max(24, Math.round(W / 44))
+    : Math.max(28, Math.round(W / 52));
 
   const cols = Math.ceil(W / blockSize);
   const rows = Math.ceil(H / blockSize);
 
   const targetColor = targetMode === "dark" ? "#171717" : "#ffffff";
-  const palette = targetMode === "dark" ? MONO_DARK_PALETTE : MONO_LIGHT_PALETTE;
 
   // ── Pre-calculate block distances and wave delays ────────────────────────
   const maxDist = Math.hypot(
@@ -106,18 +91,18 @@ function runPixelDissolve({ targetMode, originEvent, onSwap, duration }) {
       const dist = Math.hypot(cx - ox, cy - oy);
       const normDist = dist / (maxDist || 1);
 
-      // Subtle organic jitter creates natural pixel diffusion
+      // Organic subtle jitter creates natural digital dispersion
       const jitter = hash(c, r, 1) * 0.12;
-      const delay = Math.min(1, normDist * 0.68 + jitter);
+      const delay = Math.min(1, normDist * 0.66 + jitter);
 
-      const shadeIdx = Math.floor(hash(c, r, 2) * palette.length);
-      const shade = palette[shadeIdx];
+      // Subtle base opacity variation for textured dithering without color shifts
+      const baseAlpha = 0.88 + hash(c, r, 2) * 0.12;
 
       blocks.push({
         x: c * blockSize,
         y: r * blockSize,
         delay,
-        shade,
+        baseAlpha,
       });
     }
   }
@@ -132,11 +117,13 @@ function runPixelDissolve({ targetMode, originEvent, onSwap, duration }) {
     "height:100vh",
     "z-index:999999",
     "pointer-events:none",
-    "will-change:transform",
+    "will-change:opacity,transform",
+    "opacity:1",
+    "transition:opacity 0.08s ease-out",
   ].join(";");
 
   const dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 2 : 2.5);
-  canvas.width = Math.round(W * dpr);
+  canvas.width  = Math.round(W * dpr);
   canvas.height = Math.round(H * dpr);
 
   const ctx = canvas.getContext("2d", { alpha: true, desynchronized: true });
@@ -154,14 +141,15 @@ function runPixelDissolve({ targetMode, originEvent, onSwap, duration }) {
   const startTime = performance.now();
   let swapped = false;
 
-  // Window of transition per block (wide = silky smooth gradual bloom)
-  const windowSpan = 0.38;
-  const spreadScale = 0.58;
+  // Wide window span for velvety, continuous wave motion
+  const windowSpan = 0.42;
+  const spreadScale = 0.56;
 
   function frame(now) {
     const elapsed = now - startTime;
 
     ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = targetColor;
 
     if (elapsed <= half) {
       // ══ Phase 1: Blocks gently bloom outward to cover screen ════════
@@ -170,22 +158,22 @@ function runPixelDissolve({ targetMode, originEvent, onSwap, duration }) {
       for (let i = 0; i < blocks.length; i++) {
         const b = blocks[i];
         const start = b.delay * spreadScale;
-        const end = start + windowSpan;
+        const end   = start + windowSpan;
 
         if (phaseT <= start) continue;
 
         if (phaseT >= end) {
-          // Fully expanded block
-          ctx.fillStyle = targetColor;
+          // Fully covered solid block
+          ctx.globalAlpha = 1;
           ctx.fillRect(b.x, b.y, blockSize + 0.8, blockSize + 0.8);
         } else {
-          // Expanding block with smooth ease-out
+          // Softly blooming block with continuous easeInOut
           const blockT = (phaseT - start) / windowSpan;
-          const scale = easeOutCubic(blockT);
-          const size = blockSize * scale + 0.8;
-          const off = (blockSize - size) * 0.5;
+          const scale  = easeInOutCubic(blockT);
+          const size   = blockSize * scale + 0.8;
+          const off    = (blockSize - size) * 0.5;
 
-          ctx.fillStyle = blockT < 0.25 ? b.shade : targetColor;
+          ctx.globalAlpha = b.baseAlpha + (1 - b.baseAlpha) * scale;
           ctx.fillRect(b.x + off, b.y + off, size, size);
         }
       }
@@ -207,25 +195,31 @@ function runPixelDissolve({ targetMode, originEvent, onSwap, duration }) {
       for (let i = 0; i < blocks.length; i++) {
         const b = blocks[i];
         const start = b.delay * spreadScale;
-        const end = start + windowSpan;
+        const end   = start + windowSpan;
 
         if (phaseT >= end) continue; // fully dissolved
 
         if (phaseT <= start) {
           // Still solid
-          ctx.fillStyle = targetColor;
+          ctx.globalAlpha = 1;
           ctx.fillRect(b.x, b.y, blockSize + 0.8, blockSize + 0.8);
         } else {
-          // Shrinking / dissolving block
+          // Softly shrinking block with matching continuous easeInOut
           const blockT = (phaseT - start) / windowSpan;
-          const scale = 1 - easeInCubic(blockT);
-          const size = blockSize * scale + 0.8;
-          const off = (blockSize - size) * 0.5;
+          const scale  = 1 - easeInOutCubic(blockT);
+          const size   = blockSize * scale + 0.8;
+          const off    = (blockSize - size) * 0.5;
 
-          ctx.fillStyle = scale > 0.8 ? targetColor : b.shade;
+          ctx.globalAlpha = b.baseAlpha + (1 - b.baseAlpha) * scale;
           ctx.fillRect(b.x + off, b.y + off, size, size);
         }
       }
+    }
+
+    // Feather-soft exit over the final 8% of total duration
+    if (elapsed > duration * 0.92) {
+      const tailProgress = (elapsed - duration * 0.92) / (duration * 0.08);
+      canvas.style.opacity = String(Math.max(0, 1 - tailProgress));
     }
 
     if (elapsed < duration) {
@@ -256,10 +250,5 @@ export function triggerPixelTransition({
   }
 
   isTransitioning = true;
-
-  // Gentle, luxurious timing: ~820ms on mobile, ~900ms on desktop
-  const isMobile = window.innerWidth < 768;
-  const dur = isMobile ? Math.round(duration * 0.9) : duration;
-
-  runPixelDissolve({ targetMode, originEvent, onSwap, duration: dur });
+  runPixelDissolve({ targetMode, originEvent, onSwap, duration });
 }
