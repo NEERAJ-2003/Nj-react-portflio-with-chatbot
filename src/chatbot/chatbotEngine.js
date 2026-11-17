@@ -393,7 +393,7 @@ const SMALLTALK = [
     answer: "August 2026"
   },
   {
-    keywords: ["hi", "hello", "hey", "yo", "hiya", "howdy"],
+    keywords: ["hi", "hello", "hey", "yo", "hiya", "howdy", "hlo", "hallo", "hai"],
     answer: "Hey there! I'm Freya. Ask me anything about the portfolio."
   },
   {

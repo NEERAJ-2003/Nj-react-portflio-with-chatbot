@@ -92,8 +92,8 @@ function runPixelDissolve({ targetMode, currentTheme, originEvent, onSwap, durat
   const blockSize = isMobile
     ? Math.max(22, Math.round(W / 16))
     : W < 1200
-    ? Math.max(24, Math.round(W / 44))
-    : Math.max(28, Math.round(W / 52));
+      ? Math.max(24, Math.round(W / 44))
+      : Math.max(28, Math.round(W / 52));
 
   const cols = Math.ceil(W / blockSize);
   const rows = Math.ceil(H / blockSize);
@@ -156,7 +156,7 @@ function runPixelDissolve({ targetMode, currentTheme, originEvent, onSwap, durat
   ].join(";");
 
   const dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1.75 : 2.0);
-  canvas.width  = Math.round(W * dpr);
+  canvas.width = Math.round(W * dpr);
   canvas.height = Math.round(H * dpr);
 
   const ctx = canvas.getContext("2d", { alpha: true });
@@ -190,7 +190,7 @@ function runPixelDissolve({ targetMode, currentTheme, originEvent, onSwap, durat
       for (let i = 0; i < blocks.length; i++) {
         const b = blocks[i];
         const start = b.delay * spreadScale;
-        const end   = start + windowSpan;
+        const end = start + windowSpan;
 
         if (phaseT <= start) continue;
 
@@ -202,9 +202,9 @@ function runPixelDissolve({ targetMode, currentTheme, originEvent, onSwap, durat
         } else {
           // Softly blooming block with continuous easeInOut and sine alpha
           const blockT = (phaseT - start) / windowSpan;
-          const scale  = easeInOutCubic(blockT);
-          const size   = Math.ceil(blockSize * scale) + 1;
-          const off    = Math.floor((blockSize - size) * 0.5);
+          const scale = easeInOutCubic(blockT);
+          const size = Math.ceil(blockSize * scale) + 1;
+          const off = Math.floor((blockSize - size) * 0.5);
 
           ctx.globalAlpha = Math.max(0, Math.min(1, sinAlpha(blockT) * 1.15));
           ctx.fillStyle = (b.isAccent && blockT < 0.40) ? accentColor : targetColor;
@@ -229,7 +229,7 @@ function runPixelDissolve({ targetMode, currentTheme, originEvent, onSwap, durat
       for (let i = 0; i < blocks.length; i++) {
         const b = blocks[i];
         const start = b.delay * spreadScale;
-        const end   = start + windowSpan;
+        const end = start + windowSpan;
 
         if (phaseT >= end) continue; // fully dissolved into new theme
 
@@ -241,9 +241,9 @@ function runPixelDissolve({ targetMode, currentTheme, originEvent, onSwap, durat
         } else {
           // Softly dissolving block revealing new theme from the background
           const blockT = (phaseT - start) / windowSpan;
-          const scale  = 1 - easeInOutCubic(blockT);
-          const size   = Math.ceil(blockSize * scale) + 1;
-          const off    = Math.floor((blockSize - size) * 0.5);
+          const scale = 1 - easeInOutCubic(blockT);
+          const size = Math.ceil(blockSize * scale) + 1;
+          const off = Math.floor((blockSize - size) * 0.5);
 
           ctx.globalAlpha = Math.max(0, Math.min(1, sinAlpha(scale) * 1.15));
           ctx.fillStyle = (b.isAccent && scale < 0.45) ? accentColor : targetColor;

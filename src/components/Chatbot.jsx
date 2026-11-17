@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { findAnswer, isSmalltalk, pickThinkingPhrase } from "../chatbot/chatbotEngine";
 import VoiceVisualizer from "./VoiceVisualizer";
+import { triggerVaporize } from "../utils/vaporizeAnimation";
 
 
 export default function Chatbot() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([]);
+  const [isVaporizing, setIsVaporizing] = useState(false);
   const [input, setInput] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
@@ -122,7 +124,7 @@ export default function Chatbot() {
         recognitionRef.current.onerror = null;
         recognitionRef.current.onresult = null;
         recognitionRef.current.abort();
-      } catch (e) {}
+      } catch {}
       recognitionRef.current = null;
     }
   }
@@ -158,7 +160,7 @@ export default function Chatbot() {
     if ("speechSynthesis" in window) {
       try {
         window.speechSynthesis.cancel();
-      } catch (e) {}
+      } catch {}
     }
 
     try {
@@ -227,7 +229,7 @@ export default function Chatbot() {
           if (!isRecordingRef.current || !recognitionRef.current || fatalVoiceErrorRef.current) return;
           try {
             recognitionRef.current.start();
-          } catch (e) {}
+          } catch {}
         }, 180);
       };
 
@@ -244,7 +246,7 @@ export default function Chatbot() {
     }
   }
 
-  function cancelVoiceRecording(showToast = true) {
+  function cancelVoiceRecording(_showToast = true) {
     isRecordingRef.current = false;
     setIsRecording(false);
     clearInterval(timerRef.current);
@@ -431,18 +433,53 @@ export default function Chatbot() {
   }
 
   function clearChat() {
+    if (isVaporizing) return;
     cancelActiveGeneration();
     if (isRecordingRef.current) {
       cancelVoiceRecording(false);
     }
-    setMessages([
-      {
-        id: nextId(),
-        text: "Chat refreshed! Ask me about Neeraj's skills, Brain Tumor architecture, or projects.",
-        sender: "bot",
-        action: null,
+
+    const container = messagesRef.current;
+    if (!container || messages.length === 0) {
+      setMessages([
+        {
+          id: nextId(),
+          text: "Chat refreshed! Ask me about Neeraj's skills, Brain Tumor architecture, or projects.",
+          sender: "bot",
+          action: null,
+        },
+      ]);
+      return;
+    }
+
+    setIsVaporizing(true);
+
+    const activeThemeKey =
+      (typeof document !== "undefined" && document.documentElement.getAttribute("data-theme")) ||
+      "cobalt";
+    const ACCENT_COLORS = {
+      cobalt: "#699cff",
+      emerald: "#00f5a0",
+      violet: "#bf5af2",
+      amber: "#ffb020",
+    };
+    const accent = ACCENT_COLORS[activeThemeKey] || "#699cff";
+
+    triggerVaporize({
+      container,
+      accentColor: accent,
+      onComplete: () => {
+        setMessages([
+          {
+            id: nextId(),
+            text: "Chat refreshed! Ask me about Neeraj's skills, Brain Tumor architecture, or projects.",
+            sender: "bot",
+            action: null,
+          },
+        ]);
+        setIsVaporizing(false);
       },
-    ]);
+    });
   }
 
   useEffect(() => {
@@ -468,6 +505,7 @@ export default function Chatbot() {
   }
 
   function handleSend(textToSend) {
+    if (isVaporizing) return;
     const text = (textToSend || input).trim();
     if (!text) return;
 
@@ -711,9 +749,12 @@ export default function Chatbot() {
                 aria-label="Clear chat"
                 title="Clear conversation"
                 onClick={clearChat}
-                className="w-7 h-7 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors rounded-lg hover:bg-surface-container"
+                disabled={isVaporizing}
+                className="w-7 h-7 flex items-center justify-center text-on-surface-variant hover:text-primary transition-all duration-300 rounded-lg hover:bg-surface-container active:scale-90 cursor-pointer disabled:opacity-40"
               >
-                <span className="material-symbols-outlined text-[18px]">delete_sweep</span>
+                <span className={`material-symbols-outlined text-[18px] transition-transform duration-500 ${isVaporizing ? "rotate-[-45deg] scale-110 text-primary" : ""}`}>
+                  delete_sweep
+                </span>
               </button>
               <button id="chat-close-btn" aria-label="Close chat" onClick={closeChat} style={{ marginLeft: 0 }}>
                 <span className="material-symbols-outlined">close</span>
@@ -722,7 +763,7 @@ export default function Chatbot() {
           </div>
 
           {/* Chat Messages */}
-          <div id="chat-messages" ref={messagesRef}>
+          <div id="chat-messages" ref={messagesRef} className="relative">
             {messages.map((m) => {
               const isUser = m.sender === "user";
               return (
