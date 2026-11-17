@@ -44,9 +44,10 @@ export default function App() {
 
     triggerPixelTransition({
       targetMode: newMode,
+      currentTheme: theme,
       originEvent,
       onSwap: update,
-      duration: 1500,
+      duration: 1600,
     });
   }
 

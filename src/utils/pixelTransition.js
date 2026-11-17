@@ -1,27 +1,41 @@
 /**
- * Ultra-Smooth Monochrome Pixel Dissolve Theme Transition
+ * Ultra-Smooth Themed Pixel Dissolve Transition
  * ─────────────────────────────────────────────────────────────────────────
- * Mobile-Optimized & Hardware-Accelerated (120 FPS / 60 FPS):
- *   • True 100% Solid Coverage: No opacity bleed-through, completely eliminating
- *     background color shifts or visual artifacts during live mobile view.
- *   • Hardware-Composited: Uses translate3d(0,0,0) and backface-visibility
- *     on a dedicated GPU layer with zero CSS-JS transition contention.
- *   • Exact Tap Origin Detection: Uses getBoundingClientRect() on the tapped
- *     button for pinpoint origin coordinates on all mobile screens.
- *   • Viewport-Safe Sizing: Uses top:0; left:0; width:100%; height:100% to
- *     prevent mobile address-bar resize jumps.
- *   • Capped DPR on Mobile (1.75x): Prevents mobile GPU thermal throttling
- *     and keeps frame rate locked at a butter-smooth 60-120 FPS.
- *   • S-Curve Cubic Easing (easeInOutCubic): Soft entry and exit for both
- *     expand and reveal waves.
+ * Engineered for maximum smoothness and visual harmony:
+ *   • Active Accent Tint: Incorporates your selected theme color from the 4
+ *     accent options (Cobalt #699cff, Emerald #00f5a0, Violet #bf5af2, Amber #ffb020)
+ *     as delicate sparkling pixels along the wave crest, seamlessly harmonizing
+ *     with matte black (#171717) and clean white (#ffffff).
+ *   • Sine-Weighted S-Curve Easing: Combines easeInOutCubic with half-sine
+ *     optical alpha interpolation for continuous, liquid-like dissolution.
+ *   • Two-Stage Fluid Motion:
+ *       1. Cover Wave (0 → 50%): Pixels bloom outward from the toggle button
+ *          with subtle accent glints, solidifying into 100% opaque cover.
+ *       2. Midpoint (50%): DOM theme swaps invisibly under solid canvas.
+ *       3. Reveal Wave (50 → 100%): Pixels dissolve outward in the same momentum,
+ *          smoothly unveiling the new theme from the background.
+ *   • Hardware-accelerated canvas with translate3d(0,0,0) and sub-pixel closure.
+ *   • Optimized block counts for mobile and desktop screens.
  * ─────────────────────────────────────────────────────────────────────────
  */
 
 let isTransitioning = false;
 
-// ── S-Curve Easing (Zero velocity at start and end for butter softness) ────
+// ── 4 Accent Theme Map ────────────────────────────────────────────────────
+const ACCENT_MAP = {
+  cobalt: "#699cff",
+  emerald: "#00f5a0",
+  violet: "#bf5af2",
+  amber: "#ffb020",
+};
+
+// ── Silky Easing & Alpha Functions ────────────────────────────────────────
 function easeInOutCubic(t) {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
+
+function sinAlpha(t) {
+  return Math.sin(Math.max(0, Math.min(1, t)) * Math.PI * 0.5);
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────
@@ -35,7 +49,6 @@ function prefersReducedMotion() {
 
 function getOrigin(originEvent, isMobile) {
   if (originEvent) {
-    // 1. Highest precision: Bounding rectangle of the tapped/clicked element
     const target = originEvent.currentTarget || originEvent.target;
     if (target && typeof target.getBoundingClientRect === "function") {
       const rect = target.getBoundingClientRect();
@@ -46,17 +59,14 @@ function getOrigin(originEvent, isMobile) {
         };
       }
     }
-    // 2. Touch event client coordinates
     const touch = originEvent.touches?.[0] ?? originEvent.changedTouches?.[0];
     if (touch && typeof touch.clientX === "number" && touch.clientX > 0) {
       return { x: touch.clientX, y: touch.clientY };
     }
-    // 3. Mouse event client coordinates
     if (typeof originEvent.clientX === "number" && originEvent.clientX > 0) {
       return { x: originEvent.clientX, y: originEvent.clientY };
     }
   }
-  // 4. Default fallback: Top-right navbar toggle area
   const w = document.documentElement.clientWidth || window.innerWidth;
   return {
     x: w - (isMobile ? 52 : 175),
@@ -64,7 +74,7 @@ function getOrigin(originEvent, isMobile) {
   };
 }
 
-// Deterministic hash based on grid coords (stable across frames)
+// Deterministic pseudo-random hash
 function hash(c, r, seed) {
   const n = Math.sin(c * 127.1 + r * 311.7 + seed * 74.3) * 43758.5453;
   return n - Math.floor(n);
@@ -72,16 +82,13 @@ function hash(c, r, seed) {
 
 // ── Core Animation ────────────────────────────────────────────────────────
 
-function runPixelDissolve({ targetMode, originEvent, onSwap, duration }) {
-  // Mobile viewport-safe measurements (avoids dynamic address-bar jumps)
+function runPixelDissolve({ targetMode, currentTheme, originEvent, onSwap, duration }) {
   const W = document.documentElement.clientWidth || window.innerWidth;
   const H = window.innerHeight;
   const isMobile = W < 768;
   const { x: ox, y: oy } = getOrigin(originEvent, isMobile);
 
-  // Optimized block size:
-  // Mobile: ~22-26px (~16 cols, ~350 total blocks) keeps mobile GPU cool & fluid
-  // Desktop: ~26-30px (~44 cols)
+  // Responsive block sizes: mobile ~22px, desktop ~26-28px
   const blockSize = isMobile
     ? Math.max(22, Math.round(W / 16))
     : W < 1200
@@ -93,7 +100,14 @@ function runPixelDissolve({ targetMode, originEvent, onSwap, duration }) {
 
   const targetColor = targetMode === "dark" ? "#171717" : "#ffffff";
 
-  // ── Pre-calculate block distances and wave delays ────────────────────────
+  // Resolve active accent color from the 4 themes (Cobalt, Emerald, Violet, Amber)
+  const activeKey =
+    currentTheme ||
+    (typeof document !== "undefined" && document.documentElement.getAttribute("data-theme")) ||
+    "cobalt";
+  const accentColor = ACCENT_MAP[activeKey] || ACCENT_MAP.cobalt;
+
+  // ── Pre-calculate block distances, wave delays, and accent distribution ───
   const maxDist = Math.hypot(
     Math.max(ox, W - ox),
     Math.max(oy, H - oy)
@@ -107,19 +121,23 @@ function runPixelDissolve({ targetMode, originEvent, onSwap, duration }) {
       const dist = Math.hypot(cx - ox, cy - oy);
       const normDist = dist / (maxDist || 1);
 
-      // Organic subtle jitter creates natural digital dispersion
+      // Subtle organic jitter creates natural pixel diffusion
       const jitter = hash(c, r, 1) * 0.12;
-      const delay = Math.min(1, normDist * 0.66 + jitter);
+      const delay = Math.min(1, normDist * 0.64 + jitter);
+
+      // ~20% of blocks carry the active theme accent on wave edges
+      const isAccent = hash(c, r, 7) < 0.22;
 
       blocks.push({
         x: c * blockSize,
         y: r * blockSize,
         delay,
+        isAccent,
       });
     }
   }
 
-  // ── High-Performance Canvas Setup ────────────────────────────────────────
+  // ── Canvas Setup ─────────────────────────────────────────────────────────
   const canvas = document.createElement("canvas");
   canvas.setAttribute("aria-hidden", "true");
   canvas.style.cssText = [
@@ -137,7 +155,6 @@ function runPixelDissolve({ targetMode, originEvent, onSwap, duration }) {
     "transform:translate3d(0,0,0)",
   ].join(";");
 
-  // Cap mobile DPR at 1.75 to prevent mobile GPU frame-drops, 2.0 on desktop
   const dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1.75 : 2.0);
   canvas.width  = Math.round(W * dpr);
   canvas.height = Math.round(H * dpr);
@@ -152,21 +169,19 @@ function runPixelDissolve({ targetMode, originEvent, onSwap, duration }) {
 
   document.body.appendChild(canvas);
 
-  // Halfway point: 50% cover wave, 50% reveal wave
+  // 50% cover wave, 50% reveal wave
   const half = duration * 0.5;
   const startTime = performance.now();
   let swapped = false;
 
   // Wide window span for velvety, continuous wave motion
-  const windowSpan = 0.42;
-  const spreadScale = 0.56;
+  const windowSpan = 0.46;
+  const spreadScale = 0.52;
 
   function frame(now) {
     const elapsed = now - startTime;
 
-    // Solid opaque background clears to prevent any ghosting
     ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = targetColor;
 
     if (elapsed <= half) {
       // ══ Phase 1: Blocks gently bloom outward to cover screen ════════
@@ -182,15 +197,17 @@ function runPixelDissolve({ targetMode, originEvent, onSwap, duration }) {
         if (phaseT >= end) {
           // Fully covered solid block with +1px overlap to eliminate sub-pixel seams
           ctx.globalAlpha = 1;
+          ctx.fillStyle = targetColor;
           ctx.fillRect(b.x, b.y, blockSize + 1, blockSize + 1);
         } else {
-          // Softly blooming block with continuous easeInOut and soft alpha
+          // Softly blooming block with continuous easeInOut and sine alpha
           const blockT = (phaseT - start) / windowSpan;
           const scale  = easeInOutCubic(blockT);
           const size   = Math.ceil(blockSize * scale) + 1;
           const off    = Math.floor((blockSize - size) * 0.5);
 
-          ctx.globalAlpha = Math.max(0, Math.min(1, scale * 1.15));
+          ctx.globalAlpha = Math.max(0, Math.min(1, sinAlpha(blockT) * 1.15));
+          ctx.fillStyle = (b.isAccent && blockT < 0.40) ? accentColor : targetColor;
           ctx.fillRect(b.x + off, b.y + off, size, size);
         }
       }
@@ -214,11 +231,12 @@ function runPixelDissolve({ targetMode, originEvent, onSwap, duration }) {
         const start = b.delay * spreadScale;
         const end   = start + windowSpan;
 
-        if (phaseT >= end) continue; // fully dissolved into new theme background
+        if (phaseT >= end) continue; // fully dissolved into new theme
 
         if (phaseT <= start) {
           // Still solid
           ctx.globalAlpha = 1;
+          ctx.fillStyle = targetColor;
           ctx.fillRect(b.x, b.y, blockSize + 1, blockSize + 1);
         } else {
           // Softly dissolving block revealing new theme from the background
@@ -227,7 +245,8 @@ function runPixelDissolve({ targetMode, originEvent, onSwap, duration }) {
           const size   = Math.ceil(blockSize * scale) + 1;
           const off    = Math.floor((blockSize - size) * 0.5);
 
-          ctx.globalAlpha = Math.max(0, Math.min(1, scale * 1.15));
+          ctx.globalAlpha = Math.max(0, Math.min(1, sinAlpha(scale) * 1.15));
+          ctx.fillStyle = (b.isAccent && scale < 0.45) ? accentColor : targetColor;
           ctx.fillRect(b.x + off, b.y + off, size, size);
         }
       }
@@ -249,9 +268,10 @@ function runPixelDissolve({ targetMode, originEvent, onSwap, duration }) {
 
 export function triggerPixelTransition({
   targetMode,
+  currentTheme = "cobalt",
   originEvent = null,
   onSwap,
-  duration = 1500,
+  duration = 1600,
 }) {
   if (isTransitioning) return;
 
@@ -261,5 +281,5 @@ export function triggerPixelTransition({
   }
 
   isTransitioning = true;
-  runPixelDissolve({ targetMode, originEvent, onSwap, duration });
+  runPixelDissolve({ targetMode, currentTheme, originEvent, onSwap, duration });
 }
