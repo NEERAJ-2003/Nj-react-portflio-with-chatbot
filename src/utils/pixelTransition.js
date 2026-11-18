@@ -1,27 +1,33 @@
 /**
- * Ultra-Smooth Themed Pixel Dissolve Transition
+ * Pixel Ripple Dark / Light Mode Transition
  * ─────────────────────────────────────────────────────────────────────────
- * Engineered for maximum smoothness and visual harmony:
- *   • Active Accent Tint: Incorporates your selected theme color from the 4
- *     accent options (Cobalt #699cff, Emerald #00f5a0, Violet #bf5af2, Amber #ffb020)
- *     as delicate sparkling pixels along the wave crest, seamlessly harmonizing
- *     with matte black (#171717) and clean white (#ffffff).
- *   • Sine-Weighted S-Curve Easing: Combines easeInOutCubic with half-sine
- *     optical alpha interpolation for continuous, liquid-like dissolution.
- *   • Two-Stage Fluid Motion:
- *       1. Cover Wave (0 → 50%): Pixels bloom outward from the toggle button
- *          with subtle accent glints, solidifying into 100% opaque cover.
- *       2. Midpoint (50%): DOM theme swaps invisibly under solid canvas.
- *       3. Reveal Wave (50 → 100%): Pixels dissolve outward in the same momentum,
- *          smoothly unveiling the new theme from the background.
- *   • Hardware-accelerated canvas with translate3d(0,0,0) and sub-pixel closure.
- *   • Optimized block counts for mobile and desktop screens.
+ * Dual-layer synchronized mode transition:
+ *   1. View Transitions API:
+ *      Captures old and new snapshots with document.startViewTransition().
+ *      Animates ::view-transition-new(root) with clip-path: circle(0px at X Y)
+ *      growing to circle(maxR at X Y) using the Web Animations API on
+ *      documentElement, revealing the new mode outward from the toggle origin.
+ *
+ *   2. Canvas Pixel Ripple Overlay:
+ *      A full-screen fixed canvas renders a dithered ring of pixel squares
+ *      surrounding the expanding clip boundary.
+ *      - Grid cells of 10px (12px on mobile)
+ *      - u = |dist - r| / band (skipped if u >= 1)
+ *      - f = (1 - u) * (0.7 + 0.5 * hash(cellX, cellY))
+ *      - square size = cell * min(1, f * 1.15) (skipped if size < 1.2px)
+ *      - band = 22% of shorter screen side, growing in with min(1, 0.3 + p * 2.5)
+ *      - Alpha = min(1, 0.55 + 0.45 * f)
+ *      - Precomputed 96-entry lookup table cycling through 5 shades of the
+ *        active accent theme (Cobalt, Emerald, Violet, Amber)
+ *      - Timing: 2000ms with easing p = 1 - (1 - t)^2.2
+ *      - Frame 0 drawn synchronously on click for instant zero-lag feedback
  * ─────────────────────────────────────────────────────────────────────────
  */
 
 let isTransitioning = false;
+let currentAnim = null;
 
-// ── 4 Accent Theme Map ────────────────────────────────────────────────────
+// ── Accent Theme Definitions ──────────────────────────────────────────────
 const ACCENT_MAP = {
   cobalt: "#699cff",
   emerald: "#00f5a0",
@@ -29,17 +35,72 @@ const ACCENT_MAP = {
   amber: "#ffb020",
 };
 
-// ── Silky Easing & Alpha Functions ────────────────────────────────────────
-function easeInOutCubic(t) {
-  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+// ── Color Utilities & 96-Entry LUT Generation ─────────────────────────────
+function hexToRgb(hex) {
+  const n = parseInt(hex.replace("#", ""), 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
 }
 
-function sinAlpha(t) {
-  return Math.sin(Math.max(0, Math.min(1, t)) * Math.PI * 0.5);
+function lerpRgb(a, b, t) {
+  return [
+    Math.round(a[0] + (b[0] - a[0]) * t),
+    Math.round(a[1] + (b[1] - a[1]) * t),
+    Math.round(a[2] + (b[2] - a[2]) * t),
+  ];
 }
+
+/**
+ * Builds a 5-shade palette per accent:
+ * [s0: lighter tint, s1: light-mid blend, s2: base, s3: dark-mid blend, s4: darker shade]
+ */
+function buildPalette(baseHex) {
+  const base = hexToRgb(baseHex);
+  const white = [255, 255, 255];
+  const dark = [
+    Math.round(base[0] * 0.22),
+    Math.round(base[1] * 0.22),
+    Math.round(base[2] * 0.22),
+  ];
+
+  const s0 = lerpRgb(base, white, 0.55); // lighter tint
+  const s1 = lerpRgb(base, white, 0.24); // in-between light
+  const s2 = base;                       // base
+  const s3 = lerpRgb(base, dark, 0.36);  // in-between dark
+  const s4 = lerpRgb(base, dark, 0.72);  // darker shade
+
+  return [s0, s1, s2, s3, s4];
+}
+
+/**
+ * Precomputes a 96-entry color lookup table smoothly cycling through the 5 shades.
+ */
+function build96Lut(baseHex) {
+  const [s0, s1, s2, s3, s4] = buildPalette(baseHex);
+  // Smooth cyclic loop: s0 -> s1 -> s2 -> s3 -> s4 -> s3 -> s2 -> s1 -> (loops to s0)
+  const cycle = [s0, s1, s2, s3, s4, s3, s2, s1];
+  const lut = [];
+  const segCount = 8;
+  const segLen = 96 / segCount; // 12 entries per segment
+
+  for (let i = 0; i < 96; i++) {
+    const seg = Math.floor(i / segLen);
+    const frac = (i % segLen) / segLen;
+    const c1 = cycle[seg];
+    const c2 = cycle[(seg + 1) % segCount];
+    const rgb = lerpRgb(c1, c2, frac);
+    lut[i] = `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`;
+  }
+  return lut;
+}
+
+const LUT_TABLES = {
+  cobalt: build96Lut(ACCENT_MAP.cobalt),
+  emerald: build96Lut(ACCENT_MAP.emerald),
+  violet: build96Lut(ACCENT_MAP.violet),
+  amber: build96Lut(ACCENT_MAP.amber),
+};
 
 // ── Helpers ──────────────────────────────────────────────────────────────
-
 function prefersReducedMotion() {
   return (
     typeof window !== "undefined" &&
@@ -74,70 +135,70 @@ function getOrigin(originEvent, isMobile) {
   };
 }
 
-// Deterministic pseudo-random hash
-function hash(c, r, seed) {
-  const n = Math.sin(c * 127.1 + r * 311.7 + seed * 74.3) * 43758.5453;
-  return n - Math.floor(n);
+// Deterministic fast bitwise integer hash -> [0, 1)
+function hash(cx, cy) {
+  let h = (cx * 374761393 + cy * 668265263) ^ 0x5bf03635;
+  h = Math.imul(h ^ (h >>> 13), 1274126177);
+  return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
 }
 
-// ── Core Animation ────────────────────────────────────────────────────────
+// Easing: Smooth S-curve (zero initial velocity for a gentle, buttery bloom, smoothly gliding outward)
+function easeProgress(t) {
+  return t * t * (3 - 2 * t);
+}
 
-function runPixelDissolve({ targetMode, currentTheme, originEvent, onSwap, duration }) {
+// ── Public API ─────────────────────────────────────────────────────────────
+export function triggerPixelTransition({
+  targetMode: _targetMode,
+  currentTheme = "cobalt",
+  originEvent = null,
+  onSwap,
+  duration: _duration = 2000,
+}) {
+  // Ignore double clicks while an animation is in flight
+  if (isTransitioning) return;
+
+  // Fallback: if startViewTransition missing or prefers-reduced-motion, swap immediately
+  if (
+    typeof document === "undefined" ||
+    typeof document.startViewTransition !== "function" ||
+    prefersReducedMotion()
+  ) {
+    onSwap?.();
+    return;
+  }
+
+  isTransitioning = true;
+
+  const DURATION = 2000;
+
   const W = document.documentElement.clientWidth || window.innerWidth;
   const H = window.innerHeight;
   const isMobile = W < 768;
-  const { x: ox, y: oy } = getOrigin(originEvent, isMobile);
+  const { x: originX, y: originY } = getOrigin(originEvent, isMobile);
 
-  // Responsive block sizes: mobile ~22px, desktop ~26-28px
-  const blockSize = isMobile
-    ? Math.max(22, Math.round(W / 16))
-    : W < 1200
-      ? Math.max(24, Math.round(W / 44))
-      : Math.max(28, Math.round(W / 52));
+  const cell = isMobile ? 12 : 10;
+  const cols = Math.ceil(W / cell);
+  const rows = Math.ceil(H / cell);
 
-  const cols = Math.ceil(W / blockSize);
-  const rows = Math.ceil(H / blockSize);
+  const shorterSide = Math.min(W, H);
+  const baseBand = shorterSide * 0.22;
 
-  const targetColor = targetMode === "dark" ? "#171717" : "#ffffff";
+  // maxR: distance to farthest screen corner + band (ensures ring fully clears viewport)
+  const maxCornerDist = Math.hypot(
+    Math.max(originX, W - originX),
+    Math.max(originY, H - originY)
+  );
+  const maxR = maxCornerDist + baseBand;
 
-  // Resolve active accent color from the 4 themes (Cobalt, Emerald, Violet, Amber)
+  // Active theme color lookup table
   const activeKey =
     currentTheme ||
     (typeof document !== "undefined" && document.documentElement.getAttribute("data-theme")) ||
     "cobalt";
-  const accentColor = ACCENT_MAP[activeKey] || ACCENT_MAP.cobalt;
+  const lut = LUT_TABLES[activeKey] || LUT_TABLES.cobalt;
 
-  // ── Pre-calculate block distances, wave delays, and accent distribution ───
-  const maxDist = Math.hypot(
-    Math.max(ox, W - ox),
-    Math.max(oy, H - oy)
-  );
-
-  const blocks = [];
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      const cx = c * blockSize + blockSize * 0.5;
-      const cy = r * blockSize + blockSize * 0.5;
-      const dist = Math.hypot(cx - ox, cy - oy);
-      const normDist = dist / (maxDist || 1);
-
-      // Subtle organic jitter creates natural pixel diffusion
-      const jitter = hash(c, r, 1) * 0.12;
-      const delay = Math.min(1, normDist * 0.64 + jitter);
-
-      // ~20% of blocks carry the active theme accent on wave edges
-      const isAccent = hash(c, r, 7) < 0.22;
-
-      blocks.push({
-        x: c * blockSize,
-        y: r * blockSize,
-        delay,
-        isAccent,
-      });
-    }
-  }
-
-  // ── Canvas Setup ─────────────────────────────────────────────────────────
+  // ── Fixed Canvas Overlay Setup ───────────────────────────────────────────
   const canvas = document.createElement("canvas");
   canvas.setAttribute("aria-hidden", "true");
   canvas.style.cssText = [
@@ -146,16 +207,20 @@ function runPixelDissolve({ targetMode, currentTheme, originEvent, onSwap, durat
     "left:0",
     "width:100%",
     "height:100%",
-    "z-index:999999",
     "pointer-events:none",
-    "touch-action:none",
-    "-webkit-backface-visibility:hidden",
-    "backface-visibility:hidden",
-    "-webkit-transform:translate3d(0,0,0)",
-    "transform:translate3d(0,0,0)",
+    "z-index:9999999",
+    "border:none",
+    "padding:0",
+    "margin:0",
+    "background:transparent",
   ].join(";");
 
-  const dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1.75 : 2.0);
+  // Promote to top layer where supported for seamless view transition stacking
+  try {
+    canvas.setAttribute("popover", "manual");
+  } catch {}
+
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
   canvas.width = Math.round(W * dpr);
   canvas.height = Math.round(H * dpr);
 
@@ -167,119 +232,156 @@ function runPixelDissolve({ targetMode, currentTheme, originEvent, onSwap, durat
   }
   ctx.scale(dpr, dpr);
 
-  document.body.appendChild(canvas);
+  document.documentElement.appendChild(canvas);
+  try {
+    if (typeof canvas.showPopover === "function") {
+      canvas.showPopover();
+    }
+  } catch {}
 
-  // 50% cover wave, 50% reveal wave
-  const half = duration * 0.5;
-  const startTime = performance.now();
-  let swapped = false;
-
-  // Wide window span for velvety, continuous wave motion
-  const windowSpan = 0.46;
-  const spreadScale = 0.52;
-
-  function frame(now) {
-    const elapsed = now - startTime;
-
+  // ── Render function for a given progress p [0, 1] ─────────────────────────
+  function render(p) {
     ctx.clearRect(0, 0, W, H);
 
-    if (elapsed <= half) {
-      // ══ Phase 1: Blocks gently bloom outward to cover screen ════════
-      const phaseT = elapsed / half; // 0 → 1
+    const band = baseBand * Math.min(1, 0.08 + Math.sqrt(p) * 1.15);
+    const r = p * maxR;
 
-      for (let i = 0; i < blocks.length; i++) {
-        const b = blocks[i];
-        const start = b.delay * spreadScale;
-        const end = start + windowSpan;
+    // Optimization: only iterate cells inside the bounding box of the active ring
+    const maxRingR = r + band;
+    const minCol = Math.max(0, Math.floor((originX - maxRingR) / cell));
+    const maxCol = Math.min(cols - 1, Math.ceil((originX + maxRingR) / cell));
+    const minRow = Math.max(0, Math.floor((originY - maxRingR) / cell));
+    const maxRow = Math.min(rows - 1, Math.ceil((originY + maxRingR) / cell));
 
-        if (phaseT <= start) continue;
+    for (let cy = minRow; cy <= maxRow; cy++) {
+      const y = cy * cell + cell * 0.5;
+      const dy = y - originY;
+      const dy2 = dy * dy;
 
-        if (phaseT >= end) {
-          // Fully covered solid block with +1px overlap to eliminate sub-pixel seams
-          ctx.globalAlpha = 1;
-          ctx.fillStyle = targetColor;
-          ctx.fillRect(b.x, b.y, blockSize + 1, blockSize + 1);
-        } else {
-          // Softly blooming block with continuous easeInOut and sine alpha
-          const blockT = (phaseT - start) / windowSpan;
-          const scale = easeInOutCubic(blockT);
-          const size = Math.ceil(blockSize * scale) + 1;
-          const off = Math.floor((blockSize - size) * 0.5);
+      for (let cx = minCol; cx <= maxCol; cx++) {
+        const x = cx * cell + cell * 0.5;
+        const dx = x - originX;
+        const dist = Math.sqrt(dx * dx + dy2);
 
-          ctx.globalAlpha = Math.max(0, Math.min(1, sinAlpha(blockT) * 1.15));
-          ctx.fillStyle = (b.isAccent && blockT < 0.40) ? accentColor : targetColor;
-          ctx.fillRect(b.x + off, b.y + off, size, size);
-        }
+        // u = |dist - r| / band (skip if u >= 1)
+        const diff = Math.abs(dist - r);
+        const u = diff / band;
+        if (u >= 1) continue;
+
+        // Size with randomized dither modulation
+        const f = (1 - u) * (0.7 + 0.5 * hash(cx, cy));
+        const sqSize = cell * Math.min(1, f * 1.15);
+        if (sqSize < 1.2) continue;
+
+        // Angle around origin with subtle radial distance shift
+        const angle = Math.atan2(dy, dx);
+        const normAngle = (angle + Math.PI) / (2 * Math.PI);
+        const distShift = (dist - r) / (band * 3);
+        let tAngle = (normAngle + distShift) % 1;
+        if (tAngle < 0) tAngle += 1;
+        const lutIdx = Math.floor(tAngle * 96) % 96;
+
+        // Alpha calculation
+        const alpha = Math.min(1, 0.55 + 0.45 * f);
+
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = lut[lutIdx];
+        ctx.fillRect(x - sqSize * 0.5, y - sqSize * 0.5, sqSize, sqSize);
       }
-
-    } else {
-      // ══ Midpoint: theme swap fired beneath 100% solid coverage ══════
-      if (!swapped) {
-        swapped = true;
-        try {
-          onSwap?.();
-        } catch (err) {
-          console.error("[dissolve] swap:", err);
-        }
-      }
-
-      // ══ Phase 2: Blocks gently dissolve outward in same momentum ═════
-      const phaseT = (elapsed - half) / half; // 0 → 1
-
-      for (let i = 0; i < blocks.length; i++) {
-        const b = blocks[i];
-        const start = b.delay * spreadScale;
-        const end = start + windowSpan;
-
-        if (phaseT >= end) continue; // fully dissolved into new theme
-
-        if (phaseT <= start) {
-          // Still solid
-          ctx.globalAlpha = 1;
-          ctx.fillStyle = targetColor;
-          ctx.fillRect(b.x, b.y, blockSize + 1, blockSize + 1);
-        } else {
-          // Softly dissolving block revealing new theme from the background
-          const blockT = (phaseT - start) / windowSpan;
-          const scale = 1 - easeInOutCubic(blockT);
-          const size = Math.ceil(blockSize * scale) + 1;
-          const off = Math.floor((blockSize - size) * 0.5);
-
-          ctx.globalAlpha = Math.max(0, Math.min(1, sinAlpha(scale) * 1.15));
-          ctx.fillStyle = (b.isAccent && scale < 0.45) ? accentColor : targetColor;
-          ctx.fillRect(b.x + off, b.y + off, size, size);
-        }
-      }
-    }
-
-    if (elapsed < duration) {
-      requestAnimationFrame(frame);
-    } else {
-      if (!swapped) onSwap?.();
-      canvas.remove();
-      isTransitioning = false;
     }
   }
 
-  requestAnimationFrame(frame);
-}
+  // Draw Frame 0 synchronously on click so there is no initial lag
+  render(0);
 
-// ── Public API ─────────────────────────────────────────────────────────────
+  let cleanedUp = false;
+  let rafId = null;
 
-export function triggerPixelTransition({
-  targetMode,
-  currentTheme = "cobalt",
-  originEvent = null,
-  onSwap,
-  duration = 1600,
-}) {
-  if (isTransitioning) return;
+  function cleanup() {
+    if (cleanedUp) return;
+    cleanedUp = true;
 
-  if (prefersReducedMotion()) {
+    if (rafId) {
+      cancelAnimationFrame(rafId);
+      rafId = null;
+    }
+    if (canvas && canvas.parentNode) {
+      canvas.remove();
+    }
+    if (currentAnim) {
+      try {
+        currentAnim.cancel();
+      } catch {}
+      currentAnim = null;
+    }
+    isTransitioning = false;
+  }
+
+  // ── 1. Start View Transition ─────────────────────────────────────────────
+  let transition;
+  try {
+    transition = document.startViewTransition(() => {
+      onSwap?.();
+    });
+  } catch {
     onSwap?.();
+    cleanup();
     return;
   }
 
-  isTransitioning = true;
-  runPixelDissolve({ targetMode, currentTheme, originEvent, onSwap, duration });
+  const startTime = performance.now();
+
+  // ── 2. Animate ::view-transition-new(root) via Web Animations API ─────────
+  transition.ready
+    .then(() => {
+      if (cleanedUp) return;
+
+      const steps = 80;
+      const keyframes = [];
+      for (let i = 0; i <= steps; i++) {
+        const t = i / steps;
+        const p = easeProgress(t);
+        const radius = p * maxR;
+        keyframes.push({
+          clipPath: `circle(${radius.toFixed(2)}px at ${originX}px ${originY}px)`,
+        });
+      }
+
+      currentAnim = document.documentElement.animate(keyframes, {
+        duration: DURATION,
+        easing: "linear",
+        pseudoElement: "::view-transition-new(root)",
+        fill: "forwards",
+      });
+
+      // Synchronize WAAPI with elapsed time so both layers are in lockstep
+      const elapsedSoFar = performance.now() - startTime;
+      currentAnim.currentTime = Math.min(DURATION, elapsedSoFar);
+    })
+    .catch(() => {
+      cleanup();
+    });
+
+  transition.finished.finally(() => {
+    cleanup();
+  });
+
+  // ── 3. Synchronized Canvas rAF Loop ──────────────────────────────────────
+  function frame(now) {
+    if (cleanedUp) return;
+
+    const elapsed = now - startTime;
+    const t = Math.min(1, elapsed / DURATION);
+    const p = easeProgress(t);
+
+    render(p);
+
+    if (t < 1) {
+      rafId = requestAnimationFrame(frame);
+    } else {
+      cleanup();
+    }
+  }
+
+  rafId = requestAnimationFrame(frame);
 }

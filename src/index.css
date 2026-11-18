@@ -2031,15 +2031,26 @@ body {
 
 
 /* ══════════════════════════════════════════════════════════════════
-   CIRCULAR RIPPLE TRANSITION — pure canvas, no View Transitions API
-   Animation is fully handled by src/utils/pixelTransition.js
+   PIXEL RIPPLE VIEW TRANSITION
    ══════════════════════════════════════════════════════════════════ */
 
-/* Kill any browser default view-transition crossfade completely */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none !important;
   opacity: 1 !important;
+  mix-blend-mode: normal !important;
+}
+
+::view-transition-old(root) {
+  z-index: 1 !important;
+}
+
+::view-transition-new(root) {
+  z-index: 2 !important;
+}
+
+::view-transition-image-pair(root) {
+  isolation: isolate !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
