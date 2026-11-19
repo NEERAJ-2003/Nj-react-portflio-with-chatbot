@@ -330,7 +330,12 @@ const KB = [
     answer: "This is Neeraj KR — a Software Engineer specializing in FastAPI, Django, REST APIs, and database design, currently working as a Software Engineer Trainee at ZKTeco Biometrics India Pvt Ltd."
   },
   {
-    keywords: ["name", "his name", "full name", "what is his name", "what's his name"],
+    keywords: [
+      "his name", "full name", "what is his name", "what's his name", "whats his name",
+      "what is neeraj's name", "whats neerajs name", "neeraj's name", "neerajs name", "neeraj name",
+      "developer name", "creator name", "author name", "who built this portfolio",
+      "what is the developer's name", "whats the developers name", "name of the developer"
+    ],
     answer: "His name is Neeraj KR."
   },
   {
@@ -355,8 +360,11 @@ const KB = [
     answer: "That's a little Chrome-dino-style mini game built right into the Contact section — tap or press Enter/Space to jump over obstacles and try to beat the high score!"
   },
   {
-    keywords: ["who are you", "are you ai", "are you a bot", "are you human", "your name freya",
-      "what is freya", "who is freya", "are you real"],
+    keywords: [
+      "what is your name", "whats your name", "what's your name", "your name", "who are you",
+      "are you ai", "are you a bot", "are you human", "your name freya",
+      "what is freya", "who is freya", "are you real", "what should i call you", "name of bot", "bot name"
+    ],
     answer: "I'm Freya, an AI assistant built into Neeraj's portfolio to answer questions about his education, experience, skills, and projects."
   },
   {
@@ -376,10 +384,10 @@ function bestKBMatch(q) {
 
 export function getGreeting() {
   const h = new Date().getHours();
-  if (h >= 6 && h < 12) return "Good morning";
-  if (h >= 12 && h < 16) return "Good afternoon";
-  if (h >= 16 && h < 19) return "Good evening";
-  return "Good night";
+  if (h >= 6 && h < 12) return "Good Morning";
+  if (h >= 12 && h < 16) return "Good Afternoon";
+  if (h >= 16 && h < 19) return "Good Evening";
+  return "Good Night";
 }
 
 // ── Smalltalk ──

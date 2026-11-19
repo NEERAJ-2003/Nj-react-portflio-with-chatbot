@@ -83,7 +83,7 @@ export function triggerVaporize({
   container,
   onComplete,
   accentColor = "#699cff",
-  greetingText = "Good evening, Neeraj",
+  greetingText = "Good evening",
 }) {
   if (!container) {
     onComplete?.();

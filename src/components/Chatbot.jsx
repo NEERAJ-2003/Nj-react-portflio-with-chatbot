@@ -446,7 +446,7 @@ export default function Chatbot() {
     triggerVaporize({
       container,
       accentColor: accent,
-      greetingText: `${getGreeting()}, Neeraj`,
+      greetingText: getGreeting(),
       onComplete: () => {
         setMessages([]);
         setIsVaporizing(false);
@@ -741,7 +741,7 @@ export default function Chatbot() {
               <div className="freya-greeting-screen">
                 <div className="freya-greeting-row">
                   <span className="freya-greeting-star material-symbols-outlined">auto_awesome</span>
-                  <span className="freya-greeting-text">{getGreeting()}, Neeraj</span>
+                  <span className="freya-greeting-text">{getGreeting()}</span>
                 </div>
                 <p className="freya-greeting-sub">Ask me anything about the portfolio</p>
               </div>
