@@ -49,7 +49,7 @@ const SKILL_KNOWN = [
     name: "SQL & PostgreSQL",
     percent: "85%",
     aliases: ["sql", "postgresql", "postgres", "database", "databases", "db",
-      "database design", "database management", "query", "queries", "joins",
+      "database design", "database management", "sql query", "sql queries", "joins",
       "database skill", "db skill", "relational database", "data modeling", "schema design"],
     extra: "Covers datatypes, joins, complex queries, and pseudo columns."
   },
@@ -281,7 +281,7 @@ const KB = [
   {
     keywords: [
       "projects", "project", "what projects", "what are your projects", "what projects has he done",
-      "projects has he built", "list projects", "show projects", "tell me about your projects",
+      "projects has he built", "list projects", "show projects", "tell me about projects", "tell me about your projects",
       "tell me about his projects", "featured projects", "main projects"
     ],
     answer: "Neeraj's featured projects include: 1) Sentinel (Cryptographic Trust & AI Governance for autonomous agents), 2) Brain Tumor Detection System (medical ML pipeline with CNNs and Genetic Algorithms, 96.4% accuracy), 3) Traceo (cross-platform productivity telemetry ecosystem with Python daemon, Chrome extension, FastAPI backend, and React dashboard), and 4) Check Balance (real-time financial auditing web app)."
@@ -375,6 +375,8 @@ function bestKBMatch(q) {
 }
 
 // ── Smalltalk ──
+const GREETING_REGEX = /\b(h+e*l+o+|h+i+|h+e+y+|h+a+i+|y+o+|h+o+l+a+|h+o+w+d+y+|w+a+s+s*u+p+|s+u+p+|w+h+a+t+s+u+p+|g+r+e+e+t+i+n+g+s*|n+a+m+a+s+t+e+|h+i+y+a+)\b/i;
+
 const SMALLTALK = [
   {
     keywords: ["rate neeraj", "rate your creator", "how super is neeraj", "is he super"],
@@ -393,27 +395,27 @@ const SMALLTALK = [
     answer: "August 2026"
   },
   {
-    keywords: ["hi", "hello", "hey", "yo", "hiya", "howdy", "hlo", "hallo", "hai"],
-    answer: "Hey there! I'm Freya. Ask me anything about the portfolio."
-  },
-  {
-    keywords: ["good morning"],
+    keywords: ["good morning", "morning"],
     answer: "Hey, good morning, I'm Freya. Have a nice day..."
   },
   {
-    keywords: ["good afternoon"],
+    keywords: ["good afternoon", "afternoon"],
     answer: "Hey, good afternoon, I'm Freya."
   },
   {
-    keywords: ["good evening"],
+    keywords: ["good evening", "evening"],
     answer: "Hey, good evening, I'm Freya."
   },
   {
-    keywords: ["good night"],
+    keywords: ["good night", "night"],
     answer: "Hey, Good night sweet dreams..."
   },
   {
-    keywords: ["thank", "thanks", "thx", "appreciate", "cheers", "much appreciated"],
+    keywords: ["how are you", "how's it going", "what's up", "how you doing", "hows it going", "how are u"],
+    answer: "Doing great, thanks for asking! I'm here to answer questions about Neeraj's portfolio — what would you like to know?"
+  },
+  {
+    keywords: ["thank", "thanks", "thx", "appreciate", "cheers", "much appreciated", "thank you"],
     answer: "You're welcome! Let me know if you'd like to know anything else about Neeraj's work."
   },
   {
@@ -421,17 +423,23 @@ const SMALLTALK = [
     answer: "Take care! Feel free to reach out to Neeraj directly at devbyneeraj@gmail.com if you'd like to connect further."
   },
   {
-    keywords: ["how are you", "how's it going", "what's up", "how you doing", "hows it going"],
-    answer: "Doing great, thanks for asking! I'm here to answer questions about Neeraj's portfolio — what would you like to know?"
-  },
-  {
     keywords: ["ok", "okay", "cool", "nice", "great", "alright", "got it", "sounds good"],
     answer: "Glad that helps! Anything else you'd like to know about Neeraj?"
+  },
+  {
+    isGreeting: true,
+    keywords: [
+      "hi", "hello", "hey", "yo", "hiya", "howdy", "hlo", "hloo", "hlooo", "helo",
+      "helloo", "helllo", "heyy", "heyyy", "hii", "hiii", "hiiii", "hallo", "hai",
+      "haai", "hola", "namaste", "sup", "wassup", "whatsup", "greetings"
+    ],
+    answer: "Hey there! I'm Freya. Ask me anything about the portfolio."
   },
 ];
 
 function smalltalkMatch(q) {
   for (const entry of SMALLTALK) {
+    if (entry.isGreeting && GREETING_REGEX.test(q)) return entry;
     if (entry.keywords.some((k) => hasWord(q, k))) return entry;
   }
   return null;
@@ -456,9 +464,6 @@ const OFF_TOPIC = "That's outside what I can help with — I stick to questions 
 export function findAnswer(question) {
   const q = question.toLowerCase();
 
-  const smalltalk = smalltalkMatch(q);
-  if (smalltalk) return smalltalk.answer;
-
   const skillReply = skillsAnswer(question);
   const skillScore = skillReply ? 3 : 0;
 
@@ -467,18 +472,30 @@ export function findAnswer(question) {
 
   const best = Math.max(skillScore, contact.score, kb.score);
 
-  if (best === 0) {
-    return PORTFOLIO_SCOPE.some((k) => hasWord(q, k)) ? FALLBACK : OFF_TOPIC;
+  if (best > 0) {
+    if (skillScore === best && skillReply) return skillReply;
+    if (contact.score === best && contact.text) return contact.text;
+    if (kb.score === best && kb.entry) return kb.entry.answer;
   }
-  if (skillScore === best && skillReply) return skillReply;
-  if (contact.score === best && contact.text) return contact.text;
-  if (kb.score === best && kb.entry) return kb.entry.answer;
+
+  const smalltalk = smalltalkMatch(q);
+  if (smalltalk) return smalltalk.answer;
 
   return PORTFOLIO_SCOPE.some((k) => hasWord(q, k)) ? FALLBACK : OFF_TOPIC;
 }
 
 export function isSmalltalk(question) {
-  return !!smalltalkMatch(question.toLowerCase());
+  const q = question.toLowerCase();
+  const smalltalk = smalltalkMatch(q);
+  if (!smalltalk) return false;
+
+  const skillReply = skillsAnswer(question);
+  const skillScore = skillReply ? 3 : 0;
+  const contact = contactAnswer(question);
+  const kb = bestKBMatch(q);
+  const best = Math.max(skillScore, contact.score, kb.score);
+
+  return best === 0;
 }
 
 export const THINKING_PHRASES = [

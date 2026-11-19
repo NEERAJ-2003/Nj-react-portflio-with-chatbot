@@ -159,10 +159,11 @@ body {
   position: absolute;
   left: 0; bottom: 0;
   height: 2px; width: 0%;
-  background: #3b82f6;
+  background: var(--color-primary, #699cff);
+  box-shadow: 0 0 8px var(--theme-accent-glow, rgba(105, 156, 255, 0.4));
   transition: width 0.3s ease;
 }
-.nav-link.active { color: #60a5fa; font-weight: 600; }
+.nav-link.active { color: var(--color-primary, #699cff); font-weight: 600; }
 .nav-link.active::after { width: 100%; }
 
 /* ── Chatbot widget ── */
@@ -1484,21 +1485,22 @@ body {
 .nav-cta {
   padding: 8px 16px;
   border-radius: 999px;
-  background: linear-gradient(135deg, #699cff, #9c48ea);
-  color: #001e4a;
+  background: linear-gradient(135deg, var(--color-primary, #699cff), var(--color-tertiary, #9c48ea));
+  color: var(--color-on-primary, #001e4a);
   font-family: "Space Grotesk", sans-serif;
   font-size: 13px;
   font-weight: 600;
   text-decoration: none;
+  box-shadow: 0 2px 10px var(--theme-accent-glow, rgba(105, 156, 255, 0.25));
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .nav-cta:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(105, 156, 255, 0.4);
+  box-shadow: 0 4px 18px var(--theme-accent-glow, rgba(105, 156, 255, 0.45));
 }
 .nav-cta.active {
   transform: translateY(-1px);
-  box-shadow: 0 0 20px rgba(105, 156, 255, 0.6), 0 4px 16px rgba(105, 156, 255, 0.4);
+  box-shadow: 0 0 22px var(--theme-accent-glow, rgba(105, 156, 255, 0.65)), 0 4px 16px var(--theme-accent-glow, rgba(105, 156, 255, 0.4));
 }
 
 /* ── Mobile Hamburger Button ── */
@@ -1511,7 +1513,7 @@ body {
   align-items: center;
   justify-content: center;
   background: rgba(28, 32, 40, 0.65);
-  border: 1px solid rgba(105, 156, 255, 0.2);
+  border: 1px solid var(--theme-accent-border, rgba(105, 156, 255, 0.2));
   border-radius: 12px;
   cursor: pointer;
   padding: 0;
@@ -1522,16 +1524,16 @@ body {
 }
 .hamburger-btn:hover {
   background: rgba(34, 38, 45, 0.85);
-  border-color: rgba(105, 156, 255, 0.45);
-  box-shadow: 0 0 18px rgba(105, 156, 255, 0.25);
+  border-color: var(--color-primary, rgba(105, 156, 255, 0.45));
+  box-shadow: 0 0 18px var(--theme-accent-glow, rgba(105, 156, 255, 0.25));
 }
 .hamburger-btn:active {
   transform: scale(0.92);
 }
 .hamburger-btn.is-open {
   background: rgba(30, 36, 48, 0.95);
-  border-color: rgba(105, 156, 255, 0.6);
-  box-shadow: 0 0 20px rgba(105, 156, 255, 0.35);
+  border-color: var(--color-primary, rgba(105, 156, 255, 0.6));
+  box-shadow: 0 0 20px var(--theme-accent-glow, rgba(105, 156, 255, 0.35));
 }
 
 .hamburger-box {
@@ -1557,11 +1559,11 @@ body {
 }
 
 .hamburger-btn:hover .hamburger-line {
-  background: #699cff;
+  background: var(--color-primary, #699cff);
 }
 
 .hamburger-btn.is-open .hamburger-line {
-  background: #699cff;
+  background: var(--color-primary, #699cff);
 }
 
 .hamburger-btn.is-open .line-1 {
@@ -2391,6 +2393,11 @@ body {
 [data-mode="light"] .nav-link:hover,
 [data-mode="light"] .nav-link.active {
   color: var(--color-primary);
+}
+
+[data-mode="light"] .nav-cta,
+[data-mode="light"] .mobile-cta-btn {
+  color: #ffffff;
 }
 
 [data-mode="light"] .hamburger-btn {
