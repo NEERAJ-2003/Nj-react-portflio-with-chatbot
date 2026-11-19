@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { findAnswer, isSmalltalk, pickThinkingPhrase } from "../chatbot/chatbotEngine";
+import { findAnswer, isSmalltalk, pickThinkingPhrase, getGreeting } from "../chatbot/chatbotEngine";
 import VoiceVisualizer from "./VoiceVisualizer";
 import { triggerVaporize } from "../utils/vaporizeAnimation";
 
@@ -399,15 +399,7 @@ export default function Chatbot() {
         setTimeout(() => {
           setIsIntroActive(false);
           setIsIntroFading(false);
-          const id = addMessage("", "bot");
-          activeBotMsgIdRef.current = id;
-          activeTimerRef.current = setTimeout(() => {
-            typeOutMessage(
-              id,
-              "Hi, I'm Freya, Neeraj's AI assistant. Ask me about his Python & FastAPI stack, system architectures, or ML projects!",
-              28
-            );
-          }, 120);
+          // Don't auto-send any message — greeting header shows in empty state
         }, 400);
       }, 1000);
     }
@@ -422,13 +414,6 @@ export default function Chatbot() {
     setTimeout(() => {
       setIsIntroActive(false);
       setIsIntroFading(false);
-      const id = addMessage("", "bot");
-      activeBotMsgIdRef.current = id;
-      typeOutMessage(
-        id,
-        "Hi, I'm Freya, Neeraj's AI assistant. Ask me about his Python & FastAPI stack, system architectures, or ML projects!",
-        28
-      );
     }, 180);
   }
 
@@ -440,11 +425,12 @@ export default function Chatbot() {
     }
 
     const container = messagesRef.current;
+    const greeting = getGreeting();
     if (!container || messages.length === 0) {
       setMessages([
         {
           id: nextId(),
-          text: "Chat refreshed! Ask me about Neeraj's skills, Brain Tumor architecture, or projects.",
+          text: `${greeting}! Chat refreshed. Ask me about Neeraj's skills, Brain Tumor architecture, or projects.`,
           sender: "bot",
           action: null,
         },
@@ -472,7 +458,7 @@ export default function Chatbot() {
         setMessages([
           {
             id: nextId(),
-            text: "Chat refreshed! Ask me about Neeraj's skills, Brain Tumor architecture, or projects.",
+            text: `${getGreeting()}! Chat refreshed. Ask me about Neeraj's skills, Brain Tumor architecture, or projects.`,
             sender: "bot",
             action: null,
           },
@@ -763,7 +749,17 @@ export default function Chatbot() {
           </div>
 
           {/* Chat Messages */}
-          <div id="chat-messages" ref={messagesRef} className="relative">
+          <div id="chat-messages" ref={messagesRef} className={`relative ${messages.length === 0 && !isIntroActive ? "freya-empty-state" : ""}`}>
+            {/* Time-based greeting — shown only when no messages yet (like Claude) */}
+            {messages.length === 0 && !isIntroActive && (
+              <div className="freya-greeting-screen">
+                <div className="freya-greeting-row">
+                  <span className="freya-greeting-star material-symbols-outlined">auto_awesome</span>
+                  <span className="freya-greeting-text">{getGreeting()}, Neeraj</span>
+                </div>
+                <p className="freya-greeting-sub">Ask me anything about the portfolio</p>
+              </div>
+            )}
             {messages.map((m) => {
               const isUser = m.sender === "user";
               return (

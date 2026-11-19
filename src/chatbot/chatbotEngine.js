@@ -374,6 +374,14 @@ function bestKBMatch(q) {
   return { entry: best, score: bestScore };
 }
 
+export function getGreeting() {
+  const h = new Date().getHours();
+  if (h >= 6 && h < 12) return "Good morning";
+  if (h >= 12 && h < 16) return "Good afternoon";
+  if (h >= 16 && h < 19) return "Good evening";
+  return "Good night";
+}
+
 // ── Smalltalk ──
 const GREETING_REGEX = /\b(h+e*l+o+|h+i+|h+e+y+|h+a+i+|y+o+|h+o+l+a+|h+o+w+d+y+|w+a+s+s*u+p+|s+u+p+|w+h+a+t+s+u+p+|g+r+e+e+t+i+n+g+s*|n+a+m+a+s+t+e+|h+i+y+a+)\b/i;
 
@@ -433,7 +441,7 @@ const SMALLTALK = [
       "helloo", "helllo", "heyy", "heyyy", "hii", "hiii", "hiiii", "hallo", "hai",
       "haai", "hola", "namaste", "sup", "wassup", "whatsup", "greetings"
     ],
-    answer: "Hey there! I'm Freya. Ask me anything about the portfolio."
+    getAnswer: () => `${getGreeting()}! I'm Freya. Ask me anything about the portfolio.`
   },
 ];
 
@@ -479,7 +487,7 @@ export function findAnswer(question) {
   }
 
   const smalltalk = smalltalkMatch(q);
-  if (smalltalk) return smalltalk.answer;
+  if (smalltalk) return smalltalk.getAnswer ? smalltalk.getAnswer() : smalltalk.answer;
 
   return PORTFOLIO_SCOPE.some((k) => hasWord(q, k)) ? FALLBACK : OFF_TOPIC;
 }
