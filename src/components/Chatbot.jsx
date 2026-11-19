@@ -708,8 +708,8 @@ export default function Chatbot() {
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <defs>
                 <linearGradient id="freyaGradientHeader" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stopColor="#699cff" />
-                  <stop offset="100%" stopColor="#9c48ea" />
+                  <stop offset="0%" stopColor="var(--color-primary, #699cff)" style={{ stopColor: "var(--color-primary, #699cff)" }} />
+                  <stop offset="100%" stopColor="var(--color-tertiary, #9c48ea)" style={{ stopColor: "var(--color-tertiary, #9c48ea)" }} />
                 </linearGradient>
               </defs>
               <path
