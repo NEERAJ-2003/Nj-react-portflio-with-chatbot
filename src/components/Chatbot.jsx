@@ -425,16 +425,8 @@ export default function Chatbot() {
     }
 
     const container = messagesRef.current;
-    const greeting = getGreeting();
     if (!container || messages.length === 0) {
-      setMessages([
-        {
-          id: nextId(),
-          text: `${greeting}! Chat refreshed. Ask me about Neeraj's skills, Brain Tumor architecture, or projects.`,
-          sender: "bot",
-          action: null,
-        },
-      ]);
+      setMessages([]);
       return;
     }
 
@@ -454,15 +446,9 @@ export default function Chatbot() {
     triggerVaporize({
       container,
       accentColor: accent,
+      greetingText: `${getGreeting()}, Neeraj`,
       onComplete: () => {
-        setMessages([
-          {
-            id: nextId(),
-            text: `${getGreeting()}! Chat refreshed. Ask me about Neeraj's skills, Brain Tumor architecture, or projects.`,
-            sender: "bot",
-            action: null,
-          },
-        ]);
+        setMessages([]);
         setIsVaporizing(false);
       },
     });
